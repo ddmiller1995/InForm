@@ -37,6 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # user defined below here
+    'rest_framework',
+    'forms.apps.FormsConfig'
 ]
 
 MIDDLEWARE = [
