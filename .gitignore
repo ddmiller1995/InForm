@@ -1,2 +1,7 @@
 *.sqlite3
 *.pyc
+venv
+virtualenv
+node_modules
+webpack-stats.json
+assets/bundles/
