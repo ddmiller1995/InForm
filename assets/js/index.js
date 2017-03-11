@@ -1,7 +1,8 @@
-var React = require('react')
-var ReactDOM = require('react-dom')
+let React = require('react')
+let ReactDOM = require('react-dom')
+import 'whatwg-fetch';
 
-var Hello = React.createClass ({
+let Hello = React.createClass ({
     render: function() {
         return (
             <h1>
