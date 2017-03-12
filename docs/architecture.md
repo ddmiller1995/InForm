@@ -42,7 +42,7 @@ For example, for the youth tracker [home page](https://tessaev1.wixsite.com/yout
 The front end will make a web request to the backend like the following:
 
 ```javascript
-fetch('/fetchYouth')
+fetch('/api/fetchYouth')
 .then(response => return response.json())
 .then(youthArray => {
   for (let youth of youthArray) {
