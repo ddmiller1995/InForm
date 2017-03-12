@@ -2,7 +2,7 @@
 
 This repo contains the source code for the backend and the frontend.
 
-Credits: The Django-React interaction was setup by following a great guide I found on [Reddit](http://geezhawk.github.io/using-react-with-django-rest-framework).
+Credits: The Django-React interaction was setup by following a [great guide](http://geezhawk.github.io/using-react-with-django-rest-framework) I found on Reddit.
 
 ## Background knowledge
 
