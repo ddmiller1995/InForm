@@ -6,6 +6,8 @@ This repo contains the source code for the backend and the frontend.
 
 If you're not super comfortable with Python, Django, or React, check out [this](docs/learning.md) doc first.
 
+Definitely read the [software architecture](doc/architecture.md) document too.
+
 ## Python3
 
 For simplicity's sake, let's all use the same Python version. Let's go with the latest Python 3.6. Probably any Python3 version will work, but if you haven't installed Python yet, use [Python3.6](https://www.python.org/downloads/release/python-360/) so we are all on the same page.
