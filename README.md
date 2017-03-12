@@ -2,6 +2,8 @@
 
 This repo contains the source code for the backend and the frontend.
 
+Credits: The Django-React interaction was setup by following a great guide I found on [Reddit](http://geezhawk.github.io/using-react-with-django-rest-framework).
+
 ## Background knowledge
 
 If you're not super comfortable with Python, Django, or React, check out [this](docs/learning.md) doc first.
