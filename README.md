@@ -6,7 +6,7 @@ This repo contains the source code for the backend and the frontend.
 
 If you're not super comfortable with Python, Django, or React, check out [this](docs/learning.md) doc first.
 
-Definitely read the [software architecture](doc/architecture.md) document too.
+Definitely read the [software architecture](docs/architecture.md) document too.
 
 ## Python3
 
