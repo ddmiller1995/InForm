@@ -8,6 +8,7 @@ services:
     volumes:
       - ./src:/src
       - ./config/nginx:/etc/nginx/conf.d
+      - /static:/static
     depends_on:
       - web
   web:
@@ -16,5 +17,6 @@ services:
     command: bash -c "python manage.py makemigrations && python manage.py migrate && gunicorn InForm.wsgi -b 0.0.0.0:8000"
     volumes:
       - ./src:/src
+      - /static:/static
     expose:
       - "8000"
