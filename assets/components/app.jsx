@@ -10,12 +10,6 @@ export default class extends React.Component {
           this.state = {};
       }
       
-    //   render() {
-    //       return (
-    //           <h2>Running React hot compiler - edited again!</h2>
-    //       );
-    //   }
-      
       render() {
           return (
               <div className="mdl-layout mdl-js-layout mdl-layout--fixed-header">
