@@ -67,15 +67,35 @@ npm install
 
 ### Compiling JS bundles
 
-Now you need to compile the javascript into a bundle.
+~~Now you need to compile the javascript into a bundle.~~
 
-**Important**:  This is something you will need to do frequently. If you make some front end code changes, you need to recompile the javascript bundle before the Django server reflects the code changes. To prevent non-meaningful merge conflicts all the time, I've excluded the bundle files from git. This means that after you pull someone's changes down, you also need to recompile the bundle.
+~~**Important**:  This is something you will need to do frequently. If you make some front end code changes, you need to recompile the javascript bundle before the Django server reflects the code changes. To prevent non-meaningful merge conflicts all the time, I've excluded the bundle files from git. This means that after you pull someone's changes down, you also need to recompile the bundle.~~
 
 To compile the bundle, use the shortcut command defined in package.json
 
 ```bash
 npm run compile
 ```
+
+**Edit:** This command is no longer necessary, as we are now using a React Hot Loader which compiles our files on the fly and communicates any changes to our Django server. See the next section, [Running the React Hot Loader](#running-the-react-hot-loader), for more detail. 
+
+### Running the React Hot Loader
+
+We are now using React Hot Loader. In short, this means that we no longer have to run `npm run compile` everytime we make changes to our code. Instead, when paired with Webpack, React Hot Loader allows React components to be live reloaded without having to manually run any compile scripts or restart the server. We're also using webpack-dev-server's API to create a new instance of the server, stored as server.js, which communicates to our Django server any changes we make to our files.
+
+You'll need to run the Django and node server simultaneously for this to work properly. Use the following npm script command to run the node server:
+
+```bash
+npm start
+``` 
+
+That's it! Though keep in mind that without using Browser-sync, or something similar, you'll still have to manually refresh the page. This just saves you from the manual recompile. 
+
+By default, the server will keep the bundles in memory rather than writing them to disk. This is good news for us, as it means we won't end up with a new, unique bundle file everytime we make changes and compile.
+
+[Here](http://owaislone.org/blog/webpack-plus-reactjs-and-django/) is a really great tutorial that walks through how to integrate react-hot-loader with Webpack. Read the 'Bonus: Live editing react components' section for an overview on react-hot-loader and webpack-dev-server.
+
+**Note:** react-hot-loader and webpack-dev-loader should not be included in any production config. 
 
 ### Creating and applying database migrations
 
