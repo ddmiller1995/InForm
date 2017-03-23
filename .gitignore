@@ -5,3 +5,6 @@ virtualenv
 node_modules
 webpack-stats.json
 assets/bundles/
+assets/.sass-cache/*
+*main.css.map
+.idea/*

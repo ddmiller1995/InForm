@@ -1,0 +1,20 @@
+$light-green: #8fbc49;
+$orange-accent: #E17000;
+
+.mdl-layout__header {
+    background-color: #FFF;
+}
+
+.mdl-layout__header-row {
+    padding: 0 40px 0 40px;
+    color: $light-green;
+
+    .mdl-navigation__link {
+        color: $light-green;
+    }
+}
+
+.header-divider {
+     border-right:1px solid #16222c; 
+     height:25px;
+}

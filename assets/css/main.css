@@ -1,0 +1,14 @@
+.mdl-layout__header {
+  background-color: #FFF; }
+
+.mdl-layout__header-row {
+  padding: 0 40px 0 40px;
+  color: #8fbc49; }
+  .mdl-layout__header-row .mdl-navigation__link {
+    color: #8fbc49; }
+
+.header-divider {
+  border-right: 1px solid #16222c;
+  height: 25px; }
+
+/*# sourceMappingURL=main.css.map */
