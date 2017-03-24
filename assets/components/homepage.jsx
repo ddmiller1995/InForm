@@ -1,4 +1,5 @@
 import React from "react";
+import {Link, IndexLink} from "react-router";
 import "whatwg-fetch";
 import YouthTracker from "./youth-tracker.jsx";
 
@@ -13,6 +14,11 @@ export default class extends React.Component {
       render() {
           return (
               <div className="container">
+                  <h1>Homepage</h1>
+                  <div>
+                      <IndexLink className="progress-link" to="/progress" activeClassName="active">Progress Report</IndexLink>
+                      <a href="#presentation" className="presentation-link">Presentation View</a>
+                  </div>
                   <YouthTracker />
               </div>
           );

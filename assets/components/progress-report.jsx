@@ -13,7 +13,7 @@ export default class extends React.Component {
       render() {
           return (
               <div className="container">
-                  <h1>Admin page</h1>
+                  <h1>Progress</h1>
               </div>
           );
       }
