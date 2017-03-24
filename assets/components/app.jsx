@@ -1,7 +1,6 @@
 import React from "react";
-// polyfill for Safari and older browser
 import "whatwg-fetch";
-
+import YouthTracker from "./youth-tracker.jsx";
 import "../css/main.css";
 
 export default class extends React.Component {
@@ -9,12 +8,6 @@ export default class extends React.Component {
           super(props);
           this.state = {};
       }
-      
-    //   render() {
-    //       return (
-    //           <h2>Running React hot compiler - edited again!</h2>
-    //       );
-    //   }
       
       render() {
           return (
@@ -33,7 +26,9 @@ export default class extends React.Component {
                       </div>
                   </header>
                   <main>
-                      {this.props.children}
+                      <div>
+                          <YouthTracker />
+                      </div>
                   </main>
               </div>
           );
