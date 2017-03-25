@@ -6,3 +6,8 @@
 .container {
     margin-left: 15px;
 }
+
+a.mdl-navigation__link.active {
+    color: $orange-accent;
+    font-weight: 700;
+}
