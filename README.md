@@ -126,6 +126,16 @@ python manage.py runserver
 
 Then open the link that gets printed to the command line in your browser.
 
+### Watching your SASS files
+
+Since we're using Sass, we also have to tell Sass to convert any changes made in our .scss files into our main.css. Open a terminal tab and run the following command:
+
+```
+sass --watch scss/base.scss:css/main.css
+```
+
+If you make style changes in our Sass files and don't see them reflected on the page, it's probably because you forgot to run this command. Remember: using Sass means that we are no longer interacting with / editing the css file directly. Only make style changes in the appropriate Sass file and let Sass communicate to main.css on its own.
+
 ### Done!
 
 That was a lot of steps, but luckily you only have to do them when you first clone down the repo (for the most part).

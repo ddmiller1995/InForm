@@ -21,7 +21,7 @@ var router = (
         <Route path="/" component={App}>
             <IndexRoute component={Homepage}></IndexRoute>
             <Route path="/progress" component={ProgressReport}></Route> 
-            <Route path="/admin"jcomponent={Admin}></Route> 
+            <Route path="/admin" component={Admin}></Route> 
             <Route path="/youth" component={Youth}>
                 <IndexRoute component={YouthInfo}></IndexRoute>
                 <Route path="/youth/progress" component={YouthProgress}></Route> 
