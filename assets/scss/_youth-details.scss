@@ -1,0 +1,22 @@
+@import "variables";
+
+.youth-detail-container {
+    border: 1px solid black;
+    margin: 15px;
+
+    .mdl-layout__header {
+        box-shadow: none;
+    }
+
+    .mdl-layout__header-row {
+        padding: 0;
+    }
+
+    .youth-detail-divider {
+        margin: 0 15px;
+    }
+}
+
+h4 {
+    text-align: center;
+}

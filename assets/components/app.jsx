@@ -1,7 +1,6 @@
 import React from "react";
-// polyfill for Safari and older browser
+import {Link, IndexLink} from "react-router";
 import "whatwg-fetch";
-
 import "../css/main.css";
 
 export default class extends React.Component {
@@ -18,9 +17,9 @@ export default class extends React.Component {
                           <span className="mdl-layout-title">Youth Haven Portal</span>
                           <div className="mdl-layout-spacer"></div>
                           <nav className="mdl-navigation">
-                              <a className="mdl-navigation__link" href="#">Home</a>
+                              <IndexLink className="mdl-navigation__link" to="/" activeClassName="active">Home</IndexLink>
                               <div className="header-divider"></div>
-                              <a className="mdl-navigation__link" href="#">Admin</a>
+                              <IndexLink className="mdl-navigation__link" to="/admin" activeClassName="active">Admin</IndexLink>
                               <div className="header-divider"></div>
                               <a className="mdl-navigation__link" href="#">Logout</a>
                           </nav>

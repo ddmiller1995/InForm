@@ -11,4 +11,28 @@
   border-right: 1px solid #16222c;
   height: 25px; }
 
+.progress-link, .presentation-link {
+  color: #E17000;
+  padding: 15px; }
+
+.youth-detail-container {
+  border: 1px solid black;
+  margin: 15px; }
+  .youth-detail-container .mdl-layout__header {
+    box-shadow: none; }
+  .youth-detail-container .mdl-layout__header-row {
+    padding: 0; }
+  .youth-detail-container .youth-detail-divider {
+    margin: 0 15px; }
+
+h4 {
+  text-align: center; }
+
+.container {
+  margin: 15px; }
+
+a.mdl-navigation__link.active {
+  color: #E17000;
+  font-weight: 700; }
+
 /*# sourceMappingURL=main.css.map */

@@ -1,1 +1,14 @@
 @import "navbar";
+@import "homepage";
+@import "youth-tracker";
+@import "youth-details";
+@import "variables";
+
+.container {
+    margin: 15px;
+}
+
+a.mdl-navigation__link.active {
+    color: $orange-accent;
+    font-weight: 700;
+}
