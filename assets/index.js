@@ -7,6 +7,10 @@ import App from "./components/app.jsx";
 import Homepage from "./components/homepage.jsx";
 import Admin from "./components/admin.jsx";
 import ProgressReport from "./components/progress-report.jsx";
+import Youth from "./components/youth.jsx";
+import YouthInfo from "./components/youth-info.jsx";
+import YouthProgress from "./components/youth-progress.jsx";
+import YouthForms from "./components/youth-forms.jsx";
 
 import {Router, Route, IndexRoute, hashHistory} from "react-router";
 
@@ -17,7 +21,12 @@ var router = (
         <Route path="/" component={App}>
             <IndexRoute component={Homepage}></IndexRoute>
             <Route path="/progress" component={ProgressReport}></Route> 
-            <Route path="/admin" component={Admin}></Route> 
+            <Route path="/admin"jcomponent={Admin}></Route> 
+            <Route path="/youth" component={Youth}>
+                <IndexRoute component={YouthInfo}></IndexRoute>
+                <Route path="/youth/progress" component={YouthProgress}></Route> 
+                <Route path="/youth/forms" component={YouthForms}></Route> 
+            </Route> 
         </Route> 
     </Router>
 );

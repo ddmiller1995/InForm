@@ -15,8 +15,18 @@
   color: #E17000;
   padding: 15px; }
 
+.youth-detail-container {
+  border: 1px solid black;
+  margin: 15px; }
+  .youth-detail-container .mdl-layout__header {
+    box-shadow: none; }
+  .youth-detail-container .mdl-layout__header-row {
+    padding: 0; }
+  .youth-detail-container .youth-detail-divider {
+    margin: 0 15px; }
+
 .container {
-  margin-left: 15px; }
+  margin: 15px; }
 
 a.mdl-navigation__link.active {
   color: #E17000;

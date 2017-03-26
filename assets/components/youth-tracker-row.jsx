@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import {Link, IndexLink} from "react-router";
 import "whatwg-fetch";
 
@@ -10,7 +9,8 @@ export default class extends React.Component {
     }
 
     handleClick(youth) {
-        console.log(youth + " was clicked");
+        console.log(youth.name + " was clicked");
+        this.setState({youth: youth});
     }
 
     render() {
@@ -19,9 +19,9 @@ export default class extends React.Component {
                 <td className="mdl-data-table__cell--non-numeric">
                     <IndexLink 
                         className="mdl-navigation__link" 
-                        to="/"
+                        to="/youth"
                         key={this.props.youth.name} 
-                        onClick={event => this.handleClick(this.props.youth.name)}>
+                        onClick={event => this.handleClick(this.props.youth)}>
                         {this.props.youth.name}
                     </IndexLink>
                 </td>

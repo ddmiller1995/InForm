@@ -1,7 +1,6 @@
 import React from "react";
 import {Link, IndexLink} from "react-router";
 import "whatwg-fetch";
-import YouthTracker from "./youth-tracker.jsx";
 import "../css/main.css";
 
 export default class extends React.Component {

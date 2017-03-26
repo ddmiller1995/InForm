@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import YouthTrackerRow from "./youth-tracker-row.jsx";
 import "whatwg-fetch";
 
@@ -27,6 +26,9 @@ export default class extends React.Component {
 
     handleYouthNameClick(youth) {
         console.log("clicked on " + youth.name);
+        this.setState({
+            currentYouth: youth
+        });
     }
 
     getYouthData() {
