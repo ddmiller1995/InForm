@@ -12,7 +12,9 @@ services:
     depends_on:
       - web
   web:
-    build: .
+    build:
+      context: .
+      dockerfile: web.Dockerfile
     container_name: dg01
     command: bash -c "python manage.py makemigrations && python manage.py migrate && gunicorn InForm.wsgi -b 0.0.0.0:8000"
     volumes:
@@ -20,3 +22,15 @@ services:
       - /static:/static
     expose:
       - "8000"
+  hotloader:
+    build:
+      context: .
+      dockerfile: hotloader.Dockerfile
+    container_name: hl01
+    command: bash -c "npm install && npm start"
+    volumes:
+      - ./src:/src
+    expose:
+      - "3000"
+    ports:
+      - "3000:3000"
