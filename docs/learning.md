@@ -5,6 +5,7 @@ Before you can contribute to the backend, you need to know:
 * React
 * How to read and write basic Python syntax
 * What Django is, how it works, and how we are using it
+* What Docker is and how to use it
 
 This document is an attempt to centralize this pre-req knowledge so that if someone on the team doesn't have all of this pre req nice knowledge, they can use this document as a starting point for their research.
 
@@ -39,3 +40,7 @@ If you don't know Python, you can still learn Django and through the tutorial. Y
 The tutorial is broken up into 7 parts. I recommend doing parts 1-4 as well as 7 to learn everything that you need to know about Django (database modeling, MVC, html templates/partials, and admin interface). It doesn't matter if you skip part 5 and 6 because they are not immediately relevant and the rest of the tutorial doesn't depend on them being completed.
 
 If you need help intsalling python or django feel free to ask Luis. 
+
+## Docker
+
+If you don't know what Docker is or what it does, go through Docker's hello world documentation and that should give you a good overview. Maybe a 10 minute youtube video would help too. We don't all need to know the docker config details, we just all need to know how to us it.

@@ -2,17 +2,16 @@
 
 This repo contains the source code for the backend and the frontend.
 
-Credits: The Django-React interaction was setup by following a [great guide](http://geezhawk.github.io/using-react-with-django-rest-framework) I found on Reddit.
-
+Credits: 
+* The Django-React interaction was setup by following a [great guide](http://geezhawk.github.io/using-react-with-django-rest-framework) I found on Reddit.
+* The Docker-Django-Nginx-Gunicorn interaction was setup with [this](http://ruddra.com/2016/08/14/docker-django-nginx-postgres/) guide.
 ## Background knowledge
 
-If you're not super comfortable with Python, Django, or React, check out [this](docs/learning.md) doc first.
+If you're not super comfortable with Python, Django, Docker, or React, check out [this](docs/learning.md) doc first.
+
+[Here](docs/docker-commands.md) is a list of useful docker commands specific for this project.
 
 Definitely read the [software architecture](docs/architecture.md) document too.
-
-## Python3
-
-For simplicity's sake, let's all use the same Python version. Let's go with the latest Python 3.6. Probably any Python3 version will work, but if you haven't installed Python yet, use [Python3.6](https://www.python.org/downloads/release/python-360/) so we are all on the same page.
 
 ## Setup for development
 
@@ -21,48 +20,47 @@ Here are some instructions for getting the codebase up and running locally
 Overview:
 
 1. Clone the repo
-2. Create a python virtual environment
-3. Activate the virtual environment
-3. Install the pip dependencies
+2. Install docker
 4. Install node dependencies
 5. Compile the JS bundle
-5. Run database migrations
-6. Run the dev server
+5. Run docker
+6. Collect static files
+s will look something like the following (will be a different file extension on Mac, .bat is Windows only)
 
-### Python virtual environments
 
-To create the virtual environment, first cd into the root repo folder then run:
 
-```bash
-python -m venv virtualenv
-```
+### Install Docker
 
-This will create a python virtual environment in the project folder. This will make it so that python dependencies get installed locally in that virtual environment, instead of the global environment. That way your dependencies for this project won't collide with any other python modules you may have previously installed.
+Download and install Docker for Mac and Docker for Windows [here](https://www.docker.com/).
 
-To activate the virtual environment, run the activate program from the command line inside the virtualenv's Scripts folder. This will look something like the following (will be a different file extension on Mac, .bat is Windows only)
+If you are on Windows, you may need to tell Docker that your C:\ drive is shared.
 
-```bash
-C:\Users\luisn\Downloads\InForm> virtualenv\Scripts\activate.bat
-(virtualenv) C:\Users\luisn\Downloads\InForm> 
-```
-**Note**: You will need to activate your virtualenv everytime you open a new terminal and want to run the server from it.
+* Click on the Docker icon in your taskbar and click on settings.
+* Click on Shared Drives.
+* Make sure that the box for C:\ drive is checked
 
-### Installing Python dependencies
+This is required because our docker image creates local file system volumes that our containers access (e.g. to store the sqlite database in a stateful and non-volatile environment)
 
-Now that your virtualenv is activated, install the project's python dependencies (like Django for example) with pip:
+### Install node dependencies
 
-```bash
-pip install -r requirements.txt
-```
+We need to download our node dependencies.
 
-For people with a node background, requirements.txt is analogous to package.json, and pip is analogous to npm.
-
-### Installing Node dependencies
-
-Speaking of npm, now that the backend dependencies are installed, we need to install the frontend dependencies. Run the following to install the node dependencies locally (will take a while)
+Run the following in the src directory to install the node dependencies locally (will take a while).
 
 ```bash
 npm install
+```
+
+### Compile the JS bundle
+
+The bundle js file is exluded from version control to avoid annoying meaningless merge conflicts. In other words, when you clone the repo you don't get a default empty bundle. Django will throw errors if the bundle is missing, so you need to compile it before the server is run for the first time.
+
+**Important**:  If you make some front end code changes, this is something you will need to do frequently. You need to recompile the javascript bundle before the Django server reflects any code changes you've made. Since the bundle file is exluded from git, after you pull someone's changes down, you also need to recompile the bundle.
+
+To compile the bundle, run the shortcut command defined in package.json from the src directory
+
+```bash
+npm run compile
 ```
 
 ### Compiling JS bundles
@@ -71,10 +69,15 @@ npm install
 
 ~~**Important**:  This is something you will need to do frequently. If you make some front end code changes, you need to recompile the javascript bundle before the Django server reflects the code changes. To prevent non-meaningful merge conflicts all the time, I've excluded the bundle files from git. This means that after you pull someone's changes down, you also need to recompile the bundle.~~
 
-To compile the bundle, use the shortcut command defined in package.json
+### Build the docker images
+
+Now you need to build the docker images that are defined in our docker-compose.yml file.
+
+
+To do this, run the following command from the git root folder:
 
 ```bash
-npm run compile
+docker-compose build
 ```
 
 **Edit:** This command is no longer necessary, as we are now using a React Hot Loader which compiles our files on the fly and communicates any changes to our Django server. See the next section, [Running the React Hot Loader](#running-the-react-hot-loader), for more detail. 
@@ -99,32 +102,45 @@ By default, the server will keep the bundles in memory rather than writing them 
 
 ### Creating and applying database migrations
 
-Now you need to make the database migrations, and then apply them.
+### Run the docker images
 
-You are probably thinking: what the fuck are database migrations?
 
-Remember in Info 340 that you would create a table in a SQL database, populate it with data, and then decide you wanted to make a schema change (like adding a string column to your table)? You would have to drop the table, recreate it with the new schema, and the populate it with data *again*.
+Now that you've build the images locally for our services, you need to create containers from those images to run the code.
 
-Django's built in data migrations feature allows you to make scheme changes without having to drop and repopulate your database. Django will do the behind migration work for you.
-
-Even though you don't have any data in your local sqlite database yet, you still have to run the migrations command in order to get your sql database schema created. This way, Django won't throw errors when the code tries to access a table that doesn't exist yet.
-
-Run:
+To do this, run the following command from the git root folder:
 
 ```bash
-python manage.py makemigrations
-python manage.py migrate
+docker-compose up -d
 ```
 
-### Running the web server
+This will run our docker containers in the background on your host machine.
 
-Now you should be able to run the Django development server locally. Run it with the following command:
+You can see that their status by running
 
 ```bash
-python manage.py runserver
+docker-compose ps
 ```
 
-Then open the link that gets printed to the command line in your browser.
+You can bring them down with
+```bash
+docker-compose down
+```
+
+Check them out at localhost:8000!
+
+You should see a blank page for now because the container doesn't have access to the bundle yet (next step)
+
+### Collect static files
+
+Run the following command to collect static files from within the running django container:
+
+```bash
+docker exec -it dg01 python manage.py collectstatic
+```
+
+This will run the django collectstatic command and put them in the /static folder of the django container. But since the docker file defined the /static folder to be a file system volume the same way for the django container and the nginx container, they actually share a folder with each other (and with your host machine).
+
+This is how you can transport static files from the django container to the nginx container. This is important because nginx will be the one serving static files (not gunicorn).
 
 ### Watching your SASS files
 

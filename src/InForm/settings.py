@@ -25,7 +25,7 @@ SECRET_KEY = '_-p_*(j_z-*05@@*o%c@(8y@w=rf98_d44$e43*=gg#_3yeyf+'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', 'web']
 
 
 # Application definition
@@ -122,7 +122,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
-
+STATIC_ROOT = '/static'
 
 STATICFILES_DIRS = (
     #This lets Django's collectstatic store our bundles
