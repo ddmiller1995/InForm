@@ -14,7 +14,7 @@ services:
   web:
     build:
       context: .
-      dockerfile: web.Dockerfile
+      dockerfile: docker/web.Dockerfile
     container_name: dg01
     command: bash -c "python manage.py makemigrations && python manage.py migrate && gunicorn InForm.wsgi -b 0.0.0.0:8000"
     volumes:
@@ -25,7 +25,7 @@ services:
   hotloader:
     build:
       context: .
-      dockerfile: hotloader.Dockerfile
+      dockerfile: docker/hotloader.Dockerfile
     container_name: hl01
     command: bash -c "npm install && npm start"
     volumes:

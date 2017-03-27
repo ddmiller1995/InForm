@@ -4,6 +4,9 @@ var config = require('./webpack.config')
 
 new WebpackDevServer(webpack(config), {
   publicPath: config.output.publicPath,
+  watchOptions: {
+    poll: true
+  },
   hot: true,
   inline: true,
   historyApiFallback: true
