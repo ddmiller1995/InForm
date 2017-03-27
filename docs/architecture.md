@@ -1,5 +1,25 @@
 # Project architecture
 
+## Docker
+
+We are using docker-compose to bring up and bring down various docker containers at once.
+
+Our docker-compose file is defining three services/containers that will be running on the docker host machine simultaneously and working together.:
+
+* Gunicorn
+	* [Gunicorn](http://gunicorn.org) is the WSGI server that will be serving Django requests
+* Nginx
+	* This is an HTTP proxy server.
+	* Why do we need Nginx if we are using Gunicorn?
+		*  From [Gunicorn's documentation: ](http://gunicorn.org/#deployment) "Gunicorn is a WSGI HTTP server. It is best to use Gunicorn behind an HTTP proxy server. We strongly advise you to use nginx."
+		*  [Here](https://www.quora.com/What-are-the-differences-between-nginx-and-gunicorn/answer/Pramod-Lakshmanan?srid=8kxz) is a really great verbose answer to why this is necessary on Quora.
+		
+
+
+* hotloader
+	* This is the react hotloader server that will be watching the filesystem for changes and recompiling the bundle in memory during development.
+	* When we are ready to deploy, we will disable the hotloader and revert back to the manual bundle file generation process. This is because post-development, our JS will be static and can be served as a static file directly from nginx.
+
 ## Backend
 
 For the backend we are using Django for our server side web framework. 
