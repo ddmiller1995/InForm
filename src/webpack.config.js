@@ -1,12 +1,9 @@
 var path = require('path')
 var webpack = require('webpack')
 var BundleTracker = require('webpack-bundle-tracker')
+const isReachable = require('is-reachable');
 
-// import ip from 'docker-ip';
-var ip = require('docker-ip');
-ip = ip();
-
-console.log(`ip: ${ip}`);
+let ip = 'localhost';
 
 module.exports = {
     //the base directory (absolute path) for resolving the entry option
@@ -42,7 +39,7 @@ module.exports = {
                 test: /\.jsx?$/, 
                 exclude: /node_modules/, 
                 use: [
-                    {
+                    {   
                         loader: "react-hot-loader/webpack"
                     },
                     {
@@ -67,3 +64,18 @@ module.exports = {
         extensions: ['.js', '.jsx'] 
     }   
 }
+
+
+isReachable('192.168.99.100:8000').then(reachable => {
+    if (reachable) {
+        ip = '192.168.99.100';
+    }
+
+    module.exports.output.publicPath = `http://${ip}:3000/assets/bundles/`;
+
+    module.exports.entry = [
+        `webpack-dev-server/client?http://${ip}:3000`,
+        'webpack/hot/only-dev-server',
+        './assets/index'
+    ];
+});
