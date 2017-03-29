@@ -74,8 +74,10 @@ You can bring them down with
 docker-compose down
 ```
 
-Check them out at localhost:8000 (you may need to give it a second to load at first)
+Check them out at localhost:8000 (you may need to give it a second to load at first).
 
+
+If you are on docker-toolbox, you won't find the server on localhost. Run ```docker-machine ip default``` to find the IP address you need.
 
 ### Done!
 

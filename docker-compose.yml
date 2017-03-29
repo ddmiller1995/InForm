@@ -27,7 +27,7 @@ services:
       context: .
       dockerfile: docker/hotloader.Dockerfile
     container_name: hl01
-    command: bash -c "npm install && npm start"
+    command: bash -c "npm install --no-bin-links && npm start"
     volumes:
       - ./src:/src
     expose:

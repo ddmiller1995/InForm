@@ -1,12 +1,15 @@
 var path = require('path')
 var webpack = require('webpack')
 var BundleTracker = require('webpack-bundle-tracker')
+const isReachable = require('is-reachable');
+
+let ip = 'localhost';
 
 module.exports = {
     //the base directory (absolute path) for resolving the entry option
     context: __dirname,
     entry: [
-        'webpack-dev-server/client?http://localhost:3000',
+        `webpack-dev-server/client?http://${ip}:3000`,
         'webpack/hot/only-dev-server',
         './assets/index'
     ],
@@ -15,7 +18,7 @@ module.exports = {
         path: path.resolve('./assets/bundles/'), 
         //naming convention webpack should use for your files
         filename: '[name]-[hash].js', 
-        publicPath: 'http://localhost:3000/assets/bundles/'
+        publicPath: `http://${ip}:3000/assets/bundles/`
     },
     
     plugins: [
@@ -36,7 +39,7 @@ module.exports = {
                 test: /\.jsx?$/, 
                 exclude: /node_modules/, 
                 use: [
-                    {
+                    {   
                         loader: "react-hot-loader/webpack"
                     },
                     {
@@ -61,3 +64,18 @@ module.exports = {
         extensions: ['.js', '.jsx'] 
     }   
 }
+
+
+isReachable('192.168.99.100:8000').then(reachable => {
+    if (reachable) {
+        ip = '192.168.99.100';
+    }
+
+    module.exports.output.publicPath = `http://${ip}:3000/assets/bundles/`;
+
+    module.exports.entry = [
+        `webpack-dev-server/client?http://${ip}:3000`,
+        'webpack/hot/only-dev-server',
+        './assets/index'
+    ];
+});
