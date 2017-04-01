@@ -1,5 +1,6 @@
 import React from "react";
 import {Link, IndexLink} from "react-router";
+import {connect} from 'react-redux';
 import "whatwg-fetch";
 
 export default class extends React.Component {
@@ -9,11 +10,11 @@ export default class extends React.Component {
     }
       
     render() {
-        console.log("youth info props: " + this.props)
         return (
             <div className="container">
-                <h4>Youth Name</h4>
+                <h4>{this.props.currentYouth.name}</h4>
             </div>
         );
     }
+
 }

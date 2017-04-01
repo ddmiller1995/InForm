@@ -16,7 +16,7 @@ export default class extends React.Component {
     componentWillUnmount() {
         this.unsub();
     }
-      
+
     render() {
         return (
             <div className="container">
@@ -34,7 +34,7 @@ export default class extends React.Component {
                     </header>
                     <hr className="youth-detail-divider"/>
                     <main>
-                        {this.props.children}
+                        {React.cloneElement(this.props.children, {currentYouth: this.state.currentYouth})}
                     </main>
                 </div>
             </div>
