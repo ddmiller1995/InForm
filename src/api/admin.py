@@ -1,3 +1,12 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import User, Youth, YouthVisit, FormType, Form, FormYouthVisit, Task, TaskYouthVisit
+
+models = [
+    User, Youth, YouthVisit,
+    FormType, Form, FormYouthVisit,
+    Task, TaskYouthVisit
+]
+
+for model in models:
+    admin.site.register(model)
