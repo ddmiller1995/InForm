@@ -2,13 +2,13 @@ from django.db import models
 
 # Create your models here.
 
+from django.contrib.auth.models import User
+# # Are we planning on restricting access based on role?
+# class User(models.Model):
+#     user_name = models.CharField(max_length=64)
 
-# Are we planning on restricting access based on role?
-class User(models.Model):
-    user_name = models.CharField(max_length=64)
-
-    def __str__(self):
-        return self.user_name
+#     def __str__(self):
+#         return self.user_name
 
 
 class Youth(models.Model):
