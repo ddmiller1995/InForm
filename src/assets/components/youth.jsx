@@ -1,11 +1,20 @@
 import React from "react";
+import {store} from "./shared-state.js";
 import {Link, IndexLink} from "react-router";
 import "whatwg-fetch";
 
 export default class extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = store.getState();
+    }
+
+     componentDidMount() {
+        this.unsub = store.subscribe(() => this.setState(store.getState()));
+    }
+
+    componentWillUnmount() {
+        this.unsub();
     }
       
     render() {
@@ -24,7 +33,9 @@ export default class extends React.Component {
                         </div>
                     </header>
                     <hr className="youth-detail-divider"/>
-                    <h4>details here</h4>
+                    <main>
+                        {this.props.children}
+                    </main>
                 </div>
             </div>
         );

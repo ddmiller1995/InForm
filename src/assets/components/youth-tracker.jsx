@@ -1,4 +1,5 @@
 import React from 'react';
+// import {store} from "./shared-state.js";
 import YouthTrackerRow from "./youth-tracker-row.jsx";
 import "whatwg-fetch";
 
@@ -24,18 +25,14 @@ export default class extends React.Component {
         });
     }
 
-    handleYouthNameClick(youth) {
-        console.log("clicked on " + youth.name);
-        this.setState({
-            currentYouth: youth
-        });
-    }
+    // handleYouthNameClick(youth) {
+    //     console.log("clicked on " + youth.name);
+    // }
 
     getYouthData() {
         let rows;
         if (this.state.youth) { 
-            rows = this.state.youth.map(youth => <YouthTrackerRow key={youth.name} youth={youth} 
-            handleClick={youth => this.handleYouthNameClick(youth)} />);
+            rows = this.state.youth.map(youth => <YouthTrackerRow key={youth.name} youth={youth} />);
         }
         return rows;
     }

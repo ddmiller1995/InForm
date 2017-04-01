@@ -9,9 +9,10 @@ export default class extends React.Component {
     }
       
     render() {
+        console.log("youth info props: " + this.props)
         return (
             <div className="container">
-                <h2>Personal Info</h2>
+                <h4>Youth Name</h4>
             </div>
         );
     }

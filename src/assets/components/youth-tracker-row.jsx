@@ -1,17 +1,26 @@
 import React from 'react';
+import {store, setCurrentYouth} from "./shared-state.js";
 import {Link, IndexLink} from "react-router";
 import "whatwg-fetch";
 
 export default class extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = store.getState();
     }
 
-    handleClick(youth) {
-        console.log(youth.name + " was clicked");
-        this.setState({youth: youth});
+    componentDidMount() {
+        this.unsub = store.subscribe(() => this.setState(store.getState()));
     }
+
+    componentWillUnmount() {
+        this.unsub();
+    }
+
+    // handleClick(youth) {
+    //     console.log(youth.name + " was clicked");
+    //     this.setState({youth: youth});
+    // }
 
     render() {
         return (
@@ -21,7 +30,7 @@ export default class extends React.Component {
                         className="mdl-navigation__link" 
                         to="/youth"
                         key={this.props.youth.name} 
-                        onClick={event => this.handleClick(this.props.youth)}>
+                        onClick={() => store.dispatch(setCurrentYouth(this.props.youth))}>
                         {this.props.youth.name}
                     </IndexLink>
                 </td>
