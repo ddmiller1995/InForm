@@ -23,6 +23,8 @@ export function setCurrentYouth(youth) {
         currentYouth: {
             name: youth.name,
             DOB: youth.DOB,
+            ethnicity: youth.ethnicity,
+            city: youth.city,
             entryDate: youth.entryDate,
             intakeProgress: youth.intakeProgress,
             outtakeProgress: youth.outtakeProgress,

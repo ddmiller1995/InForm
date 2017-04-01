@@ -17,11 +17,6 @@ export default class extends React.Component {
         this.unsub();
     }
 
-    // handleClick(youth) {
-    //     console.log(youth.name + " was clicked");
-    //     this.setState({youth: youth});
-    // }
-
     render() {
         return (
             <tr>

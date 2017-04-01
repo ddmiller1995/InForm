@@ -1,5 +1,4 @@
 import React from 'react';
-// import {store} from "./shared-state.js";
 import YouthTrackerRow from "./youth-tracker-row.jsx";
 import "whatwg-fetch";
 
@@ -13,6 +12,8 @@ export default class extends React.Component {
         let data = [{
             name: "John Smith",
             DOB: "11/12/2001",
+            ethnicity: "African American",
+            city: "Tukwila",
             entryDate: "2/13/2017",
             intakeProgress: "Progress",
             outtakeProgress: "Progress",
@@ -24,10 +25,6 @@ export default class extends React.Component {
             youth: data
         });
     }
-
-    // handleYouthNameClick(youth) {
-    //     console.log("clicked on " + youth.name);
-    // }
 
     getYouthData() {
         let rows;
