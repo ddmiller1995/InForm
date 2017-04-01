@@ -1,7 +1,5 @@
 from django.db import models
 
-# Create your models here.
-
 
 # Are we planning on restricting access based on role?
 class User(models.Model):
@@ -9,6 +7,23 @@ class User(models.Model):
 
     def __str__(self):
         return self.user_name
+
+
+class PlacementType(models.Model):
+    placement_type_name = models.CharField(max_length=64, null=False, blank=False)
+    default_stay_length = models.IntegerField()
+
+    def __str__(self):
+        return self.placement_type_name
+
+
+class School(models.Model):
+    school_name = models.CharField(max_length=64, null=False, blank=False)
+    school_district = models.CharField(max_length=64)
+    school_phone = models.CharField(max_length=64)
+
+    def __str__(self):
+        return self.school_name
 
 
 class Youth(models.Model):
@@ -20,15 +35,13 @@ class Youth(models.Model):
         return self.youth_name
 
 
-# School tracker currently not included, possible new table?
 class YouthVisit(models.Model):
     youth_id = models.ForeignKey(Youth, on_delete=models.CASCADE)
     placement_date = models.DateTimeField(
         'placement date', null=False, blank=False)
     city_of_origin = models.CharField(max_length=256)
     guardian_name = models.CharField(max_length=256)
-    # should bed type be a table?
-    bed_type = models.CharField(max_length=256)
+    placement_type = models.ForeignKey(PlacementType, on_delete=models.SET_NULL, null=True)
     referred_by = models.CharField(max_length=256)
     permanent_housing = models.CharField(max_length=256)
     exited_to = models.CharField(max_length=256)
@@ -36,6 +49,14 @@ class YouthVisit(models.Model):
         User, on_delete=models.SET_NULL, null=True, related_name='+')
     personal_counselor = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, related_name='+')
+    # School tracker fields
+    school = models.ForeignKey(School, on_delete=models.SET_NULL, null=True)
+    school_am_transport = models.CharField(max_length=256)
+    school_am_pickup_time = models.TimeField()
+    school_am_phone = models.CharField(max_length=64)
+    school_pm_transport = models.CharField(max_length=256)
+    school_pm_dropoff_time = models.TimeField()
+    school_pm_phone = models.CharField(max_length=64)
     # POSSIBLE COMPUTED FIELDS
     # YF enroll - Youthforce Enrollment Form submitted
     # YF exit - Youthforce Exit Form submitted
@@ -45,6 +66,7 @@ class YouthVisit(models.Model):
 
     def __str__(self):
         return 'Youth: ' + self.youth_id.youth_name + ' - Placement date: ' + str(self.placement_date)
+
 
 
 class FormType(models.Model):
@@ -72,9 +94,10 @@ class FormYouthVisit(models.Model):
         return 'Youth Visit ID: ' + self.youth_visit_id.id + ' - Form ID: ' + self.form_id.id
 
 
-# Need to integrate Case Goal plan with Tasks
 class Task(models.Model):
     task_name = models.CharField(max_length=256)
+    # due date in days relative to entry date
+    default_due_date = models.IntegerField(null=True)
     form_id = models.ForeignKey(
         Form,
         on_delete=models.SET_NULL,
@@ -96,9 +119,6 @@ class TaskYouthVisit(models.Model):
     task_id = models.ForeignKey(Task, on_delete=models.CASCADE)
     youth_visit_id = models.ForeignKey(YouthVisit, on_delete=models.CASCADE)
     user_id = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    # due date is relative to entry date, so should it be computed in business logic
-    # or enforced by model?
-    due_date = models.DateTimeField('due date')
     completed = models.BooleanField(default=False)
 
     def __str__(self):
