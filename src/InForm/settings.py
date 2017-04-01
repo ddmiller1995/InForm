@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # user defined below here
     'webpack_loader',
+    'rest_framework',
     'api.apps.ApiConfig'
 ]
 

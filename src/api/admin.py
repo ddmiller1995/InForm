@@ -1,9 +1,8 @@
 from django.contrib import admin
-
-from .models import User, Youth, YouthVisit, PlacementType, School, FormType, Form, FormYouthVisit, Task, TaskYouthVisit
+from .models import Youth, YouthVisit, PlacementType, School, FormType, Form, FormYouthVisit, Task, TaskYouthVisit
 
 models = [
-    User, Youth, YouthVisit,
+    Youth, YouthVisit,
     PlacementType, School,
     FormType, Form, FormYouthVisit,
     Task, TaskYouthVisit,
