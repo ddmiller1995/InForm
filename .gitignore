@@ -8,3 +8,4 @@ assets/bundles/
 src/assets/.sass-cache/*
 *main.css.map
 .idea/*
+src/api/migrations/
