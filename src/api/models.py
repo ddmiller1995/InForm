@@ -27,6 +27,11 @@ class Youth(models.Model):
     def __str__(self):
         return self.youth_name
 
+    @staticmethod
+    def GetActiveYouth():
+        '''Return an iterable of activate youth objects'''
+        return Youth.objects.all() # TODO: Replace placeholder code
+
 
 class YouthVisit(models.Model):
     youth_id = models.ForeignKey(Youth, on_delete=models.CASCADE)
