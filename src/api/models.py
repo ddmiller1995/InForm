@@ -21,7 +21,7 @@ class School(models.Model):
 
 class Youth(models.Model):
     youth_name = models.CharField(max_length=256, null=False, blank=False)
-    date_of_birth = models.DateTimeField('date born', null=False, blank=False)
+    date_of_birth = models.DateField('date born', null=False, blank=False)
     ethnicity = models.CharField(max_length=64)
 
     def __str__(self):
@@ -35,7 +35,7 @@ class Youth(models.Model):
 
 class YouthVisit(models.Model):
     youth_id = models.ForeignKey(Youth, on_delete=models.CASCADE)
-    placement_date = models.DateTimeField(
+    placement_date = models.DateField(
         'placement date', null=False, blank=False)
     city_of_origin = models.CharField(max_length=256)
     guardian_name = models.CharField(max_length=256)
