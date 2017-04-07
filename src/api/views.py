@@ -1,4 +1,4 @@
-from api.models import Youth
+from api.models import Youth, YouthVisit
 from api.serializers import YouthSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -19,27 +19,67 @@ def youth_list(request):
         'youth': []
     }
 
-    activeOnly = False
+    active_only = False
     if 'activeOnly' in request.GET:
-        activeOnly = request.GET['activeOnly'].lower()
-        activeOnly = activeOnly == 'true'
+        active_only = request.GET['activeOnly'].lower()
+        active_only = active_only == 'true'
+
+    youth_list = Youth.GetActiveYouth() if active_only else Youth.objects.all()
 
     searchQuery = False
     if 'search' in request.GET:
         search = request.GET['search']
-
-    youth_list = Youth.GetActiveYouth() if activeOnly else Youth.objects.all()
-
-    # insert code here to filter youth_list by searchQuery if provided
+        # insert code here to filter youth_list
 
     for youth in youth_list:
-        obj = { # more fields need to be added to response
+
+        obj = { # Youth fields
             'id': youth.pk,
             'name': youth.youth_name,
             'dob': youth.date_of_birth,
             'ethnicity': youth.ethnicity,
-            'activeOnly': repr(activeOnly)
         }
+
+        youth_visit = None
+        try:
+            youth_visit = YouthVisit.objects.get(youth_id=youth)
+            obj['placement_date'] = youth_visit.placement_date
+            obj['city_of_origin'] = youth_visit.city_of_origin
+            obj['guardian_name'] = youth_visit.guardian_name
+            obj['placement_type'] = {
+                'placement_type_name': youth_visit.placement_type.placement_type_name,
+                'default_stay_length': youth_visit.placement_type.default_stay_length
+            }
+            obj['referred_by'] = youth_visit.referred_by
+            obj['permanent_housing'] = youth_visit.permanent_housing
+            obj['exited_to'] = youth_visit.exited_to
+            obj['case_manager'] = {
+                'first_name': youth_visit.case_manager.first_name,
+                'last_name': youth_visit.case_manager.last_name,
+                'username': youth_visit.case_manager.username,
+            }
+            obj['personal_counselor'] = {
+                'first_name': youth_visit.personal_counselor.first_name,
+                'last_name': youth_visit.personal_counselor.last_name,
+                'username': youth_visit.personal_counselor.username,
+            }
+            obj['school'] = {
+                'school_name': youth_visit.school.school_name,
+                'school_district': youth_visit.school.school_district,
+                'school_phone': youth_visit.school.school_phone,
+            }
+
+            obj['school_am_transport'] = youth_visit.school_am_transport
+            obj['school_am_pickup_time'] = youth_visit.school_am_pickup_time
+            obj['school_am_phone'] = youth_visit.school_am_phone
+            obj['school_pm_transport'] = youth_visit.school_pm_transport
+            obj['school_pm_dropoff_time'] = youth_visit.school_pm_dropoff_time
+            obj['school_pm_phone'] = youth_visit.school_pm_phone
+
+        except YouthVisit.DoesNotExist:
+            pass # idk why this would happen, but it could
+
+
         json['youth'].append(obj)
     return JsonResponse(json)
 
