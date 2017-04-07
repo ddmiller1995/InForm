@@ -29,12 +29,11 @@ export default class extends React.Component {
                         {this.props.youth.name}
                     </IndexLink>
                 </td>
-                <td>11/12/2001</td>
-                <td>2/13/2017</td>
-                <td>Progress</td>
-                <td>Progress</td>
-                <td>Progress</td>
-                <td>3/2/2017</td>
+                <td>{this.props.youth.dob}</td>
+                <td>{this.props.youth.placement_date}</td>
+                <td>---</td>
+                <td>---</td>
+                <td>---</td>
             </tr>
         );
     } 

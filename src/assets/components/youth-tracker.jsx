@@ -2,6 +2,8 @@ import React from 'react';
 import YouthTrackerRow from "./youth-tracker-row.jsx";
 import "whatwg-fetch";
 
+const ALL_YOUTH_API = "/api/youth/";
+
 export default class extends React.Component {
     constructor(props) {
         super(props);
@@ -9,27 +11,17 @@ export default class extends React.Component {
     }
 
     componentDidMount() {
-        let data = [{
-            name: "John Smith",
-            DOB: "11/12/2001",
-            ethnicity: "African American",
-            city: "Tukwila",
-            entryDate: "2/13/2017",
-            intakeProgress: "Progress",
-            outtakeProgress: "Progress",
-            caseGoalProgress: "Progress",
-            expectedExit: "3/2/2017"
-        }];
-
-        this.setState({
-            youth: data
-        });
+        fetch(ALL_YOUTH_API)
+            .then(response => response.json())
+            .then(data => this.setState({ youth: data }))
+            .catch(err => alert(err.message));
     }
 
     getYouthData() {
         let rows;
         if (this.state.youth) { 
-            rows = this.state.youth.map(youth => <YouthTrackerRow key={youth.name} youth={youth} />);
+            console.log(this.state.youth);
+            rows = this.state.youth.youth.map(youth => <YouthTrackerRow key={youth.name} youth={youth} />);
         }
         return rows;
     }
@@ -47,7 +39,6 @@ export default class extends React.Component {
                             <th>Entry Date</th>
                             <th>Intake Forms</th>
                             <th>Outtake Forms</th>
-                            <th>Case Goals</th>
                             <th>Planned Exit</th>
                         </tr>
                     </thead>
