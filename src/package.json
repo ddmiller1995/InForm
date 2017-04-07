@@ -29,6 +29,8 @@
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
     "react-hot-loader": "^3.0.0-beta.6",
+    "react-redux": "^5.0.3",
+    "redux": "^3.6.0",
     "style-loader": "^0.16.0",
     "webpack": "^2.2.1",
     "webpack-bundle-tracker": "^0.2.0",
@@ -38,6 +40,7 @@
     "is-reachable": "^2.3.2",
     "react-hot-loader": "^3.0.0-beta.6",
     "react-router": "^2.7.0",
+    "redux": "^3.6.0",
     "whatwg-fetch": "^2.0.3"
   }
 }

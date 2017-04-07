@@ -24,9 +24,12 @@
     padding: 0; }
   .youth-detail-container .youth-detail-divider {
     margin: 0 15px; }
+  .youth-detail-container .youth-info-divider {
+    border-color: #8fbc49;
+    width: 40%; }
 
 h4 {
-  text-align: center; }
+  text-align: left; }
 
 .container {
   margin: 15px; }

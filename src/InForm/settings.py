@@ -38,9 +38,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # user defined below here
-    'rest_framework',
     'webpack_loader',
-    'forms.apps.FormsConfig'
+    'rest_framework',
+    'api.apps.ApiConfig',
+    'frontend.apps.FrontendConfig'
 ]
 
 MIDDLEWARE = [

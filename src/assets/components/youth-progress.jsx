@@ -11,7 +11,7 @@ export default class extends React.Component {
     render() {
         return (
             <div className="container">
-                <h2>Progress</h2>
+                <h4>{this.props.currentYouth.name}</h4>
             </div>
         );
     }

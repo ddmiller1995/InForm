@@ -15,8 +15,12 @@
     .youth-detail-divider {
         margin: 0 15px;
     }
-}
 
-h4 {
-    text-align: center;
+    .youth-info-divider {
+        border-color: $light-green;
+        width: 40%;
+    }
 }
+ h4 {
+     text-align: left;
+ }
