@@ -12,6 +12,8 @@ export default class extends React.Component {
         let data = [{
             name: "John Smith",
             DOB: "11/12/2001",
+            ethnicity: "African American",
+            city: "Tukwila",
             entryDate: "2/13/2017",
             intakeProgress: "Progress",
             outtakeProgress: "Progress",
@@ -24,18 +26,10 @@ export default class extends React.Component {
         });
     }
 
-    handleYouthNameClick(youth) {
-        console.log("clicked on " + youth.name);
-        this.setState({
-            currentYouth: youth
-        });
-    }
-
     getYouthData() {
         let rows;
         if (this.state.youth) { 
-            rows = this.state.youth.map(youth => <YouthTrackerRow key={youth.name} youth={youth} 
-            handleClick={youth => this.handleYouthNameClick(youth)} />);
+            rows = this.state.youth.map(youth => <YouthTrackerRow key={youth.name} youth={youth} />);
         }
         return rows;
     }
