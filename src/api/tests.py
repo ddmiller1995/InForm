@@ -32,3 +32,7 @@ class YouthModelTests(TestCase):
         )
         youth_visit.save()
         self.assertIsNotNone(youth_visit.pk)
+        youth.delete()
+        self.assertIsNone(youth.pk)
+        print(youth_visit.pk)
+        print(youth_visit.youth_id)

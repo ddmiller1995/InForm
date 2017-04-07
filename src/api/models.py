@@ -95,7 +95,7 @@ class FormYouthVisit(models.Model):
 class Task(models.Model):
     task_name = models.CharField(max_length=256)
     # due date in days relative to entry date
-    default_due_date = models.IntegerField(null=True)
+    default_due_date = models.IntegerField(null=True, blank=True)
     form_id = models.ForeignKey(
         Form,
         on_delete=models.SET_NULL,
