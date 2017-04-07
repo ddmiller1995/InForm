@@ -20,7 +20,6 @@ export default class extends React.Component {
     getYouthData() {
         let rows;
         if (this.state.youth) { 
-            console.log(this.state.youth);
             rows = this.state.youth.youth.map(youth => <YouthTrackerRow key={youth.name} youth={youth} />);
         }
         return rows;

@@ -10,7 +10,6 @@ import ProgressReport from "./components/progress-report.jsx";
 import Youth from "./components/youth.jsx";
 import YouthInfo from "./components/youth-info.jsx";
 import YouthProgress from "./components/youth-progress.jsx";
-import YouthForms from "./components/youth-forms.jsx";
 
 import {Router, Route, IndexRoute, hashHistory} from "react-router";
 
@@ -25,7 +24,6 @@ var router = (
             <Route path="/youth" component={Youth}>
                 <IndexRoute component={YouthInfo}></IndexRoute>
                 <Route path="/youth/progress" component={YouthProgress}></Route> 
-                <Route path="/youth/forms" component={YouthForms}></Route> 
             </Route> 
         </Route> 
     </Router>

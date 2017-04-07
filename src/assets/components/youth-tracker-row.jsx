@@ -1,6 +1,7 @@
 import React from 'react';
 import {store, setCurrentYouth} from "./shared-state.js";
 import {Link, IndexLink} from "react-router";
+import { formatDate, getDateDiff } from '../util.js'
 import "whatwg-fetch";
 
 export default class extends React.Component {
@@ -29,8 +30,8 @@ export default class extends React.Component {
                         {this.props.youth.name}
                     </IndexLink>
                 </td>
-                <td>{this.props.youth.dob}</td>
-                <td>{this.props.youth.placement_date}</td>
+                <td>{formatDate(this.props.youth.dob)}</td>
+                <td>{formatDate(this.props.youth.placement_date)}</td>
                 <td>---</td>
                 <td>---</td>
                 <td>---</td>
