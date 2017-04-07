@@ -1,6 +1,5 @@
 import React from "react";
 import {Link, IndexLink} from "react-router";
-import {connect} from 'react-redux';
 import "whatwg-fetch";
 
 export default class extends React.Component {
@@ -24,5 +23,4 @@ export default class extends React.Component {
             </div>
         );
     }
-
 }
