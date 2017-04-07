@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     # user defined below here
     'webpack_loader',
     'rest_framework',
-    'api.apps.ApiConfig'
+    'api.apps.ApiConfig',
+    'frontend.apps.FrontendConfig'
 ]
 
 MIDDLEWARE = [

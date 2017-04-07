@@ -30,6 +30,7 @@ class Youth(models.Model):
     @staticmethod
     def GetActiveYouth():
         '''Return an iterable of activate youth objects'''
+        return []
         return Youth.objects.all() # TODO: Replace placeholder code
 
 

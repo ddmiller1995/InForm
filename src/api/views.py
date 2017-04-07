@@ -42,7 +42,9 @@ def youth_list(request):
 
         youth_visit = None
         try:
-            youth_visit = YouthVisit.objects.get(youth_id=youth)
+            # TODO: should change this later to "get most recent visit", since a youth could have multiple visits
+            youth_visit = YouthVisit.objects.get(youth_id=youth) 
+
             obj['placement_date'] = youth_visit.placement_date
             obj['city_of_origin'] = youth_visit.city_of_origin
             obj['guardian_name'] = youth_visit.guardian_name
