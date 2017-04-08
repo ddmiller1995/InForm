@@ -1,13 +1,22 @@
 import React from "react";
+import {store} from "./shared-state.js";
 import {Link, IndexLink} from "react-router";
 import "whatwg-fetch";
 
 export default class extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = store.getState();
     }
-      
+
+     componentDidMount() {
+        this.unsub = store.subscribe(() => this.setState(store.getState()));
+    }
+
+    componentWillUnmount() {
+        this.unsub();
+    }
+
     render() {
         return (
             <div className="container">
@@ -24,7 +33,9 @@ export default class extends React.Component {
                         </div>
                     </header>
                     <hr className="youth-detail-divider"/>
-                    <h4>details here</h4>
+                    <main>
+                        {React.cloneElement(this.props.children, {currentYouth: this.state.currentYouth})}
+                    </main>
                 </div>
             </div>
         );
