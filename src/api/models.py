@@ -157,11 +157,22 @@ class Form(models.Model):
 
 class FormYouthVisit(models.Model):
     '''FormYouthVisit model'''
+
+    PENDING = 'pending'
+    IN_PROGRESS = 'in progress'
+    DONE = 'done'
+
     form_id = models.ForeignKey(Form, on_delete=models.CASCADE)
     youth_visit_id = models.ForeignKey(YouthVisit, on_delete=models.CASCADE)
     user_id = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     # expected values: pending, in_progess, done
-    status = models.CharField(max_length=32, default='pending')
+    status = models.CharField(max_length=32, default=PENDING, 
+        choices=(
+            (PENDING, PENDING),
+            (IN_PROGRESS, IN_PROGRESS),
+            (DONE, DONE)
+        )
+    )
 
     def __str__(self):
         return 'Youth Visit ID: ' + str(self.youth_visit_id.id) + ' - Form Name: ' + self.form_id.form_name
