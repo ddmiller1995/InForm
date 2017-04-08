@@ -39,28 +39,28 @@ class YouthVisit(models.Model):
     city_of_origin = models.CharField(max_length=256, null=True, blank=True)
     guardian_name = models.CharField(max_length=256, null=True, blank=True)
     placement_type = models.ForeignKey(
-		PlacementType,
-		on_delete=models.SET_NULL,
-		null=True,
-		blank=True
-	)
+        PlacementType,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
+    )
     referred_by = models.CharField(max_length=256, null=True, blank=True)
-    permanent_housing = models.BooleanField(default=False, null=True, blank=True)
+    permanent_housing = models.NullBooleanField(null=True, blank=True)
     exited_to = models.CharField(max_length=256, null=True, blank=True)
     case_manager = models.ForeignKey(
         User,
-		on_delete=models.SET_NULL,
-		null=True,
-		blank=True,
-		related_name='+'
-	)
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='+'
+    )
     personal_counselor = models.ForeignKey(
         User,
-		on_delete=models.SET_NULL,
-		null=True,
-		blank=True,
-		related_name='+'
-	)
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='+'
+    )
     # School tracker fields - Not required fields
     school = models.ForeignKey(School, on_delete=models.SET_NULL, null=True, blank=True)
     school_am_transport = models.CharField(max_length=256, null=True, blank=True)
@@ -68,7 +68,7 @@ class YouthVisit(models.Model):
     school_am_phone = models.CharField(max_length=64, null=True, blank=True)
     school_pm_transport = models.CharField(max_length=256, null=True, blank=True)
     school_pm_dropoff_time = models.TimeField(null=True, blank=True)
-    school_pm_phone = models.CharField(max_length=64), null=True, blank=True
+    school_pm_phone = models.CharField(max_length=64, null=True, blank=True)
     # POSSIBLE COMPUTED FIELDS
     # YF enroll - Youthforce Enrollment Form submitted
     # YF exit - Youthforce Exit Form submitted
@@ -89,12 +89,12 @@ class FormType(models.Model):
 
 class Form(models.Model):
     form_name = models.CharField(max_length=256)
-	form_description = models.CharField(max_length=2048, null=True, blank=True)
+    form_description = models.CharField(max_length=2048, null=True, blank=True)
     form_type_id = models.ForeignKey(FormType, on_delete=models.CASCADE)
-	# due date in days relative to entry date
-	# forms without due dates are allowed
+    # due date in days relative to entry date
+    # forms without due dates are allowed
     default_due_date = models.IntegerField(null=True, blank=True)
-	# Form location - file location in static files?
+    # Form location - file location in static files?
 
     def __str__(self):
         return self.form_name
@@ -104,8 +104,8 @@ class FormYouthVisit(models.Model):
     form_id = models.ForeignKey(Form, on_delete=models.CASCADE)
     youth_visit_id = models.ForeignKey(YouthVisit, on_delete=models.CASCADE)
     user_id = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
-	# expected values: pending, in_progess, done
+    # expected values: pending, in_progess, done
     status = models.CharField(max_length=32, default='pending')
 
     def __str__(self):
-        return 'Youth Visit ID: ' + self.youth_visit_id.id + ' - Form ID: ' + self.form_id.id
+        return 'Youth Visit ID: ' + str(self.youth_visit_id.id) + ' - Form Name: ' + self.form_id.form_name
