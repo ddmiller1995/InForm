@@ -142,15 +142,15 @@ LOGGING = {
     'disable_existing_loggers': True,
     'formatters': {
         'verbose': {
-            'format': '[%(levelname)s] [%(name)s] [%(asctime)s]:  %(message)s'
+            'format': '[%(levelname)s] [%(name)s] [%(funcName)s] [%(asctime)s]:  %(message)s'
         },
         'simple': {
-            'format': '[%(levelname)s]: %(message)s'
+            'format': '[%(levelname)s] [%(funcName)s]: %(message)s'
         }
     },
     'handlers': {
         'console': {
-            'level': 'INFO',
+            'level': 'DEBUG',
             'class': 'logging.StreamHandler',
             'formatter': 'simple'
         },
@@ -164,7 +164,7 @@ LOGGING = {
     'loggers': {
         'api': {
             'handlers': ['console', 'file'],
-            'level': 'INFO',
+            'level': 'DEBUG',
             'propagate': True
         }
     }

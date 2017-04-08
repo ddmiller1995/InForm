@@ -41,7 +41,7 @@ def youth_list(request):
         try:
             youth_visit = youth.latest_youth_visit()
         except YouthVisit.DoesNotExist:
-            logger.warning(f'Youth with pk={youth.pk} doesn"t have any youth_visits')
+            logger.warn(f'Youth with pk={youth.pk} doesn"t have any youth_visits')
             continue
 
         serialized_youth_visit = serialize_youth_visit(youth_visit)
@@ -67,14 +67,13 @@ def youth_detail(request, youth_id):
     try:
         youth_visit = youth.latest_youth_visit()
     except YouthVisit.DoesNotExist:
-        logger.error(f'Youth with pk={youth_id} has no youth_visit yet')
+        logger.warn(f'Youth with pk={youth_id} has no youth_visit yet')
         raise Http404
 
     serialized_youth_visit = serialize_youth_visit(youth_visit)
 
     # merge both serialized objects, keep items from second object if conflicts
     json = {**serialized_youth, **serialized_youth_visit}
-    json['__name__'] = __name__
     
     return JsonResponse(json)
 

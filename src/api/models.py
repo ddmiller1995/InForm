@@ -3,7 +3,12 @@ from django.contrib.auth.models import User
 from datetime import timedelta, date
 from django.http import Http404
 
+import logging
+logger = logging.getLogger(__name__)
+
+
 class PlacementType(models.Model):
+    '''PlacementType model'''
     placement_type_name = models.CharField(max_length=64, null=False, blank=False)
     default_stay_length = models.IntegerField() # expressed as days
 
@@ -12,6 +17,7 @@ class PlacementType(models.Model):
 
 
 class School(models.Model):
+    '''School model'''
     school_name = models.CharField(max_length=64, null=False, blank=False)
     school_district = models.CharField(max_length=64, null=True, blank=True)
     school_phone = models.CharField(max_length=64, null=True, blank=True)
@@ -21,6 +27,7 @@ class School(models.Model):
 
 
 class Youth(models.Model):
+    '''Youth model'''
     youth_name = models.CharField(max_length=256)
     date_of_birth = models.DateField('date born')
     ethnicity = models.CharField(max_length=64, null=True, blank=True)
@@ -30,27 +37,32 @@ class Youth(models.Model):
 
     def latest_youth_visit(self):
         '''Return the latest youth_visit for this Youth
-        
-        Raise YouthVisit.DoesNotExist if this Youth does not have any YouthVisits'''
-        youth_visit = YouthVisit.objects.filter(youth_id=self) # filter by all YouthVisit rows that have FKs to this particular youth
 
-        if not youth_visit: # if no results found, skip this youth. This happens if a youth has no youth_visit
-            print(f'No youth visits found for pk={self.pk}!') # add this to logging? we really need a logger of some sort before deploying
+        Raise YouthVisit.DoesNotExist if this Youth does not have any YouthVisits'''
+        # filter by all YouthVisit rows that have FKs to this particular youth
+        youth_visit = YouthVisit.objects.filter(youth_id=self)
+
+        # if no results found, skip this youth. This happens if a youth has no youth_visit
+        if not youth_visit:
             raise YouthVisit.DoesNotExist
 
-        # now youth_visit is the specific youth_visit in the queryset with the latest 'placement_date'
+        # now youth_visit is the specific youth_visit in the
+        # queryset with the latest 'placement_date'
         youth_visit = youth_visit.latest('placement_date')
         return youth_visit
 
     @staticmethod
     def get_active_youth():
         '''Return an iterable of activate youth objects
-        
+
         * Estimated exit date = placement date + CURRENT placement type default stay duration
         * Definition of active youth: "Youth whose current estimated exit date hasn't happened yet"
-        * Once a youth's estimated exit date has passed, we mark that youth different (maybe highlight in light red or something), but DON'T remove it from the list of active youth by default
+        * Once a youth's estimated exit date has passed, we mark that youth different
+        (maybe highlight in light red or something), but DON'T remove it from the
+        list of active youth by default
         * We add a mechanism for them to mark exit date
-        * If a youth has a exit date marked, only then do we remove them from the computed list of active youth
+        * If a youth has a exit date marked, only then do we remove them from the
+        computed list of active youth
         '''
         active_youth = []
         today = date.today()
@@ -67,6 +79,7 @@ class Youth(models.Model):
 
 
 class YouthVisit(models.Model):
+    '''YouthVisit model'''
     youth_id = models.ForeignKey(Youth, on_delete=models.CASCADE)
     placement_date = models.DateField('placement date')
     city_of_origin = models.CharField(max_length=256, null=True, blank=True)
@@ -110,7 +123,7 @@ class YouthVisit(models.Model):
     # Pay rate - supposedly redundant with bed
 
     def __str__(self):
-        return 'Youth: ' + self.youth_id.youth_name + ' - Placement date: ' + str(self.placement_date)
+        return f'Youth: {self.youth_id.youth_name} - Placement date: {str(self.placement_date)}'
 
     def estimated_exit_date(self):
         '''Compute the current estimated exit date for this youth's visit
@@ -121,6 +134,7 @@ class YouthVisit(models.Model):
         
 
 class FormType(models.Model):
+    '''FormType model'''
     form_type_name = models.CharField(max_length=256)
 
     def __str__(self):
@@ -128,6 +142,7 @@ class FormType(models.Model):
 
 
 class Form(models.Model):
+    '''Form model'''
     form_name = models.CharField(max_length=256)
     form_description = models.CharField(max_length=2048, null=True, blank=True)
     form_type_id = models.ForeignKey(FormType, on_delete=models.CASCADE)
@@ -141,6 +156,7 @@ class Form(models.Model):
 
 
 class FormYouthVisit(models.Model):
+    '''FormYouthVisit model'''
     form_id = models.ForeignKey(Form, on_delete=models.CASCADE)
     youth_visit_id = models.ForeignKey(YouthVisit, on_delete=models.CASCADE)
     user_id = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
