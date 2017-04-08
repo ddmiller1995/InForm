@@ -7,6 +7,8 @@ from rest_framework import status
 from django.http import JsonResponse, Http404
 from django.shortcuts import get_object_or_404
 
+import logging
+logger = logging.getLogger(__name__)
 
 def youth_list(request):
     '''View for the list youth endpoint
@@ -39,6 +41,7 @@ def youth_list(request):
         try:
             youth_visit = youth.latest_youth_visit()
         except YouthVisit.DoesNotExist:
+            logger.warning(f'Youth with pk={youth.pk} doesn"t have any youth_visits')
             continue
 
         serialized_youth_visit = serialize_youth_visit(youth_visit)
@@ -47,6 +50,7 @@ def youth_list(request):
         obj = {**serialized_youth, **serialized_youth_visit}
 
         json['youth'].append(obj)
+
     return JsonResponse(json)
 
 
@@ -63,14 +67,15 @@ def youth_detail(request, youth_id):
     try:
         youth_visit = youth.latest_youth_visit()
     except YouthVisit.DoesNotExist:
+        logger.error(f'Youth with pk={youth_id} has no youth_visit yet')
         raise Http404
 
     serialized_youth_visit = serialize_youth_visit(youth_visit)
 
     # merge both serialized objects, keep items from second object if conflicts
     json = {**serialized_youth, **serialized_youth_visit}
-
-
+    json['__name__'] = __name__
+    
     return JsonResponse(json)
 
 def youth_detail_chart(request, youth_id):
