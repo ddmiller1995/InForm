@@ -52,6 +52,26 @@ class YouthModelTests(TestCase):
     def test_create_visit_succeeds(self):
         self.assertIsNotNone(YouthVisit.objects.all()[0].pk)
 
+    def test_latest_youth_visit_with_no_visits(self):
+        youth = Youth.objects.create(
+            youth_name="Sam",
+            date_of_birth=datetime.date(2000, 10, 7),
+            ethnicity="white"
+        )
+        self.assertRaises(YouthVisit.DoesNotExist, youth.latest_youth_visit)
+
+    def test_latest_youth_visit_with_one_visit(self):
+        youth = Youth.objects.get(youth_name="Bob")
+        # Bob has one visit, with a primary key of '3'
+        latest_visit = YouthVisit.objects.get(pk=3)
+        self.assertEqual(youth.latest_youth_visit(), latest_visit)
+
+    def test_latest_youth_visit_with_multiple_visits(self):
+        youth = Youth.objects.get(youth_name="John")
+        # John has two visits, the most recent one has a primary key of '2'
+        latest_visit = YouthVisit.objects.get(pk=2)
+        self.assertEqual(youth.latest_youth_visit(), latest_visit)
+
     # TODO: Expand testing for this method and for the other model methods
     def test_form_type_progress_method(self):
         visit = YouthVisit.objects.filter(pk=2)[0]
