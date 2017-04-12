@@ -32,9 +32,12 @@ export default class extends React.Component {
                 </td>
                 <td>{formatDate(this.props.youth.dob)}</td>
                 <td>{formatDate(this.props.youth.placement_date)}</td>
-                <td>---</td>
-                <td>---</td>
-                <td>---</td>
+                <td>Seattle School District</td>
+                <td>School Bus</td>
+                <td>7:45 AM</td>
+                <td>Progress</td>
+                <td>Progress</td>
+                <td>Progress</td>
             </tr>
         );
     } 

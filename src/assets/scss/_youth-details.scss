@@ -21,6 +21,40 @@
         width: 40%;
     }
 }
- h4 {
-     text-align: left;
- }
+
+
+.kanban-board {
+    margin: 40px;
+    border: 1px solid black;
+    height: 500px;
+    overflow: auto;
+    display: flex;
+    flex: 1;
+    flex-flow: row;
+
+    .col1, .col2, .col3 {
+        border: 1px solid black;
+        height: 500px;
+        width: calc(100% / 3);
+    }
+}
+
+h4 {
+    text-align: left;
+}
+
+.youth-tracker-container {
+    display: inline-block;
+    position: relative;
+}
+
+// MDL 'add' button
+.mdl-button--fab {
+    min-width: 35px;
+    height: 35px;
+    width: 35px;
+    position: absolute;
+    right: 0px;
+    bottom: -20px;
+}
+

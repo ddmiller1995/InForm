@@ -29,23 +29,24 @@ export default class extends React.Component {
         let youthData = this.getYouthData();
 
         return (
-            <div className="youth-tracker-container">
-                <table className="mdl-data-table mdl-js-data-tabled">
-                    <thead>
-                        <tr>
-                            <th className="mdl-data-table__cell--non-numeric">Name</th>
-                            <th>DOB</th>
-                            <th>Entry Date</th>
-                            <th>Intake Forms</th>
-                            <th>Outtake Forms</th>
-                            <th>Planned Exit</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {youthData}
-                    </tbody>
-                </table>
-            </div>
+            <table className="mdl-data-table mdl-js-data-tabled">
+                <thead>
+                    <tr>
+                        <th className="mdl-data-table__cell--non-numeric">Name</th>
+                        <th>DOB</th>
+                        <th>Entry Date</th>
+                        <th>School</th>
+                        <th>School Transport</th>
+                        <th>School Pickup</th>
+                        <th>Intake Forms</th>
+                        <th>Outtake Forms</th>
+                        <th>Planned Exit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {youthData}
+                </tbody>
+            </table>
         );
     } 
 }

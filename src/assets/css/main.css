@@ -28,8 +28,51 @@
     border-color: #8fbc49;
     width: 40%; }
 
+.kanban-board {
+  margin: 40px;
+  border: 1px solid black;
+  height: 500px;
+  overflow: auto;
+  display: flex;
+  flex: 1;
+  flex-flow: row; }
+  .kanban-board .col1, .kanban-board .col2, .kanban-board .col3 {
+    border: 1px solid black;
+    height: 500px;
+    width: calc(100% / 3); }
+
 h4 {
   text-align: left; }
+
+.youth-tracker-container {
+  display: inline-block;
+  position: relative; }
+
+.mdl-button--fab {
+  min-width: 35px;
+  height: 35px;
+  width: 35px;
+  position: absolute;
+  right: 0px;
+  bottom: -20px; }
+
+#add-youth-form {
+  border: 3px solid #f1f1f1;
+  max-width: 500px;
+  padding: 15px;
+  margin: 0 auto; }
+
+input[type=text],
+input[type=date] {
+  width: 100%;
+  padding: 12px 10px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box; }
+
+.mdl-button--raised.mdl-button--colored {
+  background: #8fbc49; }
 
 .container {
   margin: 3%; }
