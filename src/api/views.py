@@ -62,18 +62,15 @@ def youth_detail(request, youth_id):
         Returns: Youth object for the youth with that PK
     '''
     youth = get_object_or_404(Youth, pk=youth_id)
-    serialized_youth = serialize_youth(youth)
+    json = serialize_youth(youth)
 
-    try:
-        youth_visit = youth.latest_youth_visit()
-    except YouthVisit.DoesNotExist:
-        logger.warn(f'Youth with pk={youth_id} has no youth_visit yet')
-        raise Http404
+    youth_visits = []
+    for youth_visit in YouthVisit.objects.filter(youth_id=youth).order_by('-placement_date'):
+        serialized_youth_visit = serialize_youth_visit(youth_visit)
+        youth_visits.append(serialized_youth_visit)
 
-    serialized_youth_visit = serialize_youth_visit(youth_visit)
+    json['youth_visits'] = youth_visits
 
-    # merge both serialized objects, keep items from second object if conflicts
-    json = {**serialized_youth, **serialized_youth_visit}
     
     return JsonResponse(json)
 
