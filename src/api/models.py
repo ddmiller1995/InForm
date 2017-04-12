@@ -85,12 +85,7 @@ class YouthVisit(models.Model):
     placement_date = models.DateField('placement date')
     city_of_origin = models.CharField(max_length=256, null=True, blank=True)
     guardian_name = models.CharField(max_length=256, null=True, blank=True)
-    placement_type = models.ForeignKey(
-        PlacementType,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True
-    )
+    placement_type = models.ForeignKey(PlacementType, on_delete=models.PROTECT)
     referred_by = models.CharField(max_length=256, null=True, blank=True)
     permanent_housing = models.NullBooleanField(null=True, blank=True)
     exited_to = models.CharField(max_length=256, null=True, blank=True)
