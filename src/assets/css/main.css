@@ -15,6 +15,18 @@
   color: #E17000;
   padding: 15px; }
 
+.youth-tracker-container {
+  display: inline-block;
+  position: relative; }
+
+.mdl-button--fab {
+  min-width: 35px;
+  height: 35px;
+  width: 35px;
+  position: absolute;
+  right: 0px;
+  bottom: -20px; }
+
 .youth-detail-container {
   border: 1px solid black;
   margin: 15px; }
@@ -24,9 +36,6 @@
     padding: 0; }
   .youth-detail-container .youth-detail-divider {
     margin: 0 15px; }
-  .youth-detail-container .youth-info-divider {
-    border-color: #8fbc49;
-    width: 40%; }
 
 .kanban-board {
   margin: 40px;
@@ -44,17 +53,24 @@
 h4 {
   text-align: left; }
 
-.youth-tracker-container {
-  display: inline-block;
-  position: relative; }
-
-.mdl-button--fab {
-  min-width: 35px;
-  height: 35px;
-  width: 35px;
-  position: absolute;
-  right: 0px;
-  bottom: -20px; }
+.youth-info-container .youth-row {
+  display: flex;
+  flex-flow: row wrap;
+  flex: 1;
+  justify-content: space-between;
+  border: 1px solid black; }
+  .youth-info-container .youth-row .youth-col {
+    border: 1px solid black;
+    width: 100%; }
+  .youth-info-container .youth-row .col-text {
+    padding-left: 15px; }
+  .youth-info-container .youth-row .youth-info-divider {
+    border-color: #8fbc49;
+    width: 200px; }
+  @media (min-width: 1160px) {
+    .youth-info-container .youth-row .youth-col {
+      border: 1px solid black;
+      width: 49.8%; } }
 
 #add-youth-form {
   border: 3px solid #f1f1f1;

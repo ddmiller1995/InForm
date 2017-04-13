@@ -15,11 +15,6 @@
     .youth-detail-divider {
         margin: 0 15px;
     }
-
-    .youth-info-divider {
-        border-color: $light-green;
-        width: 40%;
-    }
 }
 
 
@@ -43,18 +38,35 @@ h4 {
     text-align: left;
 }
 
-.youth-tracker-container {
-    display: inline-block;
-    position: relative;
+.youth-info-container {
+    .youth-row {
+        display: flex;
+        flex-flow: row wrap;
+        flex: 1;
+        justify-content: space-between;
+        border: 1px solid black;
+
+        .youth-col {
+            border: 1px solid black;
+            width: 100%;
+        }
+
+        .col-text {
+            padding-left: 15px;
+        }
+
+        .youth-info-divider {
+            border-color: $light-green;
+            width: 200px;
+        }
+
+        @media (min-width: 1160px) {
+            .youth-col {
+                border: 1px solid black;
+                width: 49.8%;
+            }
+        }
+    }
 }
 
-// MDL 'add' button
-.mdl-button--fab {
-    min-width: 35px;
-    height: 35px;
-    width: 35px;
-    position: absolute;
-    right: 0px;
-    bottom: -20px;
-}
 

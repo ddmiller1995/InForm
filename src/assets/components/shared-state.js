@@ -24,9 +24,16 @@ export function setCurrentYouth(youth) {
             ethnicity: youth.ethnicity,
             city_of_origin: youth.city_of_origin,
             placement_date: youth.placement_date,
-            intakeProgress: youth.intakeProgress,
-            outtakeProgress: youth.outtakeProgress,
-            expectedExit: youth.expectedExit
+            expectedExit: youth.estimated_exit_date,
+            placement_type: {
+                default_stay: youth.placement_type.default_stay_length,
+                name: youth.placement_type.name
+            },
+            school: {
+                district: youth.school.school_district,
+                name: youth.school.school_name,
+                phone: youth.school.school_phone
+            }
         } 
     }
 }
