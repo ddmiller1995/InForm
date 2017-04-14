@@ -31,8 +31,8 @@ def serialize_youth_visit(youth_visit):
         'case_manager': serialize_user(youth_visit.case_manager),
         'personal_counselor': serialize_user(youth_visit.personal_counselor),
         'current_placement_type': {
-            'name': youth_visit.placement_type.placement_type_name,
-            'default_stay_length': youth_visit.placement_type.default_stay_length,
+            'name': youth_visit.current_placement_type.placement_type_name,
+            'default_stay_length': youth_visit.current_placement_type.default_stay_length,
             'current_placement_start_date': youth_visit.current_placement_start_date,
             'current_placement_extension_days': youth_visit.current_placement_extension_days
         },
