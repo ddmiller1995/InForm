@@ -1,5 +1,3 @@
-
-
 def serialize_youth(youth):
     'Serialize the youth object'
     obj = {  # Youth fields
@@ -9,6 +7,13 @@ def serialize_youth(youth):
     }
     return obj
 
+def serialize_user(user):
+    'Serialize the user object'
+    obj = {
+        'username': user.username,
+        'full_name': user.get_full_name()
+    }
+    return obj
 
 
 
@@ -17,6 +22,13 @@ def serialize_youth_visit(youth_visit):
 
     obj = {
         'placement_date': youth_visit.placement_date,
+        'city_of_origin': youth_visit.city_of_origin,
+        'guardian_name': youth_visit.guardian_name,
+        'referred_by': youth_visit.referred_by,
+        'permanent_housing': youth_visit.permanent_housing,
+        'exited_to': youth_visit.exited_to,
+        'case_manager': serialize_user(youth_visit.case_manager),
+        'personal_counselor': serialize_user(youth_visit.personal_counselor),
         'placement_type': {
             'name': youth_visit.placement_type.placement_type_name,
             'default_stay_length': youth_visit.placement_type.default_stay_length
@@ -37,12 +49,6 @@ def serialize_youth_visit(youth_visit):
 
 
     # TODO: Handling for empty fields, currently only works if all fields are not empty
-
-    # TODO: serialize form progress fields - how do we determine which forms/form categories
-    # to express as a % for each youth? All?
-    # pseudocode
-    # for form in Form.objects.all():
-    #     obj[f'{form.name}-progess'] = str(form.getProgress())
 
 
     return obj
