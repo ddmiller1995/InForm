@@ -21,17 +21,20 @@ def serialize_youth_visit(youth_visit):
     'Serialize the youth_visit object'
 
     obj = {
-        'placement_date': youth_visit.placement_date,
+        'visit_start_date': youth_visit.visit_start_date,
         'city_of_origin': youth_visit.city_of_origin,
         'guardian_name': youth_visit.guardian_name,
         'referred_by': youth_visit.referred_by,
         'permanent_housing': youth_visit.permanent_housing,
         'exited_to': youth_visit.exited_to,
+        'visit_exit_date': youth_visit.visit_exit_date,
         'case_manager': serialize_user(youth_visit.case_manager),
         'personal_counselor': serialize_user(youth_visit.personal_counselor),
-        'placement_type': {
+        'current_placement_type': {
             'name': youth_visit.placement_type.placement_type_name,
-            'default_stay_length': youth_visit.placement_type.default_stay_length
+            'default_stay_length': youth_visit.placement_type.default_stay_length,
+            'current_placement_start_date': youth_visit.current_placement_start_date,
+            'current_placement_extension_days': youth_visit.current_placement_extension_days
         },
         'estimated_exit_date': youth_visit.estimated_exit_date(),
         'school': {
@@ -44,7 +47,7 @@ def serialize_youth_visit(youth_visit):
         'school_pm_transport': youth_visit.school_pm_transport,
         'school_pm_dropoff_time': youth_visit.school_pm_dropoff_time,
         'school_pm_phone': youth_visit.school_pm_phone,
-        'progress': youth_visit.overall_progress()
+        'overall_form_progress': youth_visit.overall_form_progress()
     }
 
 

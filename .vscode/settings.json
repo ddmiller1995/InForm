@@ -2,5 +2,9 @@
 {
     "editor.tabSize": 4,
     "editor.insertSpaces": true,
-    "python.linting.pylintArgs": ["--load-plugins",  "pylint_django"]
+    "python.linting.pylintArgs": [
+        "--load-plugins",
+        "pylint_django"
+    ],
+    "python.linting.pylintEnabled": false
 }

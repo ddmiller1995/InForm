@@ -10,3 +10,4 @@ src/assets/.sass-cache/*
 .idea/*
 src/api/migrations/
 src/log.txt
+npm-debug.log

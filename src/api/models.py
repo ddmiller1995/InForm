@@ -8,6 +8,15 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+class PlacementType(models.Model):
+    '''PlacementType model'''
+    placement_type_name = models.CharField(max_length=64, null=False, blank=False)
+    default_stay_length = models.IntegerField() # expressed as days
+
+    def __str__(self):
+        return self.placement_type_name
+
+
 class School(models.Model):
     '''School model'''
     school_name = models.CharField(max_length=64, null=False, blank=False)
@@ -146,15 +155,6 @@ class YouthVisit(models.Model):
             result[form_type.form_type_name] = done_count / form_type.form_count
         
         return result
-
-
-class PlacementType(models.Model):
-    '''PlacementType model'''
-    placement_type_name = models.CharField(max_length=64, null=False, blank=False)
-    default_stay_length = models.IntegerField() # expressed as days
-
-    def __str__(self):
-        return self.placement_type_name
 
 
 class FormType(models.Model):
