@@ -11,21 +11,30 @@
   border-right: 1px solid #16222c;
   height: 25px; }
 
-.progress-link, .presentation-link {
-  color: #E17000;
-  padding: 15px; }
-
-.youth-tracker-container {
-  display: inline-block;
-  position: relative; }
-
-.mdl-button--fab {
-  min-width: 35px;
-  height: 35px;
-  width: 35px;
+.homepage-links {
   position: absolute;
-  right: 0px;
-  bottom: -20px; }
+  top: 120px;
+  left: 100px; }
+  .homepage-links .progress-link, .homepage-links .presentation-link {
+    color: #E17000;
+    padding: 15px; }
+
+.mdl-data-table.mdl-js-data-tabled.youth-tracker-container {
+  display: table;
+  position: relative;
+  width: 90%;
+  margin: 80px auto 0 auto; }
+
+.add-youth-btn {
+  position: absolute;
+  right: 115px;
+  top: 120px; }
+
+.mdl-navigation__link .material-icons {
+  padding-bottom: 3px; }
+
+.mdl-data-table.mdl-js-data-tabled th, .mdl-data-table.mdl-js-data-tabled td {
+  text-align: left; }
 
 .youth-detail-container {
   border: 1px solid black;
@@ -93,7 +102,8 @@ h4 {
   .youth-info-container .extend-input, .youth-info-container .bed-input {
     position: absolute;
     bottom: 630px;
-    left: 505px; }
+    left: 505px;
+    visibility: hidden; }
     .youth-info-container .extend-input #extend-input, .youth-info-container .extend-input #bed-input, .youth-info-container .bed-input #extend-input, .youth-info-container .bed-input #bed-input {
       width: 100px;
       height: 20px; }
@@ -139,24 +149,6 @@ h4 {
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   display: inline-block;
   max-width: 0.1px; }
-
-#add-youth-form {
-  border: 3px solid #f1f1f1;
-  max-width: 500px;
-  padding: 15px;
-  margin: 0 auto; }
-
-input[type=text],
-input[type=date] {
-  width: 100%;
-  padding: 12px 10px;
-  margin: 8px 0;
-  display: inline-block;
-  border: 1px solid #ccc;
-  box-sizing: border-box; }
-
-.mdl-button--raised.mdl-button--colored {
-  background: #8fbc49; }
 
 .presentation-container {
   position: relative;

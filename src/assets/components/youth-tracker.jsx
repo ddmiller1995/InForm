@@ -1,4 +1,5 @@
 import React from 'react';
+import {Link, IndexLink} from "react-router";
 import YouthTrackerRow from "./youth-tracker-row.jsx";
 import "whatwg-fetch";
 
@@ -29,17 +30,17 @@ export default class extends React.Component {
         let youthData = this.getYouthData();
 
         return (
-            <table className="mdl-data-table mdl-js-data-tabled">
+            <table className="mdl-data-table mdl-js-data-tabled youth-tracker-container">
                 <thead>
                     <tr>
                         <th className="mdl-data-table__cell--non-numeric">Name</th>
                         <th>DOB</th>
                         <th>Entry Date</th>
+                        <th>Placement</th>
                         <th>School</th>
                         <th>School Transport</th>
                         <th>School Pickup</th>
-                        <th>Intake Forms</th>
-                        <th>Outtake Forms</th>
+                        <th>Form Progress</th>
                         <th>Planned Exit</th>
                     </tr>
                 </thead>
