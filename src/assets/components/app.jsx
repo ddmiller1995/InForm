@@ -18,7 +18,7 @@ export default class extends React.Component {
                         <nav className="mdl-navigation">
                             <IndexLink className="mdl-navigation__link" to="/" activeClassName="active">Home</IndexLink>
                             <div className="header-divider"></div>
-                            <IndexLink className="mdl-navigation__link" to="/admin" activeClassName="active">Admin</IndexLink>
+                            <a className="mdl-navigation__link" href="/admin">Admin</a>
                             <div className="header-divider"></div>
                             <a className="mdl-navigation__link" href="#">Logout</a>
                         </nav>

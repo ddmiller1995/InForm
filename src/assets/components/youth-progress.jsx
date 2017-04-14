@@ -11,7 +11,11 @@ export default class extends React.Component {
     render() {
         return (
             <div className="container">
-                <h4>Kanban Board</h4>
+                <div className="kanban-board">
+                    <div className="col1"></div>
+                    <div className="col2"></div>
+                    <div className="col3"></div>
+                </div>
             </div>
         );
     }
