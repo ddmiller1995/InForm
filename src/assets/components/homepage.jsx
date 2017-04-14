@@ -12,12 +12,18 @@ export default class extends React.Component {
       render() {
           return (
               <div className="container">
-                  <h1>Homepage</h1>
                   <div>
                       <IndexLink className="progress-link" to="/progress" activeClassName="active">Progress Report</IndexLink>
                       <a href="#presentation" className="presentation-link">Presentation View</a>
                   </div>
-                  <YouthTracker />
+                  <div className="youth-tracker-container">
+                      <YouthTracker />
+                        <IndexLink className="mdl-navigation__link" to="/add" activeClassName="active">
+                            <button className="mdl-button mdl-js-button mdl-button--fab">
+                                <i className="material-icons">add</i>
+                            </button>
+                        </IndexLink>
+                  </div>
               </div>
           );
       }

@@ -3,9 +3,7 @@ import {createStore} from "redux";
 "use strict";
 
 const SET_CURRENT_YOUTH = "setCurrentYouth";
-
 const DEFAULT_STATE = {currentYouth: {}};
-
 const LS_KEY = "redux-store";
 
 function reducer(state, action) {
@@ -22,14 +20,20 @@ export function setCurrentYouth(youth) {
         type: SET_CURRENT_YOUTH,
         currentYouth: {
             name: youth.name,
-            DOB: youth.DOB,
+            dob: youth.dob,
             ethnicity: youth.ethnicity,
-            city: youth.city,
-            entryDate: youth.entryDate,
-            intakeProgress: youth.intakeProgress,
-            outtakeProgress: youth.outtakeProgress,
-            caseGoalProgress: youth.caseGoalProgress,
-            expectedExit: youth.expectedExit
+            city_of_origin: youth.city_of_origin,
+            placement_date: youth.placement_date,
+            expectedExit: youth.estimated_exit_date,
+            placement_type: {
+                default_stay: youth.placement_type.default_stay_length,
+                name: youth.placement_type.name
+            },
+            school: {
+                district: youth.school.school_district,
+                name: youth.school.school_name,
+                phone: youth.school.school_phone
+            }
         } 
     }
 }

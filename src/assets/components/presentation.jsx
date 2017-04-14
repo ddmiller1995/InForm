@@ -29,7 +29,8 @@ export default class extends React.Component {
         let youthData = this.getYouthData();
 
         return (
-            <table className="mdl-data-table mdl-js-data-tabled">
+            <table className="mdl-data-table mdl-js-data-tabled presentation-container">
+                <div className="overlay"></div>
                 <thead>
                     <tr>
                         <th className="mdl-data-table__cell--non-numeric">Name</th>

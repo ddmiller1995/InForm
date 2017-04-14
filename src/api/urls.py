@@ -21,7 +21,12 @@ PUT /api/youth/PK/progress-chart (create or update operation for the progress ch
 urlpatterns = [
     url(r'^youth/$', views.youth_list, name='youth-list'),
     url(r'^youth/(?P<youth_id>[0-9]+)/$', views.youth_detail, name='youth-detail'),
-    url(r'^youth/(?P<youth_id>[0-9]+)/progress-chart/$', views.youth_detail_chart, name='youth-detail-chart'),
+    url(r'^youth/(?P<youth_id>[0-9]+)/progress-chart/$', views.youth_detail_chart, \
+        name='youth-detail-chart'),
+    url(r'^youth/(?P<youth_id>[0-9]+)/add-extension/$', views.youth_add_extension, \
+        name='youth-add-extension'),
+    url(r'^youth/(?P<youth_id>[0-9]+)/change-placement/$', views.youth_change_placement, \
+        name='youth-change-placement'),
 
 ]
 urlpatterns = format_suffix_patterns(urlpatterns)
