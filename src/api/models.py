@@ -8,15 +8,6 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class PlacementType(models.Model):
-    '''PlacementType model'''
-    placement_type_name = models.CharField(max_length=64, null=False, blank=False)
-    default_stay_length = models.IntegerField() # expressed as days
-
-    def __str__(self):
-        return self.placement_type_name
-
-
 class School(models.Model):
     '''School model'''
     school_name = models.CharField(max_length=64, null=False, blank=False)
@@ -82,11 +73,14 @@ class Youth(models.Model):
 class YouthVisit(models.Model):
     '''YouthVisit model'''
     youth_id = models.ForeignKey(Youth, on_delete=models.CASCADE)
-    placement_date = models.DateField('placement date')
+    visit_start_date = models.DateField('initial start date for the visit')
+    current_placement_type = models.ForeignKey(PlacementType, on_delete=models.PROTECT)
+    current_placement_start_date = models.DateField('placement start date')  
+    current_placement_extension_days = models.IntegerField(default=0, blank=True)
     city_of_origin = models.CharField(max_length=256, null=True, blank=True)
     guardian_name = models.CharField(max_length=256, null=True, blank=True)
-    placement_type = models.ForeignKey(PlacementType, on_delete=models.PROTECT)
     referred_by = models.CharField(max_length=256, null=True, blank=True)
+    visit_exit_date = models.DateField('date youth actually exited', null=True, blank=True)
     permanent_housing = models.NullBooleanField(null=True, blank=True)
     exited_to = models.CharField(max_length=256, null=True, blank=True)
     case_manager = models.ForeignKey(
@@ -126,7 +120,12 @@ class YouthVisit(models.Model):
         Estimated exit date = placement date + CURRENT placement type default stay duration
         Returns a datetime.date object
         '''
-        return self.placement_date + timedelta(days=self.placement_type.default_stay_length)
+        return self.current_placement_start_date + timedelta(days=self.current_placement_type.default_stay_length)
+
+    def total_days_stayed(self):
+        '''Sums and returns the days in this visit, which can include multiple placements and extensions'''
+        end_date = self.visit_exit_date if self.visit_exit_date != None else self.visit_start_date
+        return (timezone.now().date() - end_date).days
 
     def form_type_progress(self):
         '''Computes the ratio of forms marked as completed for this youth's visit
@@ -147,7 +146,16 @@ class YouthVisit(models.Model):
             result[form_type.form_type_name] = done_count / form_type.form_count
         
         return result
-        
+
+
+class PlacementType(models.Model):
+    '''PlacementType model'''
+    placement_type_name = models.CharField(max_length=64, null=False, blank=False)
+    default_stay_length = models.IntegerField() # expressed as days
+
+    def __str__(self):
+        return self.placement_type_name
+
 
 class FormType(models.Model):
     '''FormType model'''

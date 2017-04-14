@@ -106,6 +106,9 @@ class YouthModelTests(TestCase):
         )
         self.assertEqual(visit.estimated_exit_date(), datetime.date(1806, 1, 3))
 
+    def test_total_days_stayed(self):
+        # TODO: Write this method
+
     def test_get_active_youth_multiple_active(self):    
         self.assertEqual(Youth.get_active_youth(), 
             [
