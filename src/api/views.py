@@ -65,7 +65,7 @@ def youth_detail(request, youth_id):
     json = serialize_youth(youth)
 
     youth_visits = []
-    for youth_visit in YouthVisit.objects.filter(youth_id=youth).order_by('-placement_date'):
+    for youth_visit in YouthVisit.objects.filter(youth_id=youth).order_by('-current_placement_start_date'):
         serialized_youth_visit = serialize_youth_visit(youth_visit)
         youth_visits.append(serialized_youth_visit)
 

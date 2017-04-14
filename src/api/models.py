@@ -48,8 +48,8 @@ class Youth(models.Model):
             raise YouthVisit.DoesNotExist
 
         # now youth_visit is the specific youth_visit in the
-        # queryset with the latest 'placement_date'
-        youth_visit = youth_visit.latest('placement_date')
+        # queryset with the latest 'current_placement_start_date'
+        youth_visit = youth_visit.latest('current_placement_start_date')
         return youth_visit
 
     @staticmethod
@@ -122,7 +122,7 @@ class YouthVisit(models.Model):
     # Pay rate - supposedly redundant with bed
 
     def __str__(self):
-        return 'Youth: ' + self.youth_id.youth_name + ' - Placement date: ' + str(self.placement_date)
+        return 'Youth: ' + self.youth_id.youth_name + ' - Placement date: ' + str(self.current_placement_start_date)
 
     def estimated_exit_date(self):
         '''Compute the current estimated exit date for this youth's visit
@@ -155,6 +155,9 @@ class YouthVisit(models.Model):
             result[form_type.form_type_name] = done_count / form_type.form_count
         
         return result
+
+    def overall_form_progress(self):
+        return 0.72
 
 
 class FormType(models.Model):
