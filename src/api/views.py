@@ -69,7 +69,7 @@ def youth_detail(request, youth_id):
         serialized_youth_visit = serialize_youth_visit(youth_visit)
         youth_visits.append(serialized_youth_visit)
 
-    json['youth_visits'] = youth_visits
+    json['youth_visits'] = youth_visits 
 
     
     return JsonResponse(json)
@@ -98,4 +98,15 @@ def youth_detail_chart(request, youth_id):
     else:
         raise Http404
 
+def youth_add_extension(request):
+    obj = {
+        'result': 'success'
+    }
+    return JsonResponse(obj)
+
+def youth_change_placement(request):
+    obj = {
+        'result': 'success'
+    }
+    return JsonResponse(obj)
 
