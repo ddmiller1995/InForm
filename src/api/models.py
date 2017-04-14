@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models import Count
 from datetime import timedelta, date
 from django.http import Http404
 
@@ -84,12 +85,7 @@ class YouthVisit(models.Model):
     placement_date = models.DateField('placement date')
     city_of_origin = models.CharField(max_length=256, null=True, blank=True)
     guardian_name = models.CharField(max_length=256, null=True, blank=True)
-    placement_type = models.ForeignKey(
-        PlacementType,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True
-    )
+    placement_type = models.ForeignKey(PlacementType, on_delete=models.PROTECT)
     referred_by = models.CharField(max_length=256, null=True, blank=True)
     permanent_housing = models.NullBooleanField(null=True, blank=True)
     exited_to = models.CharField(max_length=256, null=True, blank=True)
@@ -123,7 +119,7 @@ class YouthVisit(models.Model):
     # Pay rate - supposedly redundant with bed
 
     def __str__(self):
-        return f'Youth: {self.youth_id.youth_name} - Placement date: {str(self.placement_date)}'
+        return 'Youth: ' + self.youth_id.youth_name + ' - Placement date: ' + str(self.placement_date)
 
     def estimated_exit_date(self):
         '''Compute the current estimated exit date for this youth's visit
@@ -131,6 +127,26 @@ class YouthVisit(models.Model):
         Returns a datetime.date object
         '''
         return self.placement_date + timedelta(days=self.placement_type.default_stay_length)
+
+    def form_type_progress(self):
+        '''Computes the ratio of forms marked as completed for this youth's visit
+        Forms are grouped into their type and a dictionary is returned with 
+        type/ratio pairs
+        '''
+        result = {}
+
+        # Builds a QuerySet of each FormType and the total count of forms with that type
+        form_type_counts = FormType.objects.annotate(form_count=Count('form'))
+
+        # Returns a QuerySet of forms completed for this visit
+        youth_visit_done_forms = FormYouthVisit.objects.filter(youth_visit_id=self, status='done')
+        for form_type in form_type_counts:
+            # Counts the forms marked as done with each form type
+            done_count = youth_visit_done_forms.filter(form_id__form_type_id=form_type).count()
+            # Calculate the ratio, store with the key as the form type name
+            result[form_type.form_type_name] = done_count / form_type.form_count
+        
+        return result
         
 
 class FormType(models.Model):

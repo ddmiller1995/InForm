@@ -35,6 +35,9 @@ def serialize_youth_visit(youth_visit):
         'school_pm_phone': youth_visit.school_pm_phone
     }
 
+
+    # TODO: Handling for empty fields, currently only works if all fields are not empty
+
     # TODO: serialize form progress fields - how do we determine which forms/form categories
     # to express as a % for each youth? All?
     # pseudocode
