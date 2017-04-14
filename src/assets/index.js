@@ -5,7 +5,7 @@ import {render} from "react-dom";
 
 import App from "./components/app.jsx";
 import Homepage from "./components/homepage.jsx";
-// import Admin from "./components/admin.jsx";
+import Presentation from "./components/presentation.jsx";
 import ProgressReport from "./components/progress-report.jsx";
 import Youth from "./components/youth.jsx";
 import YouthInfo from "./components/youth-info.jsx";
@@ -21,7 +21,7 @@ var router = (
         <Route path="/" component={App}>
             <IndexRoute component={Homepage}></IndexRoute>
             <Route path="/progress" component={ProgressReport}></Route> 
-            {/*<Route path="/admin" component={Admin}></Route> */}
+            <Route path="/presentation" component={Presentation}></Route> 
             <Route path="/add" component={AddYouth}></Route> 
             <Route path="/youth" component={Youth}>
                 <IndexRoute component={YouthInfo}></IndexRoute>
