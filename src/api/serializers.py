@@ -1,31 +1,48 @@
-# from django.contrib.auth.models import User
-from api.models import Youth
-from rest_framework import serializers
 
-# class YouthSerializer(serializers.Serializer):
-#     id = serializers.IntegerField(read_only=True)
-#     youth_name = serializers.CharField(max_length=100)
-#     date_of_birth = serializers.DateField()
-#     ethnicity = serializers.CharField(max_length=64)
 
-#     def create(self, validated_data):
-#         """
-#         Create and return a new `Snippet` instance, given the validated data.
-#         """
-#         return Youth.objects.create(**validated_data)
+def serialize_youth(youth):
+    'Serialize the youth object'
+    obj = {  # Youth fields
+        'id': youth.pk,
+        'name': youth.youth_name,
+        'dob': youth.date_of_birth,
+        'ethnicity': youth.ethnicity,
+    }
+    return obj
 
-#     def update(self, instance, validated_data):
-#         """
-#         Update and return an existing `Snippet` instance, given the validated data.
-#         """
-#         instance.youth_name = validated_data.get('youth_name', instance.youth_name)
-#         instance.date_of_birth = validated_data.get('date_of_birth', instance.date_of_birth)
-#         instance.ethnicity = validated_data.get('ethnicity', instance.ethnicity)
 
-#         instance.save()
-#         return instance
 
-class YouthSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Youth
-        fields = ('id', 'youth_name', 'date_of_birth', 'ethnicity')
+
+def serialize_youth_visit(youth_visit):
+    'Serialize the youth_visit object'
+
+    obj = {
+        'placement_date': youth_visit.placement_date,
+        'placement_type': {
+            'name': youth_visit.placement_type.placement_type_name,
+            'default_stay_length': youth_visit.placement_type.default_stay_length
+        },
+        'estimated_exit_date': youth_visit.estimated_exit_date(),
+        'school': {
+            'school_name': youth_visit.school.school_name,
+            'school_district': youth_visit.school.school_district,
+            'school_phone': youth_visit.school.school_phone,
+        },
+        'school_am_transport': youth_visit.school_am_transport,
+        'school_am_phone': youth_visit.school_am_phone,
+        'school_pm_transport': youth_visit.school_pm_transport,
+        'school_pm_dropoff_time': youth_visit.school_pm_dropoff_time,
+        'school_pm_phone': youth_visit.school_pm_phone
+    }
+
+
+    # TODO: Handling for empty fields, currently only works if all fields are not empty
+
+    # TODO: serialize form progress fields - how do we determine which forms/form categories
+    # to express as a % for each youth? All?
+    # pseudocode
+    # for form in Form.objects.all():
+    #     obj[f'{form.name}-progess'] = str(form.getProgress())
+
+
+    return obj
