@@ -147,6 +147,9 @@ class YouthVisit(models.Model):
             result[form_type.form_type_name] = done_count / form_type.form_count
         
         return result
+
+    def overall_progress(self):
+        return '0.72'
         
 
 class FormType(models.Model):

@@ -5,8 +5,7 @@ def serialize_youth(youth):
     obj = {  # Youth fields
         'id': youth.pk,
         'name': youth.youth_name,
-        'dob': youth.date_of_birth,
-        'ethnicity': youth.ethnicity,
+        'dob': youth.date_of_birth
     }
     return obj
 
@@ -32,7 +31,8 @@ def serialize_youth_visit(youth_visit):
         'school_am_phone': youth_visit.school_am_phone,
         'school_pm_transport': youth_visit.school_pm_transport,
         'school_pm_dropoff_time': youth_visit.school_pm_dropoff_time,
-        'school_pm_phone': youth_visit.school_pm_phone
+        'school_pm_phone': youth_visit.school_pm_phone,
+        'progress': youth_visit.overall_progress()
     }
 
 
