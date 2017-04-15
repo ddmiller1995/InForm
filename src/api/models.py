@@ -83,9 +83,9 @@ class Youth(models.Model):
 class YouthVisit(models.Model):
     '''YouthVisit model'''
     youth_id = models.ForeignKey(Youth, on_delete=models.CASCADE)
-    visit_start_date = models.DateField('initial start date for the visit', default=timezone.now().date())
+    visit_start_date = models.DateField('initial start date for the visit', default=timezone.now)
     current_placement_type = models.ForeignKey(PlacementType, on_delete=models.PROTECT)
-    current_placement_start_date = models.DateField('placement start date', default=timezone.now().date())  
+    current_placement_start_date = models.DateField('placement start date', default=timezone.now)  
     current_placement_extension_days = models.IntegerField(default=0, blank=True)
     city_of_origin = models.CharField(max_length=256, null=True, blank=True)
     guardian_name = models.CharField(max_length=256, null=True, blank=True)
@@ -158,7 +158,13 @@ class YouthVisit(models.Model):
         return result
 
     def overall_form_progress(self):
-        return 0.72
+        '''Return the percentage of forms completed out of possible forms as a ratio
+        '''
+        # Count the total number of forms in the database
+        total_forms = Form.objects.all().Count()
+        # Count the number of forms maked as completed for this youth's visit
+        youth_visit_done_form_count = FormYouthVisit.objects.filter(youth_visit_id=self, status='done').Count()
+        return youth_visit_done_form_count / total_forms
 
 
 class FormType(models.Model):

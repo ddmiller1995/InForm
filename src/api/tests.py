@@ -52,7 +52,6 @@ class YouthModelTests(TestCase):
         #form_youth_visit3 = FormYouthVisit.objects.create(form_id=form1, youth_visit_id=visit2, status='done')
 
 
-
     def test_create_youth_succeeds(self):
         self.assertIsNotNone(Youth.objects.all()[0].pk)
 
@@ -100,7 +99,7 @@ class YouthModelTests(TestCase):
     def test_estimated_exit_date_past(self):
         visit = YouthVisit.objects.create(
             youth_id=Youth.objects.get(youth_name="Bob"),
-            current_placement_start_date=datetime.date(1805, 12, 31),
+            cupytrrent_placement_start_date=datetime.date(1805, 12, 31),
             city_of_origin="Seattle",
             current_placement_type=PlacementType.objects.get(placement_type_name="Testing")
         )
