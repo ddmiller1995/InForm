@@ -3,14 +3,22 @@ import {store} from "./shared-state.js";
 import {Link, IndexLink} from "react-router";
 import "whatwg-fetch";
 
+const GET_YOUTH_API = "/api/youth/"
+const YOUTH_ID = store.getState();
+
 export default class extends React.Component {
     constructor(props) {
         super(props);
-        this.state = store.getState();
+        this.state = {youth: {}};
     }
 
      componentDidMount() {
         this.unsub = store.subscribe(() => this.setState(store.getState()));
+
+        fetch(GET_YOUTH_API + YOUTH_ID.currentYouth.id)
+            .then(response => response.json())
+            .then(data => this.setState({ youth: data }))
+            .catch(err => alert(err.message));
     }
 
     componentWillUnmount() {
@@ -18,6 +26,7 @@ export default class extends React.Component {
     }
 
     render() {
+        console.log(this.state.youth);
         return (
             <div className="container">
                 <div className="youth-detail-container">
@@ -32,7 +41,7 @@ export default class extends React.Component {
                     </header>
                     <hr className="youth-detail-divider"/>
                     <main>
-                        {React.cloneElement(this.props.children, {currentYouth: this.state.currentYouth})}
+                        {/*{React.cloneElement(this.props.children, {currentYouth: this.state.youth})}*/}
                     </main>
                 </div>
             </div>

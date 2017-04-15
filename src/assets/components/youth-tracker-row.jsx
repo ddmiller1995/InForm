@@ -35,13 +35,13 @@ export default class extends React.Component {
             <tr>
                 <td className="mdl-data-table__cell--non-numeric">{this.wrapIndexLink(this.props.youth.name)}</td>
                 <td>{this.wrapIndexLink(formatDate(this.props.youth.dob))}</td>
-                <td>{this.wrapIndexLink(formatDate(this.props.youth.placement_date))}</td>
-                <td>{this.wrapIndexLink(this.props.youth.placement_type.name)}</td>
+                <td>{this.wrapIndexLink(formatDate(this.props.youth.visit_start_date))}</td>
+                <td>{this.wrapIndexLink(this.props.youth.current_placement_type.name)}</td>
                 <td>{this.wrapIndexLink("Seattle School District")}</td>
                 <td>{this.wrapIndexLink("School Bus")}</td>
                 <td>{this.wrapIndexLink("7:45 AM")}</td>
                 <td>{this.wrapIndexLink("Progress")}</td>
-                <td>{this.wrapIndexLink(this.props.youth.expectedExit)}</td>
+                <td>{this.wrapIndexLink(this.props.youth.estimated_exit_date)}</td>
             </tr>
         );
     } 

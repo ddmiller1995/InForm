@@ -9,24 +9,45 @@ export default class extends React.Component {
         this.state = {};
     }
 
-    // showInput() {
-        
-    // }
+    getVisits() {
+        let visits = this.props.currentYouth.youth_visits;
+        let visitDates = [];
+        visits.forEach(function(visit) {
+            let key = visit.visit_start_date;
+            visitDates.push(<option key={key} value={key}>{formatDate(key)}</option>);
+        });
+
+        console.log(visitDates);
+        return visitDates;
+
+        // var a = document.getElementById("thedropdown");
+        // alert(a.options[a.selectedIndex].value);
+
+        // function answers(){
+        //  document.getElementById("mySelect").value!="To measure time"||(alert('correct'))
+        //    }
+    }
+
+    selector(evt) {
+        console.log(evt);
+    }
 
     render() {
+        let visitDates = [];
+        if (this.props.currentYouth.youth_visits) {
+            visitDates = this.getVisits();
+        }
+
         return (
             <div className="container youth-info-container">
                 <div className="mdl-select mdl-js-select mdl-select--floating-label">
                     <label className="mdl-select__label" htmlFor="visit">Visit Date </label>
-                    <select className="mdl-select__input" id="visit" name="visit">
-                        <option value=""></option>
-                        <option value="option1">Recent</option>
-                        <option value="option2">10/13/2015</option>
-                        <option value="option3">3/20/2014</option>
+                    <select className="mdl-select__input" id="visit" name="visit" onChange={evt => this.selector(evt)}>
+                        {visitDates}
                     </select>
                 </div>
 
-                <button className="mdl-button mdl-js-button mdl-button--raised extend">Extend Stay</button>
+                {/*<button className="mdl-button mdl-js-button mdl-button--raised extend">Extend Stay</button>
                 <span className="extend-input"><label htmlFor="extend-input">Extend:</label>
                     <input id="extend-input" type="text" autoFocus/>
                 </span>
@@ -34,7 +55,7 @@ export default class extends React.Component {
                 <button className="mdl-button mdl-js-button mdl-button--raised change-beds">Change Beds</button>
                 <span className="bed-input"><label htmlFor="bed-input">Change:</label>
                     <input id="bed-input" type="text" autoFocus/>
-                </span>
+                </span>*/}
 
                 <div className="youth-row">
                     <div className="youth-col">
@@ -44,8 +65,8 @@ export default class extends React.Component {
                             <p>Name: {this.props.currentYouth.name}</p>
                             <p>Birthdate: <span>{formatDate(this.props.currentYouth.dob)}</span></p>
                             <p>Age: <span>{getDateDiff(this.props.currentYouth.dob)}</span></p>
-                            <p>Ethnicity: <span>{this.props.currentYouth.ethnicity}</span></p>
-                            <p>City: <span>{this.props.currentYouth.city_of_origin}</span></p>
+                            {/*<p>Ethnicity: <span>{this.props.currentYouth.ethnicity}</span></p>*/}
+                            {/*<p>City: <span>{this.props.currentYouth.city_of_origin}</span></p>*/}
                         </div>
                     </div>
                     <div className="youth-col">
@@ -56,13 +77,13 @@ export default class extends React.Component {
                         <div className="inner-col">
                             <p>Case Manager: <span>Linda Cox</span></p>
                             <p>Personal Counselor: <span>Jeff Bridges</span></p>
-                            <p>Placement Date: <span>{this.props.currentYouth.placement_date}</span></p>
+                            {/*<p>Placement Date: <span>{this.props.currentYouth.placement_date}</span></p>*/}
                             <p>Placement:  
-                                <span> {this.props.currentYouth.placement_type.name}
+                                {/*<span> {this.props.currentYouth.placement_type.name}
                                     <span> - { this.props.currentYouth.placement_type.default_stay} days</span>
-                                </span>
+                                </span>*/}
                             </p>
-                            <p>Expected Exit: <span>{this.props.currentYouth.expectedExit}</span></p>
+                            {/*<p>Expected Exit: <span>{this.props.currentYouth.expectedExit}</span></p>*/}
                         </div>
                         <div className="inner-col">
                             <p>Referred By: <span>Slam Bam</span></p>
@@ -79,9 +100,9 @@ export default class extends React.Component {
                         <hr className="youth-info-divider"/>
                     </div>
                     <div className="inner-col">
-                        <p>School: <span>{this.props.currentYouth.school.name}</span></p>
+                        {/*<p>School: <span>{this.props.currentYouth.school.name}</span></p>
                         <p>District: <span>{this.props.currentYouth.school.district}</span></p>
-                        <p>Phone: <span>{this.props.currentYouth.school.phone}</span></p>
+                        <p>Phone: <span>{this.props.currentYouth.school.phone}</span></p>*/}
                     </div>
                     <div className="inner-col">
                         <p>AM Transport: <span>Bus</span></p>
