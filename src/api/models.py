@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.db.models import Count
 from datetime import timedelta, date
 from django.http import Http404
+from django.utils import timezone
 
 import logging
 logger = logging.getLogger(__name__)
@@ -82,9 +83,9 @@ class Youth(models.Model):
 class YouthVisit(models.Model):
     '''YouthVisit model'''
     youth_id = models.ForeignKey(Youth, on_delete=models.CASCADE)
-    visit_start_date = models.DateField('initial start date for the visit')
+    visit_start_date = models.DateField('initial start date for the visit', default=timezone.now().date())
     current_placement_type = models.ForeignKey(PlacementType, on_delete=models.PROTECT)
-    current_placement_start_date = models.DateField('placement start date')  
+    current_placement_start_date = models.DateField('placement start date', default=timezone.now().date())  
     current_placement_extension_days = models.IntegerField(default=0, blank=True)
     city_of_origin = models.CharField(max_length=256, null=True, blank=True)
     guardian_name = models.CharField(max_length=256, null=True, blank=True)

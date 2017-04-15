@@ -29,21 +29,18 @@ class YouthModelTests(TestCase):
             current_placement_start_date=datetime.date(2010, 1, 1),
             city_of_origin="Bellingham",
             current_placement_type=placement,
-            visit_start_date=datetime.datetime.now()
         )
         visit2 = YouthVisit.objects.create(
             youth_id=youth1,
             current_placement_start_date=timezone.localtime(timezone.now()).date(),
             city_of_origin="Seattle",
             current_placement_type=placement,
-            visit_start_date=datetime.datetime.now()
         )
         visit3 = YouthVisit.objects.create(
             youth_id=youth2,
             current_placement_start_date=timezone.localtime(timezone.now()).date() - timedelta(days=3),
             city_of_origin="Seattle",
             current_placement_type=placement,
-            visit_start_date=datetime.datetime.now()
         )
         form_type1 = FormType.objects.create(form_type_name="Intake")
         form_type2 = FormType.objects.create(form_type_name="Outtake")
@@ -87,8 +84,7 @@ class YouthModelTests(TestCase):
             youth_id=Youth.objects.get(youth_name="Bob"),
             current_placement_start_date=datetime.date(2017, 1, 1),
             city_of_origin="Seattle",
-            current_placement_type=PlacementType.objects.get(placement_type_name="Testing"),
-            visit_start_date=datetime.datetime.now()
+            current_placement_type=PlacementType.objects.get(placement_type_name="Testing")
         )
         self.assertEqual(visit.estimated_exit_date(), datetime.date(2017, 1, 4))
 
@@ -97,8 +93,7 @@ class YouthModelTests(TestCase):
             youth_id=Youth.objects.get(youth_name="Bob"),
             current_placement_start_date=datetime.date.today() - timedelta(days=3),
             city_of_origin="Seattle",
-            current_placement_type=PlacementType.objects.get(placement_type_name="Testing"),
-            visit_start_date=datetime.datetime.now()
+            current_placement_type=PlacementType.objects.get(placement_type_name="Testing")
         )
         self.assertEqual(visit.estimated_exit_date(), datetime.date.today())
 
@@ -107,8 +102,7 @@ class YouthModelTests(TestCase):
             youth_id=Youth.objects.get(youth_name="Bob"),
             current_placement_start_date=datetime.date(1805, 12, 31),
             city_of_origin="Seattle",
-            current_placement_type=PlacementType.objects.get(placement_type_name="Testing"),
-            visit_start_date=datetime.datetime.now()
+            current_placement_type=PlacementType.objects.get(placement_type_name="Testing")
         )
         self.assertEqual(visit.estimated_exit_date(), datetime.date(1806, 1, 3))
 
