@@ -64,4 +64,4 @@ def serialize_youth_visit(youth_visit):
 class PlacementTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = PlacementType
-        fields = ('id', 'placement_type_name', 'default_stay_length')
+        fields = '__all__'

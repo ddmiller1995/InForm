@@ -3,10 +3,12 @@ import logging
 from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
+
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.renderers import JSONRenderer
 
 from api.models import PlacementType, Youth, YouthVisit
 from api.serializers import (PlacementTypeSerializer, serialize_youth,
@@ -22,6 +24,8 @@ class YouthList(APIView):
         Param: search=john (optional search param filters search results)
         Returns: Array of youth objects
     '''
+
+    renderer_classes = (JSONRenderer, )
 
     def get(self, request, format=None):
 
@@ -58,7 +62,7 @@ class YouthList(APIView):
 
             json['youth'].append(obj)
 
-        return JsonResponse(json, safe=False)
+        return Response(json, status=status.HTTP_200_OK)
 
 class YouthDetail(APIView):
     '''View for the youth detail endpoint
@@ -67,6 +71,8 @@ class YouthDetail(APIView):
     GET /api/youth/ (pk is an int which represents a youth's primary key)
         Returns: Youth object for the youth with that PK
     '''
+
+    renderer_classes = (JSONRenderer, )
 
     def get(self, request, youth_id, format=None):
         youth = get_object_or_404(Youth, pk=youth_id)
@@ -79,8 +85,7 @@ class YouthDetail(APIView):
 
         json['youth_visits'] = youth_visits 
 
-        
-        return JsonResponse(json, safe=False)
+        return Response(json, status=status.HTTP_200_OK)
 
 
 class YouthChangePlacement(APIView):
@@ -112,6 +117,8 @@ class YouthChangePlacement(APIView):
         - All failure responses will have a "error" header with an
             error message
     '''
+
+    renderer_classes = (JSONRenderer, )
 
     def post(self, request, youth_visit_id, format=None):
 
@@ -154,6 +161,8 @@ class PlacementTypeList(APIView):
     GET /api/placement-type returns JSON response
     
     '''
+
+    renderer_classes = (JSONRenderer, )
 
     def get(self, request, format=None):
         placement_types = PlacementType.objects.all()
