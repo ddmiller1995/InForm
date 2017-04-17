@@ -14,7 +14,7 @@ from api.serializers import (PlacementTypeSerializer, serialize_youth,
 
 logger = logging.getLogger(__name__)
 
-def youth_list(request):
+class YouthList(APIView):
     '''View for the list youth endpoint
 
     GET /api/youth
@@ -22,91 +22,65 @@ def youth_list(request):
         Param: search=john (optional search param filters search results)
         Returns: Array of youth objects
     '''
-    json = {
-        'youth': []
-    }
 
-    active_only = False
-    if 'activeOnly' in request.GET:
-        active_only = request.GET['activeOnly'].lower()
-        active_only = active_only == 'true'
+    def get(self, request, format=None):
 
-    youth_list = Youth.get_active_youth() if active_only else Youth.objects.all()
+        json = {
+            'youth': []
+        }
 
-    searchQuery = False
-    if 'search' in request.GET:
-        search = request.GET['search']
-        # insert code here to filter youth_list
+        active_only = False
+        if 'activeOnly' in request.query_params:
+            active_only = request.query_params['activeOnly'].lower()
+            active_only = active_only == 'true'
 
-    for youth in youth_list:
+        youth_list = Youth.get_active_youth() if active_only else Youth.objects.all()
 
-        serialized_youth = serialize_youth(youth)
+        searchQuery = False
+        if 'search' in request.query_params:
+            search = request.query_params['search']
+            # insert code here to filter youth_list
 
-        try:
-            youth_visit = youth.latest_youth_visit()
-        except YouthVisit.DoesNotExist:
-            logger.warn(f'Youth with pk={youth.pk} doesn"t have any youth_visits')
-            continue
+        for youth in youth_list:
 
-        serialized_youth_visit = serialize_youth_visit(youth_visit)
+            serialized_youth = serialize_youth(youth)
 
-        # merge both serialized objects, keep items from second object if conflicts
-        obj = {**serialized_youth, **serialized_youth_visit}
+            try:
+                youth_visit = youth.latest_youth_visit()
+            except YouthVisit.DoesNotExist:
+                logger.warn(f'Youth with pk={youth.pk} doesn"t have any youth_visits')
+                continue
 
-        json['youth'].append(obj)
+            serialized_youth_visit = serialize_youth_visit(youth_visit)
 
-    return JsonResponse(json)
+            # merge both serialized objects, keep items from second object if conflicts
+            obj = {**serialized_youth, **serialized_youth_visit}
 
+            json['youth'].append(obj)
 
-def youth_detail(request, youth_id):
+        return JsonResponse(json, safe=False)
+
+class YouthDetail(APIView):
     '''View for the youth detail endpoint
 
 
     GET /api/youth/ (pk is an int which represents a youth's primary key)
         Returns: Youth object for the youth with that PK
     '''
-    youth = get_object_or_404(Youth, pk=youth_id)
-    json = serialize_youth(youth)
 
-    youth_visits = []
-    for youth_visit in YouthVisit.objects.filter(youth_id=youth).order_by('-current_placement_start_date'):
-        serialized_youth_visit = serialize_youth_visit(youth_visit)
-        youth_visits.append(serialized_youth_visit)
-
-    json['youth_visits'] = youth_visits 
-
-    
-    return JsonResponse(json)
-
-def youth_detail_chart(request, youth_visit_id):
-    '''View for the list youth endpoint
-
-    PUT /api/youth/PK/progress-chart
-        (create or update operation for the progress chart.
-        Once a user presses "save changes", the front end will
-        persist changes with this PUT request)
-        Returns: response code 201
-    '''
-
-    # or True for debugging with GET, replace with PUT only in prod
-    if request.method == 'PUT' or True:
+    def get(self, request, youth_id, format=None):
         youth = get_object_or_404(Youth, pk=youth_id)
-        obj = {# more fields need to be added to response
-            'id': youth.pk,
-            'name': youth.youth_name,
-            'dob': youth.date_of_birth,
-            'ethnicity': youth.ethnicity,
-            'stuff': True
-        }
-        return JsonResponse(obj)
-    else:
-        raise Http404
+        json = serialize_youth(youth)
 
-def youth_add_extension(request, youth_visit_id):
-    obj = {
-        'result': 'success'
-    }
-    return JsonResponse(obj)
+        youth_visits = []
+        for youth_visit in YouthVisit.objects.filter(youth_id=youth).order_by('-current_placement_start_date'):
+            serialized_youth_visit = serialize_youth_visit(youth_visit)
+            youth_visits.append(serialized_youth_visit)
+
+        json['youth_visits'] = youth_visits 
+
+        
+        return JsonResponse(json, safe=False)
 
 
 class YouthChangePlacement(APIView):
