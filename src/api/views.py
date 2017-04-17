@@ -1,13 +1,17 @@
-from api.models import Youth, YouthVisit
-from api.serializers import serialize_youth, serialize_youth_visit
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-
-from django.http import JsonResponse, Http404
-from django.shortcuts import get_object_or_404
-
 import logging
+
+from django.http import Http404, JsonResponse
+from django.shortcuts import get_object_or_404
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from api.models import PlacementType, Youth, YouthVisit
+from api.serializers import (PlacementTypeSerializer, serialize_youth,
+                             serialize_youth_visit)
+
 logger = logging.getLogger(__name__)
 
 def youth_list(request):
@@ -74,7 +78,7 @@ def youth_detail(request, youth_id):
     
     return JsonResponse(json)
 
-def youth_detail_chart(request, youth_id):
+def youth_detail_chart(request, youth_visit_id):
     '''View for the list youth endpoint
 
     PUT /api/youth/PK/progress-chart
@@ -98,15 +102,86 @@ def youth_detail_chart(request, youth_id):
     else:
         raise Http404
 
-def youth_add_extension(request):
+def youth_add_extension(request, youth_visit_id):
     obj = {
         'result': 'success'
     }
     return JsonResponse(obj)
 
-def youth_change_placement(request):
-    obj = {
-        'result': 'success'
-    }
-    return JsonResponse(obj)
 
+class YouthChangePlacement(APIView):
+    '''Change youth placement type
+
+    Supported HTTP methods: POST
+    
+    Params:
+        - youth_visit_id is parsed from the url and represents the pk
+            of the youth_visit whose placement we are going to change
+        - new_placement_type_id is a POST param that is required. It 
+            is the pk of the placement_type that is going to be set on
+            the youth_visit
+
+            NOTE: You may need to first query the /api/placement-type endpoint
+            to get all of the placement types and their PKs 
+
+    Success:
+        - If the request was succesfull, you will receive a
+            HTTP_202_ACCEPTED response
+    Failure:
+        - If the request does not include a valid youth_visit_id,
+            you will get a HTTP_404_NOT_FOUND response
+        - If the request does not include a new_placement_type_id
+            POST param, you will receive a HTTP_400_BAD_REQUEST response
+        - If the request does not include a valid new_placement_type_id,
+            you will receive a HTTP_404_NOT_FOUND response
+
+        - All failure responses will have a "error" header with an
+            error message
+    '''
+
+    def post(self, request, youth_visit_id, format=None):
+
+        try:
+            youth_visit = YouthVisit.objects.get(pk=youth_visit_id)
+        except YouthVisit.DoesNotExist:
+            response = Response(status=status.HTTP_404_NOT_FOUND)
+            response['error'] = 'Youth visit pk=%s does not exist' % youth_visit_id
+            return response
+
+        new_placement_type_id = request.POST.get('new_placement_type_id', None)
+
+        if not new_placement_type_id:
+            response = Response(status=status.HTTP_400_BAD_REQUEST)
+            response['error'] = 'Missing POST param "new_placement_type_id"'
+            return response
+            
+        try:
+            new_placement_type = PlacementType.objects.get(pk=new_placement_type_id)
+        except PlacementType.DoesNotExist:
+            response = Response(status=status.HTTP_404_NOT_FOUND)
+            response['error'] = 'Placement type pk=%s does not exist' % new_placement_type_id
+            return response
+
+        youth_visit.current_placement_type = new_placement_type
+        youth_visit.save()
+
+        obj = {
+            'updated_youth_visit_id': youth_visit.id,
+            'new_placement_type_id': new_placement_type.id
+        }
+        return Response(obj, status=status.HTTP_202_ACCEPTED)
+        
+class PlacementTypeList(APIView):
+    '''
+    List all placement types
+
+    Supported HTTP methods: GET
+    
+    GET /api/placement-type returns JSON response
+    
+    '''
+
+    def get(self, request, format=None):
+        placement_types = PlacementType.objects.all()
+        serializer = PlacementTypeSerializer(placement_types, many=True)
+        return Response(serializer.data)

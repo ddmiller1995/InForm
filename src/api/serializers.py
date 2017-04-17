@@ -1,3 +1,6 @@
+from rest_framework import serializers
+from api.models import PlacementType
+
 def serialize_youth(youth):
     'Serialize the youth object'
     obj = {  # Youth fields
@@ -21,6 +24,7 @@ def serialize_youth_visit(youth_visit):
     'Serialize the youth_visit object'
 
     obj = {
+        'id': youth_visit.id,
         'visit_start_date': youth_visit.visit_start_date,
         'city_of_origin': youth_visit.city_of_origin,
         'guardian_name': youth_visit.guardian_name,
@@ -55,3 +59,9 @@ def serialize_youth_visit(youth_visit):
 
 
     return obj
+
+
+class PlacementTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PlacementType
+        fields = ('id', 'placement_type_name', 'default_stay_length')

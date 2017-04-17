@@ -4,6 +4,7 @@ from django.db.models import Count
 from datetime import timedelta, date
 from django.http import Http404
 from django.utils import timezone
+from django.urls import reverse
 
 import logging
 logger = logging.getLogger(__name__)
@@ -161,10 +162,13 @@ class YouthVisit(models.Model):
         '''Return the percentage of forms completed out of possible forms as a ratio
         '''
         # Count the total number of forms in the database
-        total_forms = Form.objects.all().Count()
+        total_forms = Form.objects.count()
         # Count the number of forms maked as completed for this youth's visit
-        youth_visit_done_form_count = FormYouthVisit.objects.filter(youth_visit_id=self, status='done').Count()
+        youth_visit_done_form_count = FormYouthVisit.objects.filter(youth_visit_id=self, status='done').count()
         return youth_visit_done_form_count / total_forms
+
+    def get_absolute_url(self):
+        return reverse('youth-detail', args=[str(self.id)])
 
 
 class FormType(models.Model):
