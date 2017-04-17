@@ -1,7 +1,7 @@
 import logging
 
 from django.http import Http404, JsonResponse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.views.decorators.csrf import csrf_exempt
 
 from rest_framework import status
@@ -168,3 +168,7 @@ class PlacementTypeList(APIView):
         placement_types = PlacementType.objects.all()
         serializer = PlacementTypeSerializer(placement_types, many=True)
         return Response(serializer.data)
+
+
+def api_docs(request):
+    return render(request, 'api/docs.html')
