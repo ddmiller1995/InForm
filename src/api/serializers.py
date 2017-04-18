@@ -29,6 +29,7 @@ def serialize_youth_visit(youth_visit):
         'city_of_origin': youth_visit.city_of_origin,
         'guardian_name': youth_visit.guardian_name,
         'referred_by': youth_visit.referred_by,
+        'social_worker': youth_visit.social_worker,
         'permanent_housing': youth_visit.permanent_housing,
         'exited_to': youth_visit.exited_to,
         'visit_exit_date': youth_visit.visit_exit_date,
@@ -37,7 +38,7 @@ def serialize_youth_visit(youth_visit):
         'current_placement_type': {
             'name': youth_visit.current_placement_type.placement_type_name,
             'default_stay_length': youth_visit.current_placement_type.default_stay_length,
-            'current_placement_start_date': youth_visit.current_placement_start_date,
+            'current_placement_start_date': youth_visit.curerent_placement_start_date,
             'current_placement_extension_days': youth_visit.current_placement_extension_days
         },
         'estimated_exit_date': youth_visit.estimated_exit_date(),
@@ -47,11 +48,16 @@ def serialize_youth_visit(youth_visit):
             'school_phone': youth_visit.school.school_phone,
         },
         'school_am_transport': youth_visit.school_am_transport,
+        'school_am_pickup_time': youth_visit.school_am_pickup_time,
         'school_am_phone': youth_visit.school_am_phone,
         'school_pm_transport': youth_visit.school_pm_transport,
         'school_pm_dropoff_time': youth_visit.school_pm_dropoff_time,
         'school_pm_phone': youth_visit.school_pm_phone,
-        'overall_form_progress': youth_visit.overall_form_progress()
+        'school_date_requested': youth_visit.school_date_requested,
+        'school_mkv_form': youth_visit.school_mkv_form,
+        'visit_notes': youth_visit.notes,
+        'overall_form_progress': youth_visit.overall_form_progress(),
+        'total_bed_nights': youth_visit.total_days_stayed()
     }
 
 

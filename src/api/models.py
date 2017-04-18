@@ -29,6 +29,7 @@ class School(models.Model):
     school_name = models.CharField(max_length=64, null=False, blank=False)
     school_district = models.CharField(max_length=64, null=True, blank=True)
     school_phone = models.CharField(max_length=64, null=True, blank=True)
+    notes = models.CharField(max_length=2048, null=True, blank=True)
 
     def __str__(self):
         return self.school_name
@@ -39,6 +40,7 @@ class Youth(models.Model):
     youth_name = models.CharField(max_length=256)
     date_of_birth = models.DateField('date born')
     ethnicity = models.CharField(max_length=64, null=True, blank=True)
+    notes = models.CharField(max_length=2048, null=True, blank=True)    
 
     def __str__(self):
         return self.youth_name
@@ -100,6 +102,7 @@ class YouthVisit(models.Model):
     city_of_origin = models.CharField(max_length=256, null=True, blank=True)
     guardian_name = models.CharField(max_length=256, null=True, blank=True)
     referred_by = models.CharField(max_length=256, null=True, blank=True)
+    social_worker = models.CharField(max_length=256, null=True, blank=True)
     visit_exit_date = models.DateField('date youth actually exited', null=True, blank=True)
     permanent_housing = models.NullBooleanField(null=True, blank=True)
     exited_to = models.CharField(max_length=256, null=True, blank=True)
@@ -125,6 +128,9 @@ class YouthVisit(models.Model):
     school_pm_transport = models.CharField(max_length=256, null=True, blank=True)
     school_pm_dropoff_time = models.TimeField(null=True, blank=True)
     school_pm_phone = models.CharField(max_length=64, null=True, blank=True)
+    school_date_requested = models.DateField('date information is requested from school', null=True, blank=True)
+    school_mkv_complete = models.BooleanField(default=False)
+    notes = models.CharField(max_length=2048, null=True, blank=True)
 
     def __str__(self):
         return 'Youth: ' + self.youth_id.youth_name + ' - Placement date: ' + str(self.current_placement_start_date)
@@ -194,6 +200,7 @@ class Form(models.Model):
     # forms without due dates are allowed
     default_due_date = models.IntegerField(null=True, blank=True)
     # Form location - file location in static files?
+    notes = models.CharField(max_length=2048, null=True, blank=True)    
 
     def __str__(self):
         return self.form_name
@@ -217,6 +224,7 @@ class FormYouthVisit(models.Model):
             (DONE, DONE)
         )
     )
+    notes = models.CharField(max_length=2048, null=True, blank=True)    
 
     def __str__(self):
         return 'Youth Visit ID: ' + str(self.youth_visit_id.id) + ' - Form Name: ' + self.form_id.form_name
