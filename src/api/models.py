@@ -10,6 +10,11 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+def timezone_date():
+    '''Returns just the date portion of the timezone.now() function
+    Used as a callable to evaluate the current date as a default field value'''
+    return timezone.now().date()
+
 class PlacementType(models.Model):
     '''PlacementType model'''
     placement_type_name = models.CharField(max_length=64, null=False, blank=False)
@@ -86,9 +91,9 @@ class YouthVisit(models.Model):
     youth_id = models.ForeignKey(Youth, on_delete=models.CASCADE)
 
     # Required fields
-    visit_start_date = models.DateField('initial start date for the visit', default=lambda: timezone.now().date())
+    visit_start_date = models.DateField('initial start date for the visit', default=timezone_date)
     current_placement_type = models.ForeignKey(PlacementType, on_delete=models.PROTECT)
-    current_placement_start_date = models.DateField('placement start date', default=lambda: timezone.now().date())  
+    current_placement_start_date = models.DateField('placement start date', default=timezone_date)  
 
     # Non-required fields
     current_placement_extension_days = models.IntegerField(default=0, blank=True)
