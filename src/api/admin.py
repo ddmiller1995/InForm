@@ -17,7 +17,7 @@ class YouthVisitAdmin(admin.ModelAdmin):
     list_filter = list_display
 
 class PlacementTypeAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('id', 'placement_type_name', 'default_stay_length')
 
 class SchoolAdmin(admin.ModelAdmin):
     pass
