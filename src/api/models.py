@@ -84,9 +84,13 @@ class Youth(models.Model):
 class YouthVisit(models.Model):
     '''YouthVisit model'''
     youth_id = models.ForeignKey(Youth, on_delete=models.CASCADE)
-    visit_start_date = models.DateField('initial start date for the visit', default=timezone.now)
+
+    # Required fields
+    visit_start_date = models.DateField('initial start date for the visit', default=lambda: timezone.now().date())
     current_placement_type = models.ForeignKey(PlacementType, on_delete=models.PROTECT)
-    current_placement_start_date = models.DateField('placement start date', default=timezone.now)  
+    current_placement_start_date = models.DateField('placement start date', default=lambda: timezone.now().date())  
+
+    # Non-required fields
     current_placement_extension_days = models.IntegerField(default=0, blank=True)
     city_of_origin = models.CharField(max_length=256, null=True, blank=True)
     guardian_name = models.CharField(max_length=256, null=True, blank=True)
@@ -116,12 +120,6 @@ class YouthVisit(models.Model):
     school_pm_transport = models.CharField(max_length=256, null=True, blank=True)
     school_pm_dropoff_time = models.TimeField(null=True, blank=True)
     school_pm_phone = models.CharField(max_length=64, null=True, blank=True)
-    # POSSIBLE COMPUTED FIELDS
-    # YF enroll - Youthforce Enrollment Form submitted
-    # YF exit - Youthforce Exit Form submitted
-    # >= 50% Case Goal Plan
-    # total bed nights in program
-    # Pay rate - supposedly redundant with bed
 
     def __str__(self):
         return 'Youth: ' + self.youth_id.youth_name + ' - Placement date: ' + str(self.current_placement_start_date)
@@ -135,8 +133,11 @@ class YouthVisit(models.Model):
 
     def total_days_stayed(self):
         '''Sums and returns the days in this visit, which can include multiple placements and extensions'''
-        end_date = self.visit_exit_date if self.visit_exit_date != None else self.visit_start_date
-        return (timezone.now().date() - end_date).days
+        print('exit: ' + str(self.visit_exit_date))
+        print('start: ' + str(self.visit_start_date))
+        print('now: ' + str(timezone.now().date()))
+        end_date = self.visit_exit_date if self.visit_exit_date != None else timezone.now().date()
+        return (end_date - self.visit_start_date).days
 
     def form_type_progress(self):
         '''Computes the ratio of forms marked as completed for this youth's visit
@@ -203,7 +204,7 @@ class FormYouthVisit(models.Model):
     form_id = models.ForeignKey(Form, on_delete=models.CASCADE)
     youth_visit_id = models.ForeignKey(YouthVisit, on_delete=models.CASCADE)
     user_id = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
-    # expected values: pending, in_progess, done
+    # expected values: pending, in progess, done
     status = models.CharField(max_length=32, default=PENDING, 
         choices=(
             (PENDING, PENDING),
