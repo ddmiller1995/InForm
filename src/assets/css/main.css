@@ -27,6 +27,12 @@
   right: 0px;
   bottom: -20px; }
 
+.youth-tracker-container {
+  width: 100%; }
+
+.youth-table {
+  width: 100%; }
+
 .youth-detail-container {
   border: 1px solid black;
   margin: 15px; }
@@ -177,5 +183,8 @@ input[type=date] {
 a.mdl-navigation__link.active {
   color: #E17000;
   font-weight: 700; }
+
+body {
+  background-color: #8fbc49; }
 
 /*# sourceMappingURL=main.css.map */
