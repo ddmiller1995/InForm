@@ -3,10 +3,17 @@ from django.contrib.auth.models import User
 from django.db.models import Count
 from datetime import timedelta, date
 from django.http import Http404
+from django.utils import timezone
+from django.urls import reverse
 
 import logging
 logger = logging.getLogger(__name__)
 
+
+def timezone_date():
+    '''Returns just the date portion of the timezone.now() function
+    Used as a callable to evaluate the current date as a default field value'''
+    return timezone.now().date()
 
 class PlacementType(models.Model):
     '''PlacementType model'''
@@ -22,6 +29,7 @@ class School(models.Model):
     school_name = models.CharField(max_length=64, null=False, blank=False)
     school_district = models.CharField(max_length=64, null=True, blank=True)
     school_phone = models.CharField(max_length=64, null=True, blank=True)
+    notes = models.CharField(max_length=2048, null=True, blank=True)
 
     def __str__(self):
         return self.school_name
@@ -32,6 +40,7 @@ class Youth(models.Model):
     youth_name = models.CharField(max_length=256)
     date_of_birth = models.DateField('date born')
     ethnicity = models.CharField(max_length=64, null=True, blank=True)
+    notes = models.CharField(max_length=2048, null=True, blank=True)    
 
     def __str__(self):
         return self.youth_name
@@ -82,13 +91,18 @@ class Youth(models.Model):
 class YouthVisit(models.Model):
     '''YouthVisit model'''
     youth_id = models.ForeignKey(Youth, on_delete=models.CASCADE)
-    visit_start_date = models.DateField('initial start date for the visit')
+
+    # Required fields
+    visit_start_date = models.DateField('initial start date for the visit', default=timezone_date)
     current_placement_type = models.ForeignKey(PlacementType, on_delete=models.PROTECT)
-    current_placement_start_date = models.DateField('placement start date')  
+    current_placement_start_date = models.DateField('placement start date', default=timezone_date)  
+
+    # Non-required fields
     current_placement_extension_days = models.IntegerField(default=0, blank=True)
     city_of_origin = models.CharField(max_length=256, null=True, blank=True)
     guardian_name = models.CharField(max_length=256, null=True, blank=True)
     referred_by = models.CharField(max_length=256, null=True, blank=True)
+    social_worker = models.CharField(max_length=256, null=True, blank=True)
     visit_exit_date = models.DateField('date youth actually exited', null=True, blank=True)
     permanent_housing = models.NullBooleanField(null=True, blank=True)
     exited_to = models.CharField(max_length=256, null=True, blank=True)
@@ -114,12 +128,9 @@ class YouthVisit(models.Model):
     school_pm_transport = models.CharField(max_length=256, null=True, blank=True)
     school_pm_dropoff_time = models.TimeField(null=True, blank=True)
     school_pm_phone = models.CharField(max_length=64, null=True, blank=True)
-    # POSSIBLE COMPUTED FIELDS
-    # YF enroll - Youthforce Enrollment Form submitted
-    # YF exit - Youthforce Exit Form submitted
-    # >= 50% Case Goal Plan
-    # total bed nights in program
-    # Pay rate - supposedly redundant with bed
+    school_date_requested = models.DateField('date information is requested from school', null=True, blank=True)
+    school_mkv_complete = models.BooleanField(default=False)
+    notes = models.CharField(max_length=2048, null=True, blank=True)
 
     def __str__(self):
         return 'Youth: ' + self.youth_id.youth_name + ' - Placement date: ' + str(self.current_placement_start_date)
@@ -133,8 +144,11 @@ class YouthVisit(models.Model):
 
     def total_days_stayed(self):
         '''Sums and returns the days in this visit, which can include multiple placements and extensions'''
-        end_date = self.visit_exit_date if self.visit_exit_date != None else self.visit_start_date
-        return (timezone.now().date() - end_date).days
+        print('exit: ' + str(self.visit_exit_date))
+        print('start: ' + str(self.visit_start_date))
+        print('now: ' + str(timezone.now().date()))
+        end_date = self.visit_exit_date if self.visit_exit_date != None else timezone.now().date()
+        return (end_date - self.visit_start_date).days
 
     def form_type_progress(self):
         '''Computes the ratio of forms marked as completed for this youth's visit
@@ -157,7 +171,16 @@ class YouthVisit(models.Model):
         return result
 
     def overall_form_progress(self):
-        return 0.72
+        '''Return the percentage of forms completed out of possible forms as a ratio
+        '''
+        # Count the total number of forms in the database
+        total_forms = Form.objects.count()
+        # Count the number of forms maked as completed for this youth's visit
+        youth_visit_done_form_count = FormYouthVisit.objects.filter(youth_visit_id=self, status='done').count()
+        return youth_visit_done_form_count / total_forms
+
+    def get_absolute_url(self):
+        return reverse('youth-detail', args=[str(self.id)])
 
 
 class FormType(models.Model):
@@ -177,6 +200,7 @@ class Form(models.Model):
     # forms without due dates are allowed
     default_due_date = models.IntegerField(null=True, blank=True)
     # Form location - file location in static files?
+    notes = models.CharField(max_length=2048, null=True, blank=True)    
 
     def __str__(self):
         return self.form_name
@@ -192,7 +216,7 @@ class FormYouthVisit(models.Model):
     form_id = models.ForeignKey(Form, on_delete=models.CASCADE)
     youth_visit_id = models.ForeignKey(YouthVisit, on_delete=models.CASCADE)
     user_id = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
-    # expected values: pending, in_progess, done
+    # expected values: pending, in progess, done
     status = models.CharField(max_length=32, default=PENDING, 
         choices=(
             (PENDING, PENDING),
@@ -200,6 +224,7 @@ class FormYouthVisit(models.Model):
             (DONE, DONE)
         )
     )
+    notes = models.CharField(max_length=2048, null=True, blank=True)    
 
     def __str__(self):
         return 'Youth Visit ID: ' + str(self.youth_visit_id.id) + ' - Form Name: ' + self.form_id.form_name
