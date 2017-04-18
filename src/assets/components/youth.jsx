@@ -26,7 +26,6 @@ export default class extends React.Component {
     }
 
     render() {
-        console.log(this.state.youth);
         return (
             <div className="container">
                 <div className="youth-detail-container">
@@ -41,7 +40,7 @@ export default class extends React.Component {
                     </header>
                     <hr className="youth-detail-divider"/>
                     <main>
-                        {/*{React.cloneElement(this.props.children, {currentYouth: this.state.youth})}*/}
+                        {React.cloneElement(this.props.children, {currentYouth: this.state.youth})}
                     </main>
                 </div>
             </div>

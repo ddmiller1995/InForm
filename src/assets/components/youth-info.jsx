@@ -3,46 +3,67 @@ import {Link, IndexLink} from "react-router";
 import { formatDate, getDateDiff } from '../util.js'
 import "whatwg-fetch";
 
+
+const DEFAULT_VALUE = "Not Provided"
+
+let selectedVisit;
+
 export default class extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            visitIndex: 0
+        };
     }
 
-    getVisits() {
-        let visits = this.props.currentYouth.youth_visits;
-        let visitDates = [];
+    getVisits(visits, visitDates) {
         visits.forEach(function(visit) {
             let key = visit.visit_start_date;
             visitDates.push(<option key={key} value={key}>{formatDate(key)}</option>);
         });
 
-        console.log(visitDates);
+        selectedVisit = visitDates[this.state.visitIndex].key;
+
         return visitDates;
-
-        // var a = document.getElementById("thedropdown");
-        // alert(a.options[a.selectedIndex].value);
-
-        // function answers(){
-        //  document.getElementById("mySelect").value!="To measure time"||(alert('correct'))
-        //    }
     }
 
-    selector(evt) {
-        console.log(evt);
-    }
+    getSelectedVisit(evt) {
+        let that = this;
+        let dropdown = document.querySelector(".mdl-select__input");
+        if (dropdown != null) {
+            selectedVisit = evt.target.options[evt.target.selectedIndex].value;
 
+            let visits = this.props.currentYouth.youth_visits;
+            visits.forEach(function(visit, index) {
+                let key = visit.visit_start_date;
+                if (key === selectedVisit) {
+                    that.setState({
+                        visitIndex: index
+                    });
+                }
+            });
+        }
+    }
+    
     render() {
         let visitDates = [];
+        let currentVisit;
         if (this.props.currentYouth.youth_visits) {
-            visitDates = this.getVisits();
+            let visits = this.props.currentYouth.youth_visits;
+            visitDates = this.getVisits(visits, visitDates);
+
+            currentVisit = visits[this.state.visitIndex];
+        }
+
+        if (currentVisit == null) {
+            return null;
         }
 
         return (
             <div className="container youth-info-container">
                 <div className="mdl-select mdl-js-select mdl-select--floating-label">
                     <label className="mdl-select__label" htmlFor="visit">Visit Date </label>
-                    <select className="mdl-select__input" id="visit" name="visit" onChange={evt => this.selector(evt)}>
+                    <select className="mdl-select__input" id="visit" name="visit" onChange={(evt) => this.getSelectedVisit(evt)}>
                         {visitDates}
                     </select>
                 </div>
@@ -58,39 +79,42 @@ export default class extends React.Component {
                 </span>*/}
 
                 <div className="youth-row">
-                    <div className="youth-col">
+                    <div className="youth-col personal">
                         <div className="col-text">
                             <h4>Personal</h4>
                             <hr className="youth-info-divider"/>
                             <p>Name: {this.props.currentYouth.name}</p>
                             <p>Birthdate: <span>{formatDate(this.props.currentYouth.dob)}</span></p>
-                            <p>Age: <span>{getDateDiff(this.props.currentYouth.dob)}</span></p>
-                            {/*<p>Ethnicity: <span>{this.props.currentYouth.ethnicity}</span></p>*/}
-                            {/*<p>City: <span>{this.props.currentYouth.city_of_origin}</span></p>*/}
+                            <p>Age: <span>{getDateDiff(this.props.currentYouth.dob, "years")}</span></p>
+                            <p>Ethnicity: <span></span></p>
+                            <p>City: <span>{currentVisit.city_of_origin || DEFAULT_VALUE}</span></p>
                         </div>
                     </div>
-                    <div className="youth-col">
+                    <div className="youth-col case">
                         <div className="col-text">
                             <h4>Case</h4>
                             <hr className="youth-info-divider"/>
                         </div>
                         <div className="inner-col">
-                            <p>Case Manager: <span>Linda Cox</span></p>
-                            <p>Personal Counselor: <span>Jeff Bridges</span></p>
-                            {/*<p>Placement Date: <span>{this.props.currentYouth.placement_date}</span></p>*/}
-                            <p>Placement:  
-                                {/*<span> {this.props.currentYouth.placement_type.name}
-                                    <span> - { this.props.currentYouth.placement_type.default_stay} days</span>
-                                </span>*/}
+                            <p>Case Manager: <span>{currentVisit.case_manager.username || DEFAULT_VALUE}</span></p>
+                            <p>Personal Counselor: <span>{currentVisit.personal_counselor.username || DEFAULT_VALUE}</span></p>
+                            <p>Placement Date: 
+                                <span> {formatDate(currentVisit.current_placement_type.current_placement_start_date)}</span>
                             </p>
-                            {/*<p>Expected Exit: <span>{this.props.currentYouth.expectedExit}</span></p>*/}
+                            <p>Placement:  
+                                <span> {currentVisit.current_placement_type.name}
+                                    <span> - { currentVisit.current_placement_type.default_stay_length} days</span>
+                                    <span> - { currentVisit.current_placement_type.current_placement_extension_days} extension days</span>
+                                </span>
+                            </p>
+                            <p>Expected Exit: <span>{formatDate(currentVisit.estimated_exit_date)}</span></p>
                         </div>
                         <div className="inner-col">
-                            <p>Referred By: <span>Slam Bam</span></p>
-                            <p>Social Worker: <span>Qualm Bomb</span></p>
-                            <p>Bed Nights: <span>7</span></p>
-                            <p>Where Exited: <span>Parent's Home</span></p>
-                            <p>Permanent Housing: <span>Yes</span></p>
+                            <p>Referred By: <span>{currentVisit.referred_by || DEFAULT_VALUE}</span></p>
+                            <p>Social Worker: <span></span></p>
+                            <p>Bed Nights: <span>{getDateDiff(currentVisit.current_placement_type.current_placement_start_date, "days")}</span></p>
+                            <p>Where Exited: <span>{currentVisit.exited_to || DEFAULT_VALUE}</span></p>
+                            <p>Permanent Housing: <span>{currentVisit.permanent_housing || DEFAULT_VALUE}</span></p>
                         </div>
                     </div>
                 </div>
@@ -100,23 +124,23 @@ export default class extends React.Component {
                         <hr className="youth-info-divider"/>
                     </div>
                     <div className="inner-col">
-                        {/*<p>School: <span>{this.props.currentYouth.school.name}</span></p>
-                        <p>District: <span>{this.props.currentYouth.school.district}</span></p>
-                        <p>Phone: <span>{this.props.currentYouth.school.phone}</span></p>*/}
+                        <p>School: <span>{currentVisit.school.school_name || DEFAULT_VALUE}</span></p>
+                        <p>District: <span>{currentVisit.school.school_district || DEFAULT_VALUE}</span></p>
+                        <p>Phone: <span>{currentVisit.school.school_phone || DEFAULT_VALUE}</span></p>
                     </div>
                     <div className="inner-col">
-                        <p>AM Transport: <span>Bus</span></p>
-                        <p>AM Pickup Time: <span>7:45 AM</span></p>
-                        <p>AM Phone: <span>5555555555</span></p>
+                        <p>AM Transport: <span>{currentVisit.school_am_transport || DEFAULT_VALUE}</span></p>
+                        <p>AM Pickup Time: <span></span></p>
+                        <p>AM Phone: <span>{currentVisit.school_am_phone || DEFAULT_VALUE}</span></p>
                     </div>
                     <div className="inner-col">
-                        <p>PM Transport: <span>Bus</span></p>
-                        <p>PM Dropoff Time: <span>3:30 PM</span></p>
-                        <p>PM Phone: <span>5555555555</span></p>
+                        <p>PM Transport: <span>{currentVisit.school_pm_transport || DEFAULT_VALUE}</span></p>
+                        <p>PM Dropoff Time: <span>{currentVisit.school_pm_dropoff_time || DEFAULT_VALUE}</span></p>
+                        <p>PM Phone: <span>{currentVisit.school_pm_phone || DEFAULT_VALUE}</span></p>
                     </div>
                     <div className="inner-col">
-                        <p>Date Requested: <span>10/14/2016</span></p>
-                        <p>MKV Complete: <span>Yes</span></p>
+                        <p>Date Requested: <span></span></p>
+                        <p>MKV Complete: <span></span></p>
                     </div>
                 </div>
                 <div className="youth-row">

@@ -76,7 +76,12 @@ h4 {
         @media (min-width: 1160px) {
             .youth-col {
                 border: 1px solid black;
-                width: 49.8%;
+                width: 40%;
+                flex-grow: 1;
+            }
+
+            .case {
+                width: 55%;
             }
         }
     }
