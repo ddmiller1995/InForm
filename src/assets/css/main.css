@@ -48,19 +48,6 @@
   .youth-detail-container .mdl-select.mdl-js-select {
     padding-bottom: 20px; }
 
-.kanban-board {
-  margin: 40px;
-  border: 1px solid black;
-  height: 500px;
-  overflow: auto;
-  display: flex;
-  flex: 1;
-  flex-flow: row; }
-  .kanban-board .col1, .kanban-board .col2, .kanban-board .col3 {
-    border: 1px solid black;
-    height: 500px;
-    width: calc(100% / 3); }
-
 h4 {
   text-align: left; }
 
@@ -73,10 +60,12 @@ h4 {
     justify-content: space-between;
     border: 1px solid black; }
     .youth-info-container .youth-row .youth-col {
-      border: 1px solid black;
       width: 100%;
       display: flex;
       flex-flow: row wrap; }
+    .youth-info-container .youth-row .case {
+      border-top: 1px solid black;
+      border-left: none; }
     .youth-info-container .youth-row .col-text {
       padding-left: 15px;
       width: 100%; }
@@ -85,34 +74,23 @@ h4 {
       width: 200px; }
     .youth-info-container .youth-row .inner-col {
       padding: 0 30px 0 30px; }
+    .youth-info-container .youth-row p {
+      font-weight: 600; }
+    .youth-info-container .youth-row .value {
+      font-weight: 300; }
     @media (min-width: 1160px) {
       .youth-info-container .youth-row .youth-col {
-        border: 1px solid black;
         width: 40%;
         flex-grow: 1; }
       .youth-info-container .youth-row .case {
-        width: 55%; } }
+        width: 55%;
+        border-left: 1px solid black;
+        border-top: none; } }
+  .youth-info-container .youth-action-buttons {
+    display: inline-block; }
   .youth-info-container .extend, .youth-info-container .change-beds {
-    position: absolute;
-    bottom: 640px;
-    left: 340px;
-    height: 25px;
-    width: 120px;
     text-transform: none;
     line-height: 1; }
-  .youth-info-container .change-beds {
-    bottom: 610px; }
-  .youth-info-container .extend-input, .youth-info-container .bed-input {
-    position: absolute;
-    bottom: 630px;
-    left: 505px;
-    visibility: hidden; }
-    .youth-info-container .extend-input #extend-input, .youth-info-container .extend-input #bed-input, .youth-info-container .bed-input #extend-input, .youth-info-container .bed-input #bed-input {
-      width: 100px;
-      height: 20px; }
-  .youth-info-container .bed-input {
-    bottom: 600px;
-    left: 500px; }
 
 .mdl-select {
   position: relative;
@@ -152,6 +130,19 @@ h4 {
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   display: inline-block;
   max-width: 0.1px; }
+
+.kanban-board {
+  margin: 40px;
+  border: 1px solid black;
+  height: 500px;
+  overflow: auto;
+  display: flex;
+  flex: 1;
+  flex-flow: row; }
+  .kanban-board .col1, .kanban-board .col2, .kanban-board .col3 {
+    border: 1px solid black;
+    height: 500px;
+    width: calc(100% / 3); }
 
 .presentation-container {
   position: relative;

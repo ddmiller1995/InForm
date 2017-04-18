@@ -41,7 +41,7 @@ export default class extends React.Component {
                 <td>{this.wrapIndexLink("School Bus")}</td>
                 <td>{this.wrapIndexLink("7:45 AM")}</td>
                 <td>{this.wrapIndexLink("Progress")}</td>
-                <td>{this.wrapIndexLink(this.props.youth.estimated_exit_date)}</td>
+                <td>{this.wrapIndexLink(formatDate(this.props.youth.estimated_exit_date))}</td>
             </tr>
         );
     } 
