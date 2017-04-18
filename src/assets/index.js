@@ -10,7 +10,6 @@ import ProgressReport from "./components/progress-report.jsx";
 import Youth from "./components/youth.jsx";
 import YouthInfo from "./components/youth-info.jsx";
 import YouthProgress from "./components/youth-progress.jsx";
-import AddYouth from "./components/add-youth.jsx";
 
 import {Router, Route, IndexRoute, hashHistory} from "react-router";
 
@@ -22,7 +21,6 @@ var router = (
             <IndexRoute component={Homepage}></IndexRoute>
             <Route path="/progress" component={ProgressReport}></Route> 
             <Route path="/presentation" component={Presentation}></Route> 
-            <Route path="/add" component={AddYouth}></Route> 
             <Route path="/youth" component={Youth}>
                 <IndexRoute component={YouthInfo}></IndexRoute>
                 <Route path="/youth/progress" component={YouthProgress}></Route> 

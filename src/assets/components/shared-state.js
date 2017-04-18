@@ -18,23 +18,7 @@ function reducer(state, action) {
 export function setCurrentYouth(youth) {
     return {
         type: SET_CURRENT_YOUTH,
-        currentYouth: {
-            name: youth.name,
-            dob: youth.dob,
-            ethnicity: youth.ethnicity,
-            city_of_origin: youth.city_of_origin,
-            placement_date: youth.placement_date,
-            expectedExit: youth.estimated_exit_date,
-            placement_type: {
-                default_stay: youth.placement_type.default_stay_length,
-                name: youth.placement_type.name
-            },
-            school: {
-                district: youth.school.school_district,
-                name: youth.school.school_name,
-                phone: youth.school.school_phone
-            }
-        } 
+        currentYouth: {id:youth.id}
     }
 }
 

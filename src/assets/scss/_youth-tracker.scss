@@ -1,7 +1,14 @@
+@import "variables";
+
+.mdl-data-table.mdl-js-data-tabled {
+    th, td {
+        text-align: left;
+    }
+}
+
 .youth-tracker-container {
     width: 100%;
 }
 
 .youth-table {
     width: 100%;
-}

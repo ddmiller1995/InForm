@@ -1,21 +1,32 @@
 @import "variables";
 
-.progress-link, .presentation-link {
-    color: $orange-accent;
-    padding: 15px;
-}
-
-.youth-tracker-container {
-    display: inline-block;
-    position: relative;
-}
-
-// MDL 'add' button
-.mdl-button--fab {
-    min-width: 35px;
-    height: 35px;
-    width: 35px;
+.homepage-links {
     position: absolute;
-    right: 0px;
-    bottom: -20px;
+    top: 120px;
+    left: 100px;
+
+    .progress-link, .presentation-link {
+        color: $orange-accent;
+        padding: 15px;
+    }
 }
+
+.mdl-data-table.mdl-js-data-tabled.youth-tracker-container {
+    display: table;
+    position: relative;
+    width: 90%;
+    margin: 80px auto 0 auto;
+}
+
+.add-youth-btn {
+    position: absolute;
+    right: 115px;
+    top: 120px;
+}
+
+.mdl-navigation__link .material-icons {
+    padding-bottom: 3px;
+}
+
+
+

@@ -1,190 +1,69 @@
-.mdl-layout__header {
-  background-color: #FFF; }
+/*
+Error: Invalid CSS after "    width: 100%;": expected "}", was ""
+        on line 14 of scss/_youth-tracker.scss
+        from line 3 of scss/base.scss
 
-.mdl-layout__header-row {
-  padding: 0 40px 0 40px;
-  color: #8fbc49; }
-  .mdl-layout__header-row .mdl-navigation__link {
-    color: #8fbc49; }
+9: .youth-tracker-container {
+10:     width: 100%;
+11: }
+12: 
+13: .youth-table {
+14:     width: 100%;
 
-.header-divider {
-  border-right: 1px solid #16222c;
-  height: 25px; }
-
-.progress-link, .presentation-link {
-  color: #E17000;
-  padding: 15px; }
-
-.youth-tracker-container {
-  display: inline-block;
-  position: relative; }
-
-.mdl-button--fab {
-  min-width: 35px;
-  height: 35px;
-  width: 35px;
-  position: absolute;
-  right: 0px;
-  bottom: -20px; }
-
-.youth-tracker-container {
-  width: 100%; }
-
-.youth-table {
-  width: 100%; }
-
-.youth-detail-container {
-  border: 1px solid black;
-  margin: 15px; }
-  .youth-detail-container .mdl-layout__header {
-    box-shadow: none; }
-  .youth-detail-container .mdl-layout__header-row {
-    padding: 0; }
-  .youth-detail-container .youth-detail-divider {
-    margin: 0 15px; }
-  .youth-detail-container .mdl-select.mdl-js-select {
-    padding-bottom: 20px; }
-
-.kanban-board {
-  margin: 40px;
-  border: 1px solid black;
-  height: 500px;
-  overflow: auto;
-  display: flex;
-  flex: 1;
-  flex-flow: row; }
-  .kanban-board .col1, .kanban-board .col2, .kanban-board .col3 {
-    border: 1px solid black;
-    height: 500px;
-    width: calc(100% / 3); }
-
-h4 {
-  text-align: left; }
-
-.youth-info-container {
-  position: relative; }
-  .youth-info-container .youth-row {
-    display: flex;
-    flex-flow: row wrap;
-    flex: 1;
-    justify-content: space-between;
-    border: 1px solid black; }
-    .youth-info-container .youth-row .youth-col {
-      border: 1px solid black;
-      width: 100%;
-      display: flex;
-      flex-flow: row wrap; }
-    .youth-info-container .youth-row .col-text {
-      padding-left: 15px;
-      width: 100%; }
-    .youth-info-container .youth-row .youth-info-divider {
-      border-color: #8fbc49;
-      width: 200px; }
-    .youth-info-container .youth-row .inner-col {
-      padding: 0 30px 0 30px; }
-    @media (min-width: 1160px) {
-      .youth-info-container .youth-row .youth-col {
-        border: 1px solid black;
-        width: 49.8%; } }
-  .youth-info-container .extend, .youth-info-container .change-beds {
-    position: absolute;
-    bottom: 640px;
-    left: 340px;
-    height: 25px;
-    width: 120px;
-    text-transform: none;
-    line-height: 1; }
-  .youth-info-container .change-beds {
-    bottom: 610px; }
-  .youth-info-container .extend-input, .youth-info-container .bed-input {
-    position: absolute;
-    bottom: 630px;
-    left: 505px; }
-    .youth-info-container .extend-input #extend-input, .youth-info-container .extend-input #bed-input, .youth-info-container .bed-input #extend-input, .youth-info-container .bed-input #bed-input {
-      width: 100px;
-      height: 20px; }
-  .youth-info-container .bed-input {
-    bottom: 600px;
-    left: 500px; }
-
-.mdl-select {
-  position: relative;
-  font-size: 16px;
-  display: inline-block;
-  box-sizing: border-box;
-  width: 300px;
-  max-width: 100%;
-  margin: 0;
-  padding: 20px 0; }
-
-.mdl-select__input {
-  border: none;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.15);
-  display: inline-block;
-  font-size: 16px;
-  margin: 0;
-  padding: 4px 0;
-  width: 100%;
-  background: 16px;
-  text-align: left;
-  color: inherit; }
-
-.mdl-select__label {
-  bottom: 0;
-  color: rgba(0, 0, 0, 0.5);
-  font-size: 16px;
-  padding-left: 5px; }
-
-.mdl-select__expandable-holder {
-  display: inline-block;
-  position: relative;
-  margin-left: 32px;
-  -webkit-transition-duration: 0.2s;
-  transition-duration: 0.2s;
-  -webkit-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  display: inline-block;
-  max-width: 0.1px; }
-
-#add-youth-form {
-  border: 3px solid #f1f1f1;
-  max-width: 500px;
-  padding: 15px;
-  margin: 0 auto; }
-
-input[type=text],
-input[type=date] {
-  width: 100%;
-  padding: 12px 10px;
-  margin: 8px 0;
-  display: inline-block;
-  border: 1px solid #ccc;
-  box-sizing: border-box; }
-
-.mdl-button--raised.mdl-button--colored {
-  background: #8fbc49; }
-
-.presentation-container {
-  position: relative;
-  width: 90%;
-  margin: 20px auto 0 auto; }
-
-.overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 10;
-  width: 100%;
-  height: 100%; }
-
-.container {
-  margin: 3%; }
-
-a.mdl-navigation__link.active {
-  color: #E17000;
-  font-weight: 700; }
-
-body {
-  background-color: #8fbc49; }
-
-/*# sourceMappingURL=main.css.map */
+Backtrace:
+scss/_youth-tracker.scss:14
+scss/base.scss:3
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.22/lib/sass/scss/parser.rb:1189:in `expected'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.22/lib/sass/scss/parser.rb:1125:in `expected'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.22/lib/sass/scss/parser.rb:1120:in `tok!'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.22/lib/sass/scss/parser.rb:658:in `block'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.22/lib/sass/scss/parser.rb:649:in `ruleset'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.22/lib/sass/scss/parser.rb:675:in `block_child'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.22/lib/sass/scss/parser.rb:668:in `block_contents'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.22/lib/sass/scss/parser.rb:125:in `stylesheet'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.22/lib/sass/scss/parser.rb:41:in `parse'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.22/lib/sass/engine.rb:406:in `_to_tree'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.22/lib/sass/engine.rb:312:in `to_tree'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.22/lib/sass/tree/visitors/perform.rb:326:in `block in visit_import'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.22/lib/sass/stack.rb:88:in `block in with_import'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.22/lib/sass/stack.rb:115:in `with_frame'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.22/lib/sass/stack.rb:88:in `with_import'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.22/lib/sass/tree/visitors/perform.rb:325:in `visit_import'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.22/lib/sass/tree/visitors/base.rb:36:in `visit'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.22/lib/sass/tree/visitors/perform.rb:160:in `block in visit'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.22/lib/sass/stack.rb:79:in `block in with_base'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.22/lib/sass/stack.rb:115:in `with_frame'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.22/lib/sass/stack.rb:79:in `with_base'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.22/lib/sass/tree/visitors/perform.rb:160:in `visit'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.22/lib/sass/tree/visitors/base.rb:52:in `block in visit_children'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.22/lib/sass/tree/visitors/base.rb:52:in `map'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.22/lib/sass/tree/visitors/base.rb:52:in `visit_children'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.22/lib/sass/tree/visitors/perform.rb:169:in `block in visit_children'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.22/lib/sass/tree/visitors/perform.rb:181:in `with_environment'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.22/lib/sass/tree/visitors/perform.rb:168:in `visit_children'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.22/lib/sass/tree/visitors/base.rb:36:in `block in visit'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.22/lib/sass/tree/visitors/perform.rb:188:in `visit_root'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.22/lib/sass/tree/visitors/base.rb:36:in `visit'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.22/lib/sass/tree/visitors/perform.rb:159:in `visit'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.22/lib/sass/tree/visitors/perform.rb:8:in `visit'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.22/lib/sass/tree/root_node.rb:36:in `css_tree'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.22/lib/sass/tree/root_node.rb:29:in `render_with_sourcemap'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.22/lib/sass/engine.rb:381:in `_render_with_sourcemap'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.22/lib/sass/engine.rb:298:in `render_with_sourcemap'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.22/lib/sass/plugin/compiler.rb:492:in `update_stylesheet'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.22/lib/sass/plugin/compiler.rb:215:in `block in update_stylesheets'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.22/lib/sass/plugin/compiler.rb:209:in `each'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.22/lib/sass/plugin/compiler.rb:209:in `update_stylesheets'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.22/lib/sass/plugin/compiler.rb:473:in `on_file_changed'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.22/lib/sass/plugin/compiler.rb:331:in `block in watch'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.22/vendor/listen/lib/listen/listener.rb:252:in `call'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.22/vendor/listen/lib/listen/listener.rb:252:in `on_change'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.22/vendor/listen/lib/listen/listener.rb:290:in `block in initialize_adapter'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.22/vendor/listen/lib/listen/adapters/polling.rb:48:in `call'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.22/vendor/listen/lib/listen/adapters/polling.rb:48:in `poll_changed_directories'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.22/vendor/listen/lib/listen/adapter.rb:299:in `block in start_poller'
+*/
+body:before {
+  white-space: pre;
+  font-family: monospace;
+  content: "Error: Invalid CSS after \"    width: 100%;\": expected \"}\", was \"\"\A         on line 14 of scss/_youth-tracker.scss\A         from line 3 of scss/base.scss\A \A 9: .youth-tracker-container {\A 10:     width: 100%;\A 11: }\A 12: \A 13: .youth-table {\A 14:     width: 100%;"; }
