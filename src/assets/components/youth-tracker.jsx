@@ -3,7 +3,8 @@ import {Link, IndexLink} from "react-router";
 import YouthTrackerRow from "./youth-tracker-row.jsx";
 import "whatwg-fetch";
 
-const ALL_YOUTH_API = "/api/youth/";
+const ALL_YOUTH_API = "/api/youth/?activeOnly=";
+let showActive = "true";
 
 export default class extends React.Component {
     constructor(props) {
@@ -12,7 +13,7 @@ export default class extends React.Component {
     }
 
     componentDidMount() {
-        fetch(ALL_YOUTH_API)
+        fetch(ALL_YOUTH_API + showActive)
             .then(response => response.json())
             .then(data => this.setState({ youth: data }))
             .catch(err => alert(err.message));
@@ -28,6 +29,7 @@ export default class extends React.Component {
 
     render() {
         let youthData = this.getYouthData();
+        console.log(this.state.youth);
 
         return (
             <table className="mdl-data-table mdl-js-data-tabled youth-tracker-container">

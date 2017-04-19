@@ -38,7 +38,7 @@ def serialize_youth_visit(youth_visit):
         'current_placement_type': {
             'name': youth_visit.current_placement_type.placement_type_name,
             'default_stay_length': youth_visit.current_placement_type.default_stay_length,
-            'current_placement_start_date': youth_visit.curerent_placement_start_date,
+            'current_placement_start_date': youth_visit.current_placement_start_date,
             'current_placement_extension_days': youth_visit.current_placement_extension_days
         },
         'estimated_exit_date': youth_visit.estimated_exit_date(),
@@ -54,7 +54,7 @@ def serialize_youth_visit(youth_visit):
         'school_pm_dropoff_time': youth_visit.school_pm_dropoff_time,
         'school_pm_phone': youth_visit.school_pm_phone,
         'school_date_requested': youth_visit.school_date_requested,
-        'school_mkv_form': youth_visit.school_mkv_form,
+        'school_mkv_complete': youth_visit.school_mkv_complete,
         'visit_notes': youth_visit.notes,
         'overall_form_progress': youth_visit.overall_form_progress(),
         'total_bed_nights': youth_visit.total_days_stayed()
