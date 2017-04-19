@@ -1,4 +1,5 @@
 import React from 'react';
+import {Link, IndexLink} from "react-router";
 import YouthTrackerRow from "./youth-tracker-row.jsx";
 import "whatwg-fetch";
 
@@ -29,25 +30,30 @@ export default class extends React.Component {
         let youthData = this.getYouthData();
 
         return (
-            <table className="mdl-data-table mdl-js-data-tabled presentation-container">
-                <div className="overlay"></div>
-                <thead>
-                    <tr>
-                        <th className="mdl-data-table__cell--non-numeric">Name</th>
-                        <th>DOB</th>
-                        <th>Entry Date</th>
-                        <th>School</th>
-                        <th>School Transport</th>
-                        <th>School Pickup</th>
-                        <th>Intake Forms</th>
-                        <th>Outtake Forms</th>
-                        <th>Planned Exit</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {youthData}
-                </tbody>
-            </table>
+            <div>
+                <button className="mdl-button mdl-js-button">
+                    <IndexLink className="mdl-navigation__link" to="/" activeClassName="active">Close</IndexLink>
+                </button>
+                <table className="mdl-data-table mdl-js-data-tabled presentation-container">
+                    <div className="overlay"></div>
+                    <thead>
+                        <tr>
+                            <th className="mdl-data-table__cell--non-numeric">Name</th>
+                            <th>DOB</th>
+                            <th>Entry Date</th>
+                            <th>School</th>
+                            <th>School Transport</th>
+                            <th>School Pickup</th>
+                            <th>Intake Forms</th>
+                            <th>Outtake Forms</th>
+                            <th>Planned Exit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {youthData}
+                    </tbody>
+                </table>
+            </div>
         );
     } 
 }
