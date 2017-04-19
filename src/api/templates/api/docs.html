@@ -1,0 +1,140 @@
+{% load static %}
+
+<!doctype html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+
+    <title>InForm API Docs</title>
+
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+        crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
+        crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="{% static "api/api.css" %}">
+    <!--[if lt IE 9]>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
+  <![endif]-->
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="jumbotron">
+            <h1>InForm API Endpoints</h1>
+            <p>This page is an index for the current state of our api. Use it to reference params, endpoints, behaviors, and
+                urls.</p>
+        </div>
+
+        <div class="endpoint">
+            <div class="path">
+                <h2>/api/youth</h2>
+            </div>
+
+
+            <div class="method">
+                <h3>GET</h3>
+                <h4>Behavior</h4>
+                <p>List view of youths</p>
+                <h4>Params</h4>
+                <ul>
+                    <li>activeOnly</li>
+                    <ul>
+                        <li>values = ['true', 'false']</li>
+                        <li>default = false</li>
+                    </ul>
+                    <li>search (not implemented)</li>
+                </ul>
+            </div>
+        </div>
+
+
+        <div class="endpoint">
+            <div class="path">
+                <h2>/api/youth/&lt;pk&gt;</h2>
+            </div>
+
+
+            <div class="method">
+                <h3>GET</h3>
+                <h4>Behavior</h4>
+                <p>Detail view of a specific youth</p>
+            </div>
+        </div>
+
+        <div class="endpoint">
+            <div class="path">
+                <h2>/api/placement-type</h2>
+            </div>
+
+
+            <div class="method">
+                <h3>GET</h3>
+                <h4>Behavior</h4>
+                <p>List view of all placement types and their ids</p>
+            </div>
+        </div>
+
+        <div class="endpoint">
+            <div class="path">
+                <h2>/api/visit/&lt;pk&gt;/change-placement</h2>
+            </div>
+
+
+            <div class="method">
+                <h3>POST</h3>
+                <h4>Behavior</h4>
+                <p>Change the placement type for a specific youth</p>
+                <h4>Params</h4>
+                <ul>
+                    <li>new_placement_type_id</li>
+                    <ul>
+                        <li>value = an int that represents a placement type's id</li>
+                    </ul>
+                </ul>
+
+                <pre>
+    Params:
+        - youth_visit_id is parsed from the url and represents the pk
+            of the youth_visit whose placement we are going to change
+        - new_placement_type_id is a POST param that is required. It 
+            is the pk of the placement_type that is going to be set on
+            the youth_visit
+
+            NOTE: You may need to first query the /api/placement-type endpoint
+            to get all of the placement types and their PKs 
+
+    Success:
+        - If the request was succesfull, you will receive a
+            HTTP_202_ACCEPTED response
+    Failure:
+        - If the request does not include a valid youth_visit_id,
+            you will get a HTTP_404_NOT_FOUND response
+        - If the request does not include a new_placement_type_id
+            POST param, you will receive a HTTP_400_BAD_REQUEST response
+        - If the request does not include a valid new_placement_type_id,
+            you will receive a HTTP_404_NOT_FOUND response
+
+        - All failure responses will have a "error" header with an
+            error message
+                </pre>
+
+            </div>
+        </div>
+
+
+    </div>
+
+</body>
+
+</html>

@@ -1,3 +1,6 @@
+from rest_framework import serializers
+from api.models import PlacementType
+
 def serialize_youth(youth):
     'Serialize the youth object'
     obj = {  # Youth fields
@@ -21,10 +24,12 @@ def serialize_youth_visit(youth_visit):
     'Serialize the youth_visit object'
 
     obj = {
+        'id': youth_visit.id,
         'visit_start_date': youth_visit.visit_start_date,
         'city_of_origin': youth_visit.city_of_origin,
         'guardian_name': youth_visit.guardian_name,
         'referred_by': youth_visit.referred_by,
+        'social_worker': youth_visit.social_worker,
         'permanent_housing': youth_visit.permanent_housing,
         'exited_to': youth_visit.exited_to,
         'visit_exit_date': youth_visit.visit_exit_date,
@@ -43,11 +48,16 @@ def serialize_youth_visit(youth_visit):
             'school_phone': youth_visit.school.school_phone,
         },
         'school_am_transport': youth_visit.school_am_transport,
+        'school_am_pickup_time': youth_visit.school_am_pickup_time,
         'school_am_phone': youth_visit.school_am_phone,
         'school_pm_transport': youth_visit.school_pm_transport,
         'school_pm_dropoff_time': youth_visit.school_pm_dropoff_time,
         'school_pm_phone': youth_visit.school_pm_phone,
-        'overall_form_progress': youth_visit.overall_form_progress()
+        'school_date_requested': youth_visit.school_date_requested,
+        'school_mkv_complete': youth_visit.school_mkv_complete,
+        'visit_notes': youth_visit.notes,
+        'overall_form_progress': youth_visit.overall_form_progress(),
+        'total_bed_nights': youth_visit.total_days_stayed()
     }
 
 
@@ -55,3 +65,9 @@ def serialize_youth_visit(youth_visit):
 
 
     return obj
+
+
+class PlacementTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PlacementType
+        fields = '__all__'

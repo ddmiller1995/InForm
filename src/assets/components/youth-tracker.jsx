@@ -29,6 +29,7 @@ export default class extends React.Component {
 
     render() {
         let youthData = this.getYouthData();
+        console.log(this.state.youth);
 
         return (
             <table className="mdl-data-table mdl-js-data-tabled youth-table youth-tracker-container">
