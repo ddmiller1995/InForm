@@ -18,26 +18,30 @@ export default class extends React.Component {
         this.unsub();
     }
 
+    wrapIndexLink(data) {
+        return (
+            <IndexLink 
+                className="mdl-navigation__link" 
+                to="/youth"
+                key={data} 
+                onClick={() => store.dispatch(setCurrentYouth(this.props.youth))}>
+                {data}
+            </IndexLink>
+        );
+    }
+
     render() {
         return (
             <tr>
-                <td className="mdl-data-table__cell--non-numeric">
-                    <IndexLink 
-                        className="mdl-navigation__link" 
-                        to="/youth"
-                        key={this.props.youth.name} 
-                        onClick={() => store.dispatch(setCurrentYouth(this.props.youth))}>
-                        {this.props.youth.name}
-                    </IndexLink>
-                </td>
-                <td>{formatDate(this.props.youth.dob)}</td>
-                <td>{formatDate(this.props.youth.placement_date)}</td>
-                <td>Seattle School District</td>
-                <td>School Bus</td>
-                <td>7:45 AM</td>
-                <td>Progress</td>
-                <td>Progress</td>
-                <td>Progress</td>
+                <td className="mdl-data-table__cell--non-numeric">{this.wrapIndexLink(this.props.youth.name)}</td>
+                <td>{this.wrapIndexLink(formatDate(this.props.youth.dob))}</td>
+                <td>{this.wrapIndexLink(formatDate(this.props.youth.visit_start_date))}</td>
+                <td>{this.wrapIndexLink(this.props.youth.current_placement_type.name)}</td>
+                <td>{this.wrapIndexLink("Seattle School District")}</td>
+                <td>{this.wrapIndexLink("School Bus")}</td>
+                <td>{this.wrapIndexLink("7:45 AM")}</td>
+                <td>{this.wrapIndexLink("Progress")}</td>
+                <td>{this.wrapIndexLink(formatDate(this.props.youth.estimated_exit_date))}</td>
             </tr>
         );
     } 

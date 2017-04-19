@@ -11,21 +11,30 @@
   border-right: 1px solid #16222c;
   height: 25px; }
 
-.progress-link, .presentation-link {
-  color: #E17000;
-  padding: 15px; }
-
-.youth-tracker-container {
-  display: inline-block;
-  position: relative; }
-
-.mdl-button--fab {
-  min-width: 35px;
-  height: 35px;
-  width: 35px;
+.homepage-links {
   position: absolute;
-  right: 0px;
-  bottom: -20px; }
+  top: 120px;
+  left: 100px; }
+  .homepage-links .progress-link, .homepage-links .presentation-link {
+    color: #E17000;
+    padding: 15px; }
+
+.mdl-data-table.mdl-js-data-tabled.youth-tracker-container {
+  display: table;
+  position: relative;
+  width: 90%;
+  margin: 80px auto 0 auto; }
+
+.add-youth-btn {
+  position: absolute;
+  right: 115px;
+  top: 120px; }
+
+.mdl-navigation__link .material-icons {
+  padding-bottom: 3px; }
+
+.mdl-data-table.mdl-js-data-tabled th, .mdl-data-table.mdl-js-data-tabled td {
+  text-align: left; }
 
 .youth-detail-container {
   border: 1px solid black;
@@ -39,19 +48,6 @@
   .youth-detail-container .mdl-select.mdl-js-select {
     padding-bottom: 20px; }
 
-.kanban-board {
-  margin: 40px;
-  border: 1px solid black;
-  height: 500px;
-  overflow: auto;
-  display: flex;
-  flex: 1;
-  flex-flow: row; }
-  .kanban-board .col1, .kanban-board .col2, .kanban-board .col3 {
-    border: 1px solid black;
-    height: 500px;
-    width: calc(100% / 3); }
-
 h4 {
   text-align: left; }
 
@@ -64,10 +60,12 @@ h4 {
     justify-content: space-between;
     border: 1px solid black; }
     .youth-info-container .youth-row .youth-col {
-      border: 1px solid black;
       width: 100%;
       display: flex;
       flex-flow: row wrap; }
+    .youth-info-container .youth-row .case {
+      border-top: 1px solid black;
+      border-left: none; }
     .youth-info-container .youth-row .col-text {
       padding-left: 15px;
       width: 100%; }
@@ -76,30 +74,23 @@ h4 {
       width: 200px; }
     .youth-info-container .youth-row .inner-col {
       padding: 0 30px 0 30px; }
+    .youth-info-container .youth-row p {
+      font-weight: 600; }
+    .youth-info-container .youth-row .value {
+      font-weight: 300; }
     @media (min-width: 1160px) {
       .youth-info-container .youth-row .youth-col {
-        border: 1px solid black;
-        width: 49.8%; } }
+        width: 40%;
+        flex-grow: 1; }
+      .youth-info-container .youth-row .case {
+        width: 55%;
+        border-left: 1px solid black;
+        border-top: none; } }
+  .youth-info-container .youth-action-buttons {
+    display: inline-block; }
   .youth-info-container .extend, .youth-info-container .change-beds {
-    position: absolute;
-    bottom: 640px;
-    left: 340px;
-    height: 25px;
-    width: 120px;
     text-transform: none;
     line-height: 1; }
-  .youth-info-container .change-beds {
-    bottom: 610px; }
-  .youth-info-container .extend-input, .youth-info-container .bed-input {
-    position: absolute;
-    bottom: 630px;
-    left: 505px; }
-    .youth-info-container .extend-input #extend-input, .youth-info-container .extend-input #bed-input, .youth-info-container .bed-input #extend-input, .youth-info-container .bed-input #bed-input {
-      width: 100px;
-      height: 20px; }
-  .youth-info-container .bed-input {
-    bottom: 600px;
-    left: 500px; }
 
 .mdl-select {
   position: relative;
@@ -140,23 +131,18 @@ h4 {
   display: inline-block;
   max-width: 0.1px; }
 
-#add-youth-form {
-  border: 3px solid #f1f1f1;
-  max-width: 500px;
-  padding: 15px;
-  margin: 0 auto; }
-
-input[type=text],
-input[type=date] {
-  width: 100%;
-  padding: 12px 10px;
-  margin: 8px 0;
-  display: inline-block;
-  border: 1px solid #ccc;
-  box-sizing: border-box; }
-
-.mdl-button--raised.mdl-button--colored {
-  background: #8fbc49; }
+.kanban-board {
+  margin: 40px;
+  border: 1px solid black;
+  height: 500px;
+  overflow: auto;
+  display: flex;
+  flex: 1;
+  flex-flow: row; }
+  .kanban-board .col1, .kanban-board .col2, .kanban-board .col3 {
+    border: 1px solid black;
+    height: 500px;
+    width: calc(100% / 3); }
 
 .presentation-container {
   position: relative;
