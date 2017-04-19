@@ -22,13 +22,15 @@ Overview:
 
 1. Clone the repo
 2. Install docker
-3. Build the docker images 
-4. Run the docker containers
+3. Manually handle schema changes (temporary)
+4. Build the docker images 
+5. Run the docker containers
 
 
 ### Install Docker
 
 Download and install Docker for Mac or Docker for Windows [here](https://www.docker.com/).
+If you don't have Windows Professional or above, you'll need to use Docker Toolbox instead. Download [here](https://www.docker.com/products/docker-toolbox)
 
 If you are on Windows, you may need to tell Docker that your C:\ drive is shared.
 
@@ -38,8 +40,39 @@ If you are on Windows, you may need to tell Docker that your C:\ drive is shared
 
 This is required because our docker image creates local file system volumes that our containers access (e.g. to store the sqlite database in a stateful and non-volatile environment)
 
+### Reseting the SQLite Database
 
+If there have been schema changes since the last time you ran the docker containers, there's a few more steps you'll need to take
 
+First, delete all the migration files located in InForm/src/api/migrations. These are the .py files with a number in them. Next delete the db.sqlite3 file located in InForm/src
+
+Now, if you haven't already create the virtual environment from the root repo folder using
+
+```bash
+python -m venv virtualenv
+```
+
+Run the activate program from the command line, which will look something like this:
+
+```bash
+C:\Users\luisn\Downloads\InForm> virtualenv\Scripts\activate.bat
+(virtualenv) C:\Users\luisn\Downloads\InForm> 
+```
+
+Now that your virtualenv is activated, install the project's python dependencies (like Django for example) with pip:
+
+```bash
+pip install -r config/requirements.txt
+```
+
+Next you need to run database migrations, which will initialize the database with the new schema changes.
+
+```bash
+python src/manage.py makemigrations
+python src/manage.py migrate
+```
+
+Now you can close out the virtual environment and continue with the rest of the docker steps. This block of instructions are only necessary because we are still making frequent schema changes, and the automatic migrations docker is doing either aren't running properly or the migrations don't go through cleanly because of the nature of the schema change. 
 
 ### Build the docker images
 
