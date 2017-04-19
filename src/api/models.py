@@ -144,9 +144,6 @@ class YouthVisit(models.Model):
 
     def total_days_stayed(self):
         '''Sums and returns the days in this visit, which can include multiple placements and extensions'''
-        print('exit: ' + str(self.visit_exit_date))
-        print('start: ' + str(self.visit_start_date))
-        print('now: ' + str(timezone.now().date()))
         end_date = self.visit_exit_date if self.visit_exit_date != None else timezone.now().date()
         return (end_date - self.visit_start_date).days
 
