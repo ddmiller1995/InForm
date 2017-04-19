@@ -19,6 +19,21 @@ export default class extends React.Component {
             .catch(err => alert(err.message));
     }
 
+    getHeaderColumns() {
+        let headers = [
+            "Name",
+            "DOB",
+            "Entry Date", 
+            "Placement",
+            "School",
+            "School Transport",
+            "School Pickup",
+            "Form Progress",
+            "Planned Exit"
+        ];
+        return headers;
+    }
+
     getYouthData() {
         let rows;
         if (this.state.youth) { 
@@ -29,7 +44,6 @@ export default class extends React.Component {
 
     render() {
         let youthData = this.getYouthData();
-        console.log(this.state.youth);
 
         return (
             <table className="mdl-data-table mdl-js-data-tabled youth-tracker-container">

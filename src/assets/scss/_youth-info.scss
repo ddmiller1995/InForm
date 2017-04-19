@@ -45,7 +45,7 @@
 
         @media (min-width: 1160px) {
             .youth-col {
-                width: 40%;
+                width: 25%;
                 flex-grow: 1;
             }
 
@@ -58,39 +58,19 @@
     }
 
     .youth-action-buttons {
-        display: inline-block;
+        position: absolute;
+        right: 0;
+        top: 38px;
+
+        .material-icons {
+            padding: 0 3px 3px 0;
+        }
     }
 
     .extend, .change-beds {
-        // position: absolute;
-        // bottom: 640px;
-        // left: 340px;
-        // height: 25px;
-        // width: 120px;
         text-transform: none;
         line-height: 1;
     }
-
-    // .change-beds {
-    //     bottom: 610px;
-    // }
-
-    // .extend-input, .bed-input {
-    //     position: absolute;
-    //     bottom: 630px;
-    //     left: 505px;
-    //     visibility: hidden;
-
-    //     #extend-input, #bed-input {
-    //         width: 100px;
-    //         height: 20px;
-    //     }
-    // }
-
-    // .bed-input {
-    //     bottom: 600px;
-    //     left: 500px;
-    // }
 }
 
 .mdl-select {

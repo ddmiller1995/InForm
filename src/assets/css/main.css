@@ -80,14 +80,18 @@ h4 {
       font-weight: 300; }
     @media (min-width: 1160px) {
       .youth-info-container .youth-row .youth-col {
-        width: 40%;
+        width: 25%;
         flex-grow: 1; }
       .youth-info-container .youth-row .case {
         width: 55%;
         border-left: 1px solid black;
         border-top: none; } }
   .youth-info-container .youth-action-buttons {
-    display: inline-block; }
+    position: absolute;
+    right: 0;
+    top: 38px; }
+    .youth-info-container .youth-action-buttons .material-icons {
+      padding: 0 3px 3px 0; }
   .youth-info-container .extend, .youth-info-container .change-beds {
     text-transform: none;
     line-height: 1; }
