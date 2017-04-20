@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Youth, YouthVisit, PlacementType, School, FormType, Form, FormYouthVisit
+from .models import Youth, YouthVisit, PlacementType, School, Ethnicity, FormType, Form, FormYouthVisit
 
 # class QuestionInline(admin.TabularInline):
 #     model = Question
@@ -22,6 +22,9 @@ class PlacementTypeAdmin(admin.ModelAdmin):
 class SchoolAdmin(admin.ModelAdmin):
     pass
 
+class EthnicityAdmin(admin.ModelAdmin):
+    pass
+
 class FormTypeAdmin(admin.ModelAdmin):
     pass
 
@@ -35,6 +38,7 @@ admin.site.register(Youth, YouthAdmin)
 admin.site.register(YouthVisit, YouthVisitAdmin)
 admin.site.register(PlacementType, PlacementTypeAdmin)
 admin.site.register(School, SchoolAdmin)
+admin.site.register(Ethnicity, EthnicityAdmin)
 admin.site.register(FormType, FormTypeAdmin)
 admin.site.register(Form, FormAdmin)
 admin.site.register(FormYouthVisit, FormYouthVisitAdmin)

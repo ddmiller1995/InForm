@@ -13,12 +13,10 @@ class YouthModelTests(TestCase):
         youth1 = Youth.objects.create(
             youth_name="John",
             date_of_birth=datetime.date(1995, 12, 25),
-            ethnicity="white"
         )
         youth2 = Youth.objects.create(
             youth_name="Bob",
             date_of_birth=datetime.date(1999, 3, 7),
-            ethnicity="asian"
         )
         placement = PlacementType.objects.create(
             placement_type_name="Testing",
@@ -32,13 +30,13 @@ class YouthModelTests(TestCase):
         )
         visit2 = YouthVisit.objects.create(
             youth_id=youth1,
-            current_placement_start_date=timezone.localtime(timezone.now()).date(),
+            current_placement_start_date=timezone.now().date(),
             city_of_origin="Seattle",
             current_placement_type=placement,
         )
         visit3 = YouthVisit.objects.create(
             youth_id=youth2,
-            current_placement_start_date=timezone.localtime(timezone.now()).date() - timedelta(days=3),
+            current_placement_start_date=timezone.now().date() - timedelta(days=3),
             city_of_origin="Seattle",
             current_placement_type=placement,
         )
@@ -62,7 +60,6 @@ class YouthModelTests(TestCase):
         youth = Youth.objects.create(
             youth_name="Sam",
             date_of_birth=datetime.date(2000, 10, 7),
-            ethnicity="white"
         )
         self.assertRaises(YouthVisit.DoesNotExist, youth.latest_youth_visit)
 

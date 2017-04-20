@@ -16,9 +16,18 @@ def timezone_date():
     return timezone.now().date()
 
 class PlacementType(models.Model):
-    '''PlacementType model'''
-    placement_type_name = models.CharField(max_length=64, null=False, blank=False)
+    '''PlacementType model
+    Should be prepopulated with the 6 current types:
+    - Interim(1A) - 30 days - 1:3
+    - Interim(1B) - 30 days - 1:4
+    - Assessment - 30 days - 1:5
+    - RHY - 21 days - 1:8
+    - HOPE(Self) - 30 days - 1:8
+    - HOPE(State) - 30 days - 1:8
+    '''
+    placement_type_name = models.CharField(max_length=64)
     default_stay_length = models.IntegerField() # expressed as days
+    supervision_ratio = models.FloatField(null=True, blank=True)
 
     def __str__(self):
         return self.placement_type_name
@@ -29,18 +38,33 @@ class School(models.Model):
     school_name = models.CharField(max_length=64, null=False, blank=False)
     school_district = models.CharField(max_length=64, null=True, blank=True)
     school_phone = models.CharField(max_length=64, null=True, blank=True)
-    notes = models.CharField(max_length=2048, null=True, blank=True)
+    notes = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return self.school_name
+
+class Ethnicity(models.Model):
+    '''Ethnicity model
+    Should be prepopulated with the values from the YF Enrollment Form:
+    - American Indian/Alaskan Native
+    - Asian
+    - Black/African American
+    - Hispanic/Latino
+    - Native Hawaiian/Pacific Islander
+    - White/Caucasian
+    '''
+    ethnicity_name = models.CharField(max_length=256)
+
+    def __str__(self):
+        return self.ethnicity_name
 
 
 class Youth(models.Model):
     '''Youth model'''
     youth_name = models.CharField(max_length=256)
     date_of_birth = models.DateField('date born')
-    ethnicity = models.CharField(max_length=64, null=True, blank=True)
-    notes = models.CharField(max_length=2048, null=True, blank=True)    
+    ethnicity = models.ForeignKey(Ethnicity, on_delete=models.SET_NULL, null=True, blank=True)
+    notes = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return self.youth_name
@@ -75,14 +99,14 @@ class Youth(models.Model):
         computed list of active youth
         '''
         active_youth = []
-        today = date.today()
+        today = timezone.now().date()
 
         for youth in Youth.objects.all():
             try:
                 youth_visit = youth.latest_youth_visit()
             except YouthVisit.DoesNotExist:
                 continue
-            if today <= youth_visit.estimated_exit_date():
+            if youth_visit.visit_exit_date is None and today <= youth_visit.estimated_exit_date():
                 active_youth.append(youth)
 
         return active_youth
@@ -100,6 +124,7 @@ class YouthVisit(models.Model):
     # Non-required fields
     current_placement_extension_days = models.IntegerField(default=0, blank=True)
     city_of_origin = models.CharField(max_length=256, null=True, blank=True)
+    state_of_origin = models.CharField(max_length=64, default='Washington', null=True, blank=True)
     guardian_name = models.CharField(max_length=256, null=True, blank=True)
     referred_by = models.CharField(max_length=256, null=True, blank=True)
     social_worker = models.CharField(max_length=256, null=True, blank=True)
@@ -130,7 +155,7 @@ class YouthVisit(models.Model):
     school_pm_phone = models.CharField(max_length=64, null=True, blank=True)
     school_date_requested = models.DateField('date information is requested from school', null=True, blank=True)
     school_mkv_complete = models.BooleanField(default=False)
-    notes = models.CharField(max_length=2048, null=True, blank=True)
+    notes = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return 'Youth: ' + self.youth_id.youth_name + ' - Placement date: ' + str(self.current_placement_start_date)
@@ -140,7 +165,10 @@ class YouthVisit(models.Model):
         Estimated exit date = placement date + CURRENT placement type default stay duration
         Returns a datetime.date object
         '''
-        return self.current_placement_start_date + timedelta(days=self.current_placement_type.default_stay_length)
+        return self.current_placement_start_date + (
+            timedelta(days=self.current_placement_type.default_stay_length) +
+            timedelta(days=self.current_placement_extension_days)
+        )
 
     def total_days_stayed(self):
         '''Sums and returns the days in this visit, which can include multiple placements and extensions'''
@@ -163,7 +191,10 @@ class YouthVisit(models.Model):
             # Counts the forms marked as done with each form type
             done_count = youth_visit_done_forms.filter(form_id__form_type_id=form_type).count()
             # Calculate the ratio, store with the key as the form type name
-            result[form_type.form_type_name] = done_count / form_type.form_count
+            if form_type.form_count == 0:
+                result[form_type.form_type_name] = 0.0
+            else:
+                result[form_type.form_type_name] = done_count / form_type.form_count
         
         return result
 
@@ -176,7 +207,7 @@ class YouthVisit(models.Model):
         youth_visit_done_form_count = FormYouthVisit.objects.filter(youth_visit_id=self, status='done').count()
 
         if total_forms == 0:
-            return 0
+            return 0.0
 
         return youth_visit_done_form_count / total_forms
 
@@ -201,7 +232,8 @@ class Form(models.Model):
     # forms without due dates are allowed
     default_due_date = models.IntegerField(null=True, blank=True)
     # Form location - file location in static files?
-    notes = models.CharField(max_length=2048, null=True, blank=True)    
+    required = models.BooleanField(default=False)
+    notes = models.TextField(null=True, blank=True)    
 
     def __str__(self):
         return self.form_name
@@ -225,7 +257,7 @@ class FormYouthVisit(models.Model):
             (DONE, DONE)
         )
     )
-    notes = models.CharField(max_length=2048, null=True, blank=True)    
+    notes = models.TextField(null=True, blank=True)    
 
     def __str__(self):
         return 'Youth Visit ID: ' + str(self.youth_visit_id.id) + ' - Form Name: ' + self.form_id.form_name

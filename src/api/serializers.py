@@ -6,7 +6,10 @@ def serialize_youth(youth):
     obj = {  # Youth fields
         'id': youth.pk,
         'name': youth.youth_name,
-        'dob': youth.date_of_birth
+        'dob': youth.date_of_birth,
+        # Needs to handle null ethnicity
+        'ethnicity': youth.ethnicity.ethnicity_name,
+        'notes': youth.notes
     }
     return obj
 
