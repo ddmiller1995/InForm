@@ -1,4 +1,5 @@
 import React from "react";
+import ReactDOM from "react-dom";
 import {Link, IndexLink} from "react-router";
 import { formatDate, getDateDiff, formatTime } from '../util.js'
 import "whatwg-fetch";
@@ -47,23 +48,85 @@ export default class extends React.Component {
     renderActionButtons() {
         return (
             <div className="youth-action-buttons">
-                <button className="mdl-button mdl-js-button extend">
+                <button className="mdl-button mdl-js-button extend" onClick={() => this.toggleModal("extend")}>
                     <i className="material-icons">schedule</i>Extend Stay
                 </button>
-                {/*<span className="extend-input"><label htmlFor="extend-input">Extend:</label>
-                    <input id="extend-input" type="text" autoFocus/>
-                </span>*/}
 
-                <button className="mdl-button mdl-js-button change-beds">
+                <button className="mdl-button mdl-js-button change-beds" onClick={() => this.toggleModal("switch")}>
                     <i className="material-icons">hotel</i>Change Beds
                 </button>
-                {/*<span className="bed-input"><label htmlFor="bed-input">Change:</label>
-                    <input id="bed-input" type="text" autoFocus/>
-                </span>*/}
             </div>
         );
     }
+
+    toggleModal(action) {
+        let div;
+        if (action === "extend") {
+            div = this.buildExtendModal();
+        } else {
+            div = this.buildSwitchModal();
+        }
+
+        // if dialog doesn't exist, append it
+        if (document.getElementById("mdl-dialog") == null) {
+            document.querySelector(".youth-info-container").appendChild(div.firstElementChild);
+        } 
+
+        let modal = document.getElementById("mdl-dialog");
+        if (modal != null) {
+            let dialog = document.querySelector("dialog");
+            if (!dialog.showModal) {
+                dialogPolyfill.registerDialog(dialog);
+            }
+
+            dialog.showModal();
+            document.getElementById("dialog-close").addEventListener("click", function() {
+                dialog.open = "true";
+                dialog.close();
+                let parent = document.querySelector(".youth-info-container");
+                document.querySelector(".youth-info-container").removeChild(parent.childNodes[5]);
+            });
+        }
+    }
+
+    buildExtendModal() {
+        let div = document.createElement("div");
+        let modal = (`
+            <dialog id="mdl-dialog">
+                <h4 id="dialog-title">Extend Stay</h4>
+                <div id="dialog-descr">
+                    <p>description</p>
+                </div>
+                <div id="dialog-actions">
+                    <button type="button" id="dialog-submit">Submit</button>
+                    <button type="button" id="dialog-close">Close</button>
+                </div>
+            </dialog>
+        `);
+
+        div.innerHTML = modal;
+        return div;
+    }
     
+    buildSwitchModal() {
+        let div = document.createElement("div");
+        let modal = (`
+            <dialog id="mdl-dialog">
+                <h4 id="dialog-title">Switch Beds</h4>
+                <div id="dialog-descr">
+                    <p>description</p>
+                </div>
+                <div id="dialog-actions">
+                    <button type="button" id="dialog-submit">Submit</button>
+                    <button type="button" id="dialog-close">Close</button>
+                </div>
+            </dialog>
+        `);
+
+        div.innerHTML = modal;
+        return div;
+    }
+
     render() {
         let visitDates = [];
         let currentVisit;

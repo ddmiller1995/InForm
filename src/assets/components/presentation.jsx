@@ -31,8 +31,10 @@ export default class extends React.Component {
 
         return (
             <div>
-                <button className="mdl-button mdl-js-button">
-                    <IndexLink className="mdl-navigation__link" to="/" activeClassName="active">Close</IndexLink>
+                <button className="mdl-button mdl-js-button exit-btn">
+                    <IndexLink className="mdl-navigation__link" to="/" activeClassName="active">
+                        <i className="material-icons">clear</i>
+                    </IndexLink>
                 </button>
                 <table className="mdl-data-table mdl-js-data-tabled presentation-container">
                     <div className="overlay"></div>
