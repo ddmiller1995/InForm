@@ -106,7 +106,7 @@ class Youth(models.Model):
                 youth_visit = youth.latest_youth_visit()
             except YouthVisit.DoesNotExist:
                 continue
-            if youth_visit.visit_exit_date is None and today <= youth_visit.estimated_exit_date():
+            if youth_visit.is_active():
                 active_youth.append(youth)
 
         return active_youth
@@ -168,7 +168,9 @@ class YouthVisit(models.Model):
 
     def is_active(self):
         '''Return True if the Youth for this visit is still active'''
-        return True
+        today = timezone.now().date()
+        return self.visit_exit_date is None and today <= self.estimated_exit_date()
+
     is_active.boolean = True
     is_active.short_description = 'Is Active?'
 

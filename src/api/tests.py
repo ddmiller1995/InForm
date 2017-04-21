@@ -18,13 +18,19 @@ class YouthModelTests(TestCase):
             youth_name="Bob",
             date_of_birth=datetime.date(1999, 3, 7),
         )
+
+        youth3 = Youth.objects.create(
+            youth_name="Sarah",
+            date_of_birth=datetime.date(1995, 4, 20)
+        )
+
         placement = PlacementType.objects.create(
             placement_type_name="Testing",
             default_stay_length=3
         )
         visit1 = YouthVisit.objects.create(
             youth_id=youth1,
-            current_placement_start_date=datetime.date(2010, 1, 1),
+            current_placement_start_date=datetime.date(2010, 1, 1), # this youth should not be active b/c they were placed long ago
             city_of_origin="Bellingham",
             current_placement_type=placement,
         )
@@ -40,6 +46,25 @@ class YouthModelTests(TestCase):
             city_of_origin="Seattle",
             current_placement_type=placement,
         )
+
+        visit4_exited_before_deadline = YouthVisit.objects.create(
+            youth_id=youth3,
+            current_placement_start_date=timezone.now().date() - timedelta(days=2), # placement deadline is 3 days
+            city_of_origin="Everett",
+            current_placement_type=placement,
+            visit_exit_date=timezone.now().date() # this youth should not be active b/c they have exit date
+        )
+
+        
+        visit5_exited_after_deadline = YouthVisit.objects.create(
+            youth_id=youth3,
+            current_placement_start_date=timezone.now().date() - timedelta(days=5), # placement deadline is 3 days
+            city_of_origin="Everett",
+            current_placement_type=placement,
+            visit_exit_date=timezone.now().date() # this youth should not be active b/c they have exit date
+        )
+
+        
         form_type1 = FormType.objects.create(form_type_name="Intake")
         form_type2 = FormType.objects.create(form_type_name="Outtake")
         form1 = Form.objects.create(form_name="Form 1", form_type_id=form_type1)
@@ -197,3 +222,21 @@ class YouthModelTests(TestCase):
     def test_overall_form_progress_in_progress_no_forms(self):
         visit = YouthVisit.objects.get(pk=3)
         self.assertEqual(visit.overall_form_progress(), 0.0)
+
+    def test_youth_visit_is_active_false(self):
+        visit = YouthVisit.objects.get(pk=1)
+        self.assertEqual(visit.is_active(), False)
+        
+    def test_youth_visit_is_active_true(self):
+        visit = YouthVisit.objects.get(pk=2)
+        self.assertEqual(visit.is_active(), True)
+
+    def test_youth_visit_is_active_exited_before(self):
+        visit = YouthVisit.objects.get(pk=4)
+        self.assertEqual(visit.is_active(), False)
+
+    def test_youth_visit_is_active_exited_after(self):
+        visit = YouthVisit.objects.get(pk=5)
+        self.assertEqual(visit.is_active(), False)
+        
+        
