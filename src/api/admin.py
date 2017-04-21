@@ -9,7 +9,11 @@ from .models import Youth, YouthVisit, PlacementType, School, Ethnicity, FormTyp
 #     inlines = [QuestionInline]
 
 class YouthAdmin(admin.ModelAdmin):
-    list_display = ('youth_name', 'date_of_birth')
+    list_display = (
+        'youth_name',
+        'date_of_birth',
+        'ethnicity'
+    )
 
 class YouthVisitAdmin(admin.ModelAdmin):
     list_display = ('youth_id', 'current_placement_start_date', 'city_of_origin', 'estimated_exit_date', 'is_active')
@@ -68,10 +72,24 @@ class YouthVisitAdmin(admin.ModelAdmin):
 
 
 class PlacementTypeAdmin(admin.ModelAdmin):
-    list_display = ('id', 'placement_type_name', 'default_stay_length')
+    list_display = ('placement_type_name', 'default_stay_length', 'supervision_ratio')
 
 class SchoolAdmin(admin.ModelAdmin):
-    pass
+    list_display = (
+        'school_name',
+        'school_district',
+        'school_phone'
+    )
+
+    list_filter = (
+        'school_district',
+    )
+
+    search_fields = [
+        'school_name',
+        'school_district',
+        'notes'
+    ]
 
 class EthnicityAdmin(admin.ModelAdmin):
     pass
@@ -80,8 +98,22 @@ class FormTypeAdmin(admin.ModelAdmin):
     pass
 
 class FormAdmin(admin.ModelAdmin):
-    pass
+    list_display = (
+        'form_name',
+        'form_type_id',
+        'default_due_date',
+        'required'
+    )
+    
+    list_filter = (
+        'form_type_id__form_type_name',
+    )
 
+    search_fields = [
+        'form_name',
+        'form_description',
+        'form_type_id__form_type_name'
+    ]
 class FormYouthVisitAdmin(admin.ModelAdmin):
     pass
 

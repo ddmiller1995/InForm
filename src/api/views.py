@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime
 
 from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, render
@@ -15,6 +16,8 @@ from api.serializers import (PlacementTypeSerializer, serialize_youth,
                              serialize_youth_visit)
 
 logger = logging.getLogger(__name__)
+
+DATE_STRING_FORMAT = '%Y-%m-%d' # YYYY-MM-DD
 
 class YouthList(APIView):
     '''View for the list youth endpoint
@@ -121,7 +124,7 @@ class YouthChangePlacement(APIView):
     renderer_classes = (JSONRenderer, )
 
     def post(self, request, youth_visit_id, format=None):
-
+        # year/month/day YYYY-MM-DD
         try:
             youth_visit = YouthVisit.objects.get(pk=youth_visit_id)
         except YouthVisit.DoesNotExist:
@@ -143,13 +146,26 @@ class YouthChangePlacement(APIView):
             response['error'] = 'Placement type pk=%s does not exist' % new_placement_type_id
             return response
 
+
+        new_placement_start_date_string = request.POST.get('new_placement_start_date', None)
+
+        if not new_placement_start_date_string:
+            response = Response(status=status.HTTP_400_BAD_REQUEST)
+            response['error'] = 'Missing POST param "new_placement_start_date"'
+            return response
+            
         youth_visit.current_placement_type = new_placement_type
+        youth_visit.current_placement_extension_days = 0
+        
+        youth_visit.current_placement_start_date = datetime.strptime(new_placement_start_date_string, DATE_STRING_FORMAT)
         youth_visit.save()
 
         obj = {
             'updated_youth_visit_id': youth_visit.id,
-            'new_placement_type_id': new_placement_type.id
+            'new_placement_type_id': new_placement_type.id,
+            'new_placement_start_date': youth_visit.current_placement_start_date.strftime(DATE_STRING_FORMAT)
         }
+
         return Response(obj, status=status.HTTP_202_ACCEPTED)
         
 class PlacementTypeList(APIView):

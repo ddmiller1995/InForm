@@ -27,7 +27,7 @@ class PlacementType(models.Model):
     '''
     placement_type_name = models.CharField(max_length=64)
     default_stay_length = models.IntegerField() # expressed as days
-    supervision_ratio = models.FloatField(null=True, blank=True)
+    supervision_ratio = models.CharField(max_length=64, null=True, blank=True)
 
     def __str__(self):
         return self.placement_type_name
