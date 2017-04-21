@@ -12,9 +12,60 @@ class YouthAdmin(admin.ModelAdmin):
     list_display = ('youth_name', 'date_of_birth')
 
 class YouthVisitAdmin(admin.ModelAdmin):
-    list_display = ('youth_id', 'current_placement_start_date', 'city_of_origin')
-    search_fields = ['youth_id']
-    list_filter = list_display
+    list_display = ('youth_id', 'current_placement_start_date', 'city_of_origin', 'estimated_exit_date', 'is_active')
+    search_fields = ['youth_id__youth_name']
+    list_filter = ('youth_id', 'current_placement_start_date', 'city_of_origin',
+                    'case_manager', 'personal_counselor')
+
+    fieldsets = [
+        (None, {'fields': [
+            'youth_id',
+            'visit_start_date',
+            'city_of_origin',
+            'state_of_origin',
+            'notes'
+
+         ]}
+        ),
+        ('Staff', {
+            'fields': [
+                'social_worker',
+                'case_manager',
+                'personal_counselor'
+            ]
+        }),
+        ('Placement', {
+            'fields': [
+                'current_placement_type',
+                'current_placement_start_date',
+                'current_placement_extension_days'
+            ]
+        }),
+        ('School', {
+            'classes': ('wide', 'extrapretty',), 
+            'description': 'School information',
+            'fields': [
+                'school',
+                ('school_am_transport', 'school_pm_transport'),
+                ('school_am_pickup_time', 'school_pm_dropoff_time'),
+                ('school_am_phone', 'school_pm_phone'),
+                'school_date_requested',
+                'school_mkv_complete'
+            ]
+        }),
+        ('Misc', {
+            # 'classes': ('collapse',),
+            'fields': [
+                'guardian_name',
+                'referred_by',
+                'visit_exit_date',
+                'exited_to',
+                'permanent_housing'
+            ]
+        })
+    ]
+
+
 
 class PlacementTypeAdmin(admin.ModelAdmin):
     list_display = ('id', 'placement_type_name', 'default_stay_length')
