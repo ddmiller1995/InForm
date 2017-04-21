@@ -113,6 +113,9 @@
 
             NOTE: You may need to first query the /api/placement-type endpoint
             to get all of the placement types and their PKs 
+        - new_placement_start_date is a POST param that is required. It
+            is the date of the new placement start date that is going to be
+            set on the youth_visit
 
     Success:
         - If the request was succesfull, you will receive a
@@ -123,6 +126,8 @@
         - If the request does not include a new_placement_type_id
             POST param, you will receive a HTTP_400_BAD_REQUEST response
         - If the request does not include a valid new_placement_type_id,
+            you will receive a HTTP_404_NOT_FOUND response
+        - If the request does not include a valid new_placement_start_date,
             you will receive a HTTP_404_NOT_FOUND response
 
         - All failure responses will have a "error" header with an
