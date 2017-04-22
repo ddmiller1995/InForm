@@ -49,6 +49,7 @@ export default class extends React.Component {
                             <th>Intake Forms</th>
                             <th>Outtake Forms</th>
                             <th>Planned Exit</th>
+                            <th>Exit Date</th>
                         </tr>
                     </thead>
                     <tbody>

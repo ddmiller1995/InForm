@@ -35,6 +35,29 @@
 
 .mdl-data-table.mdl-js-data-tabled th, .mdl-data-table.mdl-js-data-tabled td {
   text-align: left; }
+.mdl-data-table.mdl-js-data-tabled .exit-column {
+  padding: 0 0 0 5px; }
+
+.add-exit {
+  text-transform: none;
+  padding: 0; }
+  .add-exit .add-exit-icon {
+    padding-bottom: 3px; }
+
+.youth-tracker-container #mdl-dialog {
+  width: 375px; }
+  .youth-tracker-container #mdl-dialog #exit-warning {
+    word-wrap: break-word;
+    white-space: normal;
+    padding: 15px 15px 0 15px; }
+    .youth-tracker-container #mdl-dialog #exit-warning p {
+      line-height: 20px;
+      color: red;
+      font-size: 12px;
+      text-align: center; }
+
+.youth-tracker-container #mdl-dialog input[type="radio"] {
+  margin-right: 10px; }
 
 .youth-detail-container {
   border: 1px solid black;
@@ -179,7 +202,14 @@ h4 {
 
 #notes-input {
   width: 96%;
-  margin: 15px; }
+  margin: 1%;
+  margin-bottom: 3%; }
+
+.save-notes {
+  position: absolute;
+  bottom: 0;
+  right: 25px;
+  text-transform: none; }
 
 .kanban-board {
   margin: 40px;

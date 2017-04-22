@@ -4,4 +4,40 @@
     th, td {
         text-align: left;
     }
+
+    .exit-column {
+        padding: 0 0 0 5px;
+    }
+}
+
+.add-exit {
+    text-transform: none;
+    padding: 0;
+
+    .add-exit-icon {
+        padding-bottom: 3px;
+    }
+}
+
+.youth-tracker-container {
+    #mdl-dialog {
+        width: 375px;
+
+        #exit-warning {
+            word-wrap: break-word;
+            white-space: normal;
+            padding: 15px 15px 0 15px;
+
+            p {
+                line-height: 20px;
+                color: red;
+                font-size: 12px;
+                text-align: center;
+            }
+        }
+    }
+}
+
+.youth-tracker-container #mdl-dialog input[type="radio"] {
+    margin-right: 10px;
 }

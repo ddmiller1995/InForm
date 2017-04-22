@@ -1,8 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import {Link, IndexLink} from "react-router";
-import { formatDate, getDateDiff, formatTime } from '../util.js'
+import { formatDate, getDateDiff, formatTime, registerDialog } from '../util.js'
 import "whatwg-fetch";
+
 var moment = require("moment");
 
 const PLACEMENT_API = "/api/placement-type";
@@ -88,30 +89,11 @@ export default class extends React.Component {
         } 
 
         // update estimated exit date according to user-inputed extend days
-        let exit = this.props.currentYouth.youth_visits[this.state.visitIndex].estimated_exit_date;
-        let extend = document.getElementById("extend-input");
-        if (extend != null) {
-            that.changeEstimatedDate(exit, "15");
-            extend.addEventListener("input", function(e) {
-                that.changeEstimatedDate(exit, extend.value);
-            });
-        }
+        this.changeEstimatedDate();
 
-        let modal = document.getElementById("mdl-dialog");
-        if (modal != null) {
-            let dialog = document.querySelector("dialog");
-            if (!dialog.showModal) {
-                dialogPolyfill.registerDialog(dialog);
-            }
-
-            dialog.showModal();
-            document.getElementById("dialog-close").addEventListener("click", function() {
-                dialog.open = "true";
-                dialog.close();
-                let parent = document.querySelector(".youth-info-container");
-                document.querySelector(".youth-info-container").removeChild(parent.childNodes[5]);
-            });
-        }
+        // @param1: parent container that dialog child will be added and removed from
+        // @param2: index of dialog in childNodes array
+        registerDialog(".youth-info-container", 5);
     }
 
     buildExtendModal() {
@@ -142,9 +124,9 @@ export default class extends React.Component {
         return div;
     }
     
-    
     buildSwitchModal() {
         let div = document.createElement("div");
+        let placementTypes = this.getPlacementTypes();
         let today = moment().format("YYYY-MM-DD");
         let modal = (`
             <dialog id="mdl-dialog">
@@ -154,7 +136,11 @@ export default class extends React.Component {
                     <p>Current placement: 
                         ${this.props.currentYouth.youth_visits[this.state.visitIndex].current_placement_type.name}
                     </p>
-                    <p>New placement: <span><input id="switch-input" type="text"></input></span></p>
+                    <p>New placement: 
+                        <span>
+                            <select id="placement-dropdown">${placementTypes}</select>
+                        </span>
+                    </p>
                     <p>Transfer Date: <span><input id="date-input" type="date" value=`+today+`></input></span></p>
                 </div>
                 <div id="dialog-actions">
@@ -168,14 +154,33 @@ export default class extends React.Component {
         return div;
     }
 
-    changeEstimatedDate(exit, extension) {
-        let date = new Date(exit);
-        let month = date.getMonth();
-        let year = date.getFullYear();
-        let day = date.getDate() + parseInt(extension);
+    changeEstimatedDate() {
+        let exit = this.props.currentYouth.youth_visits[this.state.visitIndex].estimated_exit_date;
+        let extend = document.getElementById("extend-input");
+        if (extend != null) {
+            let update = function updateEstimate() {
+                let date = new Date(exit);
+                let month = date.getMonth() + 1;
+                let year = date.getFullYear();
+                let day = date.getDate() + parseInt(extend.value);
 
-        let newExit = document.getElementById("new-estimate");
-        newExit.textContent = month + "/" + day + "/" + year;
+                let newExit = document.getElementById("new-estimate");
+                newExit.textContent = month + "/" + day + "/" + year;
+            };
+            update();
+
+            extend.addEventListener("input", update);
+        }
+    }
+
+    getPlacementTypes() {
+        let types = [];
+        this.state.placement_types.forEach(function(type) {
+            let key = type.placement_type_name;
+            types.push(<option key={key} value={key}>{key}</option>);
+        });
+
+        return types;
     }
 
     render() {
@@ -286,6 +291,7 @@ export default class extends React.Component {
                         <h4>Visit Notes</h4>
                         <hr className="youth-info-divider"/>
                         <textarea name="notes" id="notes-input" cols="30" rows="10"></textarea>
+                        {/*<button className="mdl-button mdl-js-button save-notes">Save</button>*/}
                     </div>
                 </div>
             </div>
