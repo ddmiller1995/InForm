@@ -33,7 +33,7 @@ export default class extends React.Component {
             <div>
                 <button className="mdl-button mdl-js-button exit-btn">
                     <IndexLink className="mdl-navigation__link" to="/" activeClassName="active">
-                        <i className="material-icons">clear</i>
+                        <i className="material-icons exit-icon">clear</i>
                     </IndexLink>
                 </button>
                 <table className="mdl-data-table mdl-js-data-tabled presentation-container">

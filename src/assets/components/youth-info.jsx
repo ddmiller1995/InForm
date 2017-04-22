@@ -3,8 +3,9 @@ import ReactDOM from "react-dom";
 import {Link, IndexLink} from "react-router";
 import { formatDate, getDateDiff, formatTime } from '../util.js'
 import "whatwg-fetch";
+var moment = require("moment");
 
-
+const PLACEMENT_API = "/api/placement-type";
 const DEFAULT_VALUE = "Not Provided"
 let selectedVisit;
 
@@ -14,6 +15,13 @@ export default class extends React.Component {
         this.state = {
             visitIndex: 0
         };
+    }
+
+    componentDidMount() {
+        fetch(PLACEMENT_API)
+            .then(response => response.json())
+            .then(data => this.setState({ placement_types: data }))
+            .catch(err => alert(err.message));
     }
 
     getVisits(visits, visitDates) {
@@ -55,11 +63,18 @@ export default class extends React.Component {
                 <button className="mdl-button mdl-js-button change-beds" onClick={() => this.toggleModal("switch")}>
                     <i className="material-icons">hotel</i>Change Beds
                 </button>
+                <button className="mdl-button mdl-js-button edit-youth">
+                    <a className="mdl-navigation__link" href={"/admin/api/youthvisit/" + this.props.currentYouth.id + "/change/"}>
+                        <i className="material-icons">mode_edit</i>
+                        Edit Visit Details
+                    </a>
+                </button>
             </div>
         );
     }
 
     toggleModal(action) {
+        let that = this;
         let div;
         if (action === "extend") {
             div = this.buildExtendModal();
@@ -71,6 +86,16 @@ export default class extends React.Component {
         if (document.getElementById("mdl-dialog") == null) {
             document.querySelector(".youth-info-container").appendChild(div.firstElementChild);
         } 
+
+        // update estimated exit date according to user-inputed extend days
+        let exit = this.props.currentYouth.youth_visits[this.state.visitIndex].estimated_exit_date;
+        let extend = document.getElementById("extend-input");
+        if (extend != null) {
+            that.changeEstimatedDate(exit, "15");
+            extend.addEventListener("input", function(e) {
+                that.changeEstimatedDate(exit, extend.value);
+            });
+        }
 
         let modal = document.getElementById("mdl-dialog");
         if (modal != null) {
@@ -95,10 +120,19 @@ export default class extends React.Component {
             <dialog id="mdl-dialog">
                 <h4 id="dialog-title">Extend Stay</h4>
                 <div id="dialog-descr">
-                    <p>description</p>
+                    <p>Extend stay for ${this.props.currentYouth.name}</p>
+                    <p>Current extension days: 
+                        ${this.props.currentYouth.youth_visits[this.state.visitIndex].current_placement_type.current_placement_extension_days}
+                    </p>
+                    <p>Extend by 
+                        <span>
+                            <input id="extend-input" type="number" value="15"></input>
+                        </span> days
+                    </p>
+                    <p>New estimated exit: <span id="new-estimate"></span></p>
                 </div>
                 <div id="dialog-actions">
-                    <button type="button" id="dialog-submit">Submit</button>
+                    <button type="button" id="dialog-submit">Save</button>
                     <button type="button" id="dialog-close">Close</button>
                 </div>
             </dialog>
@@ -108,16 +142,23 @@ export default class extends React.Component {
         return div;
     }
     
+    
     buildSwitchModal() {
         let div = document.createElement("div");
+        let today = moment().format("YYYY-MM-DD");
         let modal = (`
             <dialog id="mdl-dialog">
                 <h4 id="dialog-title">Switch Beds</h4>
                 <div id="dialog-descr">
-                    <p>description</p>
+                    <p>Switch beds for ${this.props.currentYouth.name}</p>
+                    <p>Current placement: 
+                        ${this.props.currentYouth.youth_visits[this.state.visitIndex].current_placement_type.name}
+                    </p>
+                    <p>New placement: <span><input id="switch-input" type="text"></input></span></p>
+                    <p>Transfer Date: <span><input id="date-input" type="date" value=`+today+`></input></span></p>
                 </div>
                 <div id="dialog-actions">
-                    <button type="button" id="dialog-submit">Submit</button>
+                    <button type="button" id="dialog-submit">Save</button>
                     <button type="button" id="dialog-close">Close</button>
                 </div>
             </dialog>
@@ -125,6 +166,16 @@ export default class extends React.Component {
 
         div.innerHTML = modal;
         return div;
+    }
+
+    changeEstimatedDate(exit, extension) {
+        let date = new Date(exit);
+        let month = date.getMonth();
+        let year = date.getFullYear();
+        let day = date.getDate() + parseInt(extension);
+
+        let newExit = document.getElementById("new-estimate");
+        newExit.textContent = month + "/" + day + "/" + year;
     }
 
     render() {
@@ -171,8 +222,11 @@ export default class extends React.Component {
                         </div>
                         <div className="inner-col">
                             <p>Entry Date: <span className="value">{formatDate(currentVisit.visit_start_date)}</span></p>
-                            <p>Case Manager: <span className="value">{currentVisit.case_manager.username || DEFAULT_VALUE}</span></p>
-                            <p>Personal Counselor: <span className="value">{currentVisit.personal_counselor.username || DEFAULT_VALUE}</span></p>
+                            <p>Bed Nights: 
+                                <span className="value">
+                                    {getDateDiff(currentVisit.current_placement_type.current_placement_start_date, "days")}
+                                </span>
+                            </p>
                             <p>Current Placement Date:  
                                 <span className="value"> 
                                     {formatDate(currentVisit.current_placement_type.current_placement_start_date)}
@@ -181,22 +235,21 @@ export default class extends React.Component {
                             <p>Placement Type:  
                                 <span className="value"> {currentVisit.current_placement_type.name}</span>
                             </p>
-                            <p>Expected Stay:  
-                                <span className="value"> { currentVisit.current_placement_type.default_stay_length} days</span>
-                            </p>
-                            <p>Extension Days:  
-                                <span className="value"> { currentVisit.current_placement_type.current_placement_extension_days}</span>
+                            <p>Estimated Stay:  
+                                <span className="value"> { currentVisit.current_placement_type.default_stay_length} days (+ 
+                                    { currentVisit.current_placement_type.current_placement_extension_days} day extension)
+                                </span>
                             </p>
                         </div>
                         <div className="inner-col">
-                            <p>Expected Exit: <span className="value">{formatDate(currentVisit.estimated_exit_date)}</span></p>
+                            <p>Case Manager: <span className="value">{currentVisit.case_manager.name || DEFAULT_VALUE}</span></p>
+                            <p>Personal Counselor: <span className="value">{currentVisit.personal_counselor.name || DEFAULT_VALUE}</span></p>
                             <p>Social Worker: <span className="value">{currentVisit.social_worker || DEFAULT_VALUE}</span></p>
                             <p>Referred By: <span className="value">{currentVisit.referred_by || DEFAULT_VALUE}</span></p>
-                            <p>Bed Nights: 
-                                <span className="value">
-                                    {getDateDiff(currentVisit.current_placement_type.current_placement_start_date, "days")}
-                                </span>
-                            </p>
+                        </div>
+                        <div className="inner-col">
+                            <p>Estimated Exit: <span className="value">{formatDate(currentVisit.estimated_exit_date)}</span></p>
+                            <p>Actual Exit: <span className="value">{formatDate(currentVisit.visit_exit_date) || "N/A"}</span></p>
                             <p>Where Exited: <span className="value">{currentVisit.exited_to || DEFAULT_VALUE}</span></p>
                             <p>Permanent Housing: <span className="value">{currentVisit.permanent_housing || DEFAULT_VALUE}</span></p>
                         </div>
@@ -230,8 +283,9 @@ export default class extends React.Component {
                 </div>
                 <div className="youth-row">
                     <div className="col-text">
-                        <h4>Notes</h4>
+                        <h4>Visit Notes</h4>
                         <hr className="youth-info-divider"/>
+                        <textarea name="notes" id="notes-input" cols="30" rows="10"></textarea>
                     </div>
                 </div>
             </div>
