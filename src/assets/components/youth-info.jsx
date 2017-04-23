@@ -25,6 +25,7 @@ export default class extends React.Component {
             .catch(err => alert(err.message));
     }
 
+    // populate the visit date dropdown with all the visits of this particular youth
     getVisits(visits, visitDates) {
         visits.forEach(function(visit) {
             let key = visit.visit_start_date;
@@ -36,6 +37,7 @@ export default class extends React.Component {
         return visitDates;
     }
 
+    // grab the visit date currently selected in the visit dropdown
     getSelectedVisit(evt) {
         let that = this;
         let dropdown = document.querySelector(".mdl-select__input");
@@ -82,15 +84,13 @@ export default class extends React.Component {
         } else {
             div = this.buildSwitchModal();
         }
-
         // if dialog doesn't exist, append it
         if (document.getElementById("mdl-dialog") == null) {
             document.querySelector(".youth-info-container").appendChild(div.firstElementChild);
         } 
 
-        // update estimated exit date according to user-inputed extend days
         this.changeEstimatedDate();
-
+        this.setPlacementTypes();
         // @param1: parent container that dialog child will be added and removed from
         // @param2: index of dialog in childNodes array
         registerDialog(".youth-info-container", 5);
@@ -126,7 +126,6 @@ export default class extends React.Component {
     
     buildSwitchModal() {
         let div = document.createElement("div");
-        let placementTypes = this.getPlacementTypes();
         let today = moment().format("YYYY-MM-DD");
         let modal = (`
             <dialog id="mdl-dialog">
@@ -137,9 +136,7 @@ export default class extends React.Component {
                         ${this.props.currentYouth.youth_visits[this.state.visitIndex].current_placement_type.name}
                     </p>
                     <p>New placement: 
-                        <span>
-                            <select id="placement-dropdown">${placementTypes}</select>
-                        </span>
+                        <span><select className="mdl-select__input" id="placement-dropdown" name="placement"></select></span>
                     </p>
                     <p>Transfer Date: <span><input id="date-input" type="date" value=`+today+`></input></span></p>
                 </div>
@@ -154,15 +151,17 @@ export default class extends React.Component {
         return div;
     }
 
+    // on the extend modal, update the estimated exit date according to the user-inputted
+    // extend days
     changeEstimatedDate() {
         let exit = this.props.currentYouth.youth_visits[this.state.visitIndex].estimated_exit_date;
         let extend = document.getElementById("extend-input");
         if (extend != null) {
             let update = function updateEstimate() {
                 let date = new Date(exit);
+                let day = date.getDate() + parseInt(extend.value);
                 let month = date.getMonth() + 1;
                 let year = date.getFullYear();
-                let day = date.getDate() + parseInt(extend.value);
 
                 let newExit = document.getElementById("new-estimate");
                 newExit.textContent = month + "/" + day + "/" + year;
@@ -173,14 +172,20 @@ export default class extends React.Component {
         }
     }
 
-    getPlacementTypes() {
-        let types = [];
-        this.state.placement_types.forEach(function(type) {
-            let key = type.placement_type_name;
-            types.push(<option key={key} value={key}>{key}</option>);
-        });
+    // on the switch modal, populate the dropdown with all the placement types
+    setPlacementTypes() {
+        let change = document.getElementById("placement-dropdown");
+        if (change != null) {
+            this.state.placement_types.forEach(function(type) {
+                let option = document.createElement("option");
+                option.textContent = type.placement_type_name;
+                change.appendChild(option);
+            });
+        }
+    }
 
-        return types;
+    saveNotes() {
+        console.log("here");
     }
 
     render() {
@@ -291,7 +296,7 @@ export default class extends React.Component {
                         <h4>Visit Notes</h4>
                         <hr className="youth-info-divider"/>
                         <textarea name="notes" id="notes-input" cols="30" rows="10"></textarea>
-                        {/*<button className="mdl-button mdl-js-button save-notes">Save</button>*/}
+                        <button className="mdl-button mdl-js-button save-notes" onClick={() => this.saveNotes()}>Save</button>
                     </div>
                 </div>
             </div>

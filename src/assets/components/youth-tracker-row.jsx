@@ -86,7 +86,6 @@ export default class extends React.Component {
             pickupTime = this.props.youth.school_pm_dropoff_time;
             transport = this.props.youth.school_pm_transport;
         }
-        console.log(this.props.youth);
 
         return (
             <tr>
