@@ -270,3 +270,4 @@ class YouthModelTests(TestCase):
         youth_visit = YouthVisit.objects.get(id=youth_visit_id)
         self.assertEqual(youth_visit.current_placement_type.id, new_placement_type_id)
         self.assertEqual(youth_visit.current_placement_start_date, datetime.date(2017, 4, 20))
+        self.assertEqual(youth_visit.current_placement_extension_days, 0)
