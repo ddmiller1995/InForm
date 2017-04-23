@@ -114,7 +114,7 @@ If you are on docker-toolbox, you won't find the server on localhost. Run ```doc
 
 ### Watching your SASS files
 
-Since we're using Sass, we also have to tell Sass to convert any changes made in our .scss files into our main.css. Open a terminal tab and run the following command:
+Since we're using Sass, we also have to tell Sass to convert any changes made in our .scss files into our main.css. Open a terminal tab and run the following command from within the src/assets/ directory:
 
 ```
 sass --watch scss/base.scss:css/main.css
