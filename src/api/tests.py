@@ -3,6 +3,9 @@ import datetime
 from django.test import TestCase
 from django.utils import timezone
 
+from django.test import Client
+from django.urls import reverse
+
 from .models import *
 
 class YouthModelTests(TestCase):
@@ -28,6 +31,12 @@ class YouthModelTests(TestCase):
             placement_type_name="Testing",
             default_stay_length=3
         )
+
+        placement2 = PlacementType.objects.create(
+            placement_type_name="RHY",
+            default_stay_length=21
+        )
+
         visit1 = YouthVisit.objects.create(
             youth_id=youth1,
             current_placement_start_date=datetime.date(2010, 1, 1), # this youth should not be active b/c they were placed long ago
@@ -240,3 +249,22 @@ class YouthModelTests(TestCase):
         self.assertEqual(visit.is_active(), False)
         
         
+    def test_change_placement_type_success(self):
+        client = Client()
+
+        youth_visit_id = 1
+        new_placement_type_id = 2
+        new_placement_start_date = '2017-04-20'
+
+        url = reverse('youth-change-placement', args=[youth_visit_id])
+
+        response = client.post(url, {
+            'new_placement_type_id': new_placement_type_id,
+            'new_placement_start_date': new_placement_start_date
+        })
+
+        self.assertEqual(response.status_code, 202)
+
+        youth_visit = YouthVisit.objects.get(id=youth_visit_id)
+        self.assertEqual(youth_visit.current_placement_type.id, new_placement_type_id)
+        self.assertEqual(youth_visit.current_placement_start_date, datetime.date(2017, 4, 20))
