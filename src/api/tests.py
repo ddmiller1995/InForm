@@ -39,7 +39,7 @@ class YouthModelTests(TestCase):
 
         visit1 = YouthVisit.objects.create(
             youth_id=youth1,
-            current_placement_start_date=datetime.date(2010, 1, 1), # this youth should not be active b/c they were placed long ago
+            current_placement_start_date=datetime.date(2010, 1, 1),
             city_of_origin="Bellingham",
             current_placement_type=placement,
         )
@@ -234,7 +234,9 @@ class YouthModelTests(TestCase):
 
     def test_youth_visit_is_active_false(self):
         visit = YouthVisit.objects.get(pk=1)
-        self.assertEqual(visit.is_active(), False)
+        self.assertEqual(visit.is_active(), True)
+        # this youth was placed years ago, but his exit was never marked,
+        # so he should technically still be active
         
     def test_youth_visit_is_active_true(self):
         visit = YouthVisit.objects.get(pk=2)
