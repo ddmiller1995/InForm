@@ -167,6 +167,46 @@
             </div>
         </div>
 
+        <div class="endpoint">
+            <div class="path">
+                <h2>/api/visit/&lt;pk&gt;/add-extension</h2>
+            </div>
+
+
+            <div class="method">
+                <h3>POST</h3>
+                <h4>Behavior</h4>
+                <p>Give a youth visit an extension</p>
+                <p>
+                    Specifically, this endpoint adds an integer value to this youth visit's extension days.
+                    This implicitly affects the visit's estimated exit date because that value is computed
+                    from the extension days integer.
+                </p>
+
+                <pre>
+    Params:
+        - youth_visit_id is parsed from the url and represents the pk
+            of the youth_visit whose placement we are going to change
+        - extension is a POST param that is required. It 
+            is an int value that represents the number of extension days
+            to ADD to this youth visit (not set)
+    Success:
+        - If the request was succesfull, you will receive a
+            HTTP_202_ACCEPTED response
+    Failure:
+        - If the request does not include a valid youth_visit_id,
+            you will get a HTTP_404_NOT_FOUND response
+        - If the permanent_housing param value is not an int value,
+            you will get a HTTP_406_NOT_ACCEPTABLE response
+        - If the request does not include all of the required
+            POST params, you will receive a HTTP_400_BAD_REQUEST response
+        - All failure responses will have a "error" header with an
+            error message
+                </pre>
+
+            </div>
+        </div>
+
     </div>
 
 </body>

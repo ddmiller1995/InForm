@@ -219,8 +219,40 @@ class YouthMarkExited(APIView):
         obj = {}
         return Response(obj, status=status.HTTP_202_ACCEPTED)
 
-class PlacementTypeList(APIView):
+class YouthAddExtension(APIView):
     '''
+    Add an extension to a Youth Visit
+    '''
+    def post(self, request, youth_visit_id, format=None):
+        try:
+            youth_visit = YouthVisit.objects.get(pk=youth_visit_id)
+        except YouthVisit.DoesNotExist:
+            response = Response(status=status.HTTP_404_NOT_FOUND)
+            response['error'] = 'Youth visit pk=%s does not exist' % youth_visit_id
+            return response
+
+        extension = request.POST.get('extension', None)
+        if not extension:
+            response = Response(status=status.HTTP_400_BAD_REQUEST)
+            response['error'] = 'Missing POST param "extension"'
+            return response
+
+        try:
+            extension = int(extension)
+        except ValueError:
+            msg = 'Non int POST param passed to add extension endpoint'
+            logger.warn(msg)
+            response = Response(status=status.HTTP_406_NOT_ACCEPTABLE)
+            response['error'] = msg
+            return response  
+
+        youth_visit.current_placement_extension_days += int(extension)
+        youth_visit.save()
+
+        return Response({}, status=status.HTTP_202_ACCEPTED)
+
+class PlacementTypeList(APIView):
+    '''~
     List all placement types
 
     Supported HTTP methods: GET

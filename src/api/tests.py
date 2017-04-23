@@ -28,6 +28,11 @@ class YouthModelTests(TestCase):
             date_of_birth=datetime.date(1995, 4, 20)
         )
 
+        youth4 = Youth.objects.create(
+            youth_name="Neville",
+            date_of_birth=datetime.date(1996, 3, 22)
+        )
+
         placement = PlacementType.objects.create(
             placement_type_name="Testing",
             default_stay_length=3
@@ -74,6 +79,14 @@ class YouthModelTests(TestCase):
             visit_exit_date=timezone.now().date() # this youth should not be active b/c they have exit date
         )
 
+        visit6_deadline_extended = YouthVisit.objects.create(
+            youth_id=youth4,
+            current_placement_start_date=timezone.now().date() - timedelta(days=22), # placed 22 days ago
+            city_of_origin="Mountlake Terrace",
+            current_placement_type=placement2, # 21 day deadline
+            current_placement_extension_days=15 # given 15 day extension
+        )
+
         
         form_type1 = FormType.objects.create(form_type_name="Intake")
         form_type2 = FormType.objects.create(form_type_name="Outtake")
@@ -114,7 +127,8 @@ class YouthModelTests(TestCase):
         self.assertEqual(Youth.get_active_youth(), 
             [
                 Youth.objects.get(youth_name="John"),
-                Youth.objects.get(youth_name="Bob")        
+                Youth.objects.get(youth_name="Bob"),
+                Youth.objects.get(youth_name="Neville")        
             ]
         )
    
@@ -326,3 +340,56 @@ class YouthModelTests(TestCase):
         self.assertEqual(youth_visit.visit_exit_date, exit_date)
         self.assertEqual(youth_visit.exited_to, where_exited)
         self.assertEqual(youth_visit.permanent_housing, permanent_housing)
+
+# '''
+#         visit6_deadline_extended = YouthVisit.objects.create(
+#             youth_id=youth4,
+#             current_placement_start_date=timezone.now().date() - timedelta(days=22), # placed 22 days ago
+#             city_of_origin="Mountlake Terrace",
+#             current_placement_type=placement2, # 21 day deadline
+#             current_placement_extension_days=15 # given 15 day extension
+#         )
+#         estimated exit = -22 + 21 + 15
+# '''
+
+    def test_youth_add_extension_success(self):
+        '''Test that the add extension endpoint works as expected
+        Testing with a youth visit that was
+            * Placed 22 days ago
+            * Is given a 21 day deadline
+            * Was manually given a 15 day extension before this test
+
+        This test gives him a 15 day extension via the add extension endpoint
+        and tests that the youth visit's computed values are as expected afterwards
+        '''
+        client = Client()
+
+        youth_visit_id = 6
+        
+        extension = '15'
+
+        url = reverse('youth-add-extension', args=[youth_visit_id])
+
+        youth_visit = YouthVisit.objects.get(id=youth_visit_id)
+        self.assertEqual(youth_visit.current_placement_extension_days, 15)
+        self.assertEqual(youth_visit.is_active(), True)
+        self.assertEqual(youth_visit.is_before_estimated_exited_date(), True)
+        self.assertEqual(youth_visit.estimated_exit_date(), 
+            youth_visit.current_placement_start_date + 
+            timedelta(days=youth_visit.current_placement_type.default_stay_length) +
+            timedelta(days=youth_visit.current_placement_extension_days))
+
+        response = client.post(url, {
+            'extension': extension
+        })
+
+        youth_visit = YouthVisit.objects.get(id=youth_visit_id)
+
+        self.assertEqual(response.status_code, 202)
+        self.assertEqual(youth_visit.current_placement_extension_days, 30)
+        self.assertEqual(youth_visit.is_active(), True)
+        self.assertEqual(youth_visit.is_before_estimated_exited_date(), True)
+        self.assertEqual(youth_visit.estimated_exit_date(), 
+            youth_visit.current_placement_start_date + 
+            timedelta(days=youth_visit.current_placement_type.default_stay_length) +
+            timedelta(days=youth_visit.current_placement_extension_days))
