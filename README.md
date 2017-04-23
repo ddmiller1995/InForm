@@ -112,6 +112,16 @@ Check them out at localhost:8000 (you may need to give it a second to load at fi
 
 If you are on docker-toolbox, you won't find the server on localhost. Run ```docker-machine ip default``` to find the IP address you need.
 
+### Watching your SASS files
+
+Since we're using Sass, we also have to tell Sass to convert any changes made in our .scss files into our main.css. Open a terminal tab and run the following command:
+
+```
+sass --watch scss/base.scss:css/main.css
+```
+
+If you make style changes in our Sass files and don't see them reflected on the page, it's probably because you forgot to run this command. Remember: using Sass means that we are no longer interacting with / editing the css file directly. Only make style changes in the appropriate Sass file and let Sass communicate to main.css on its own.
+
 ### Done!
 
 ![](https://media.giphy.com/media/A4R8sdUG7G9TG/giphy.gif)
