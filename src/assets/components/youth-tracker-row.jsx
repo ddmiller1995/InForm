@@ -87,12 +87,14 @@ export default class extends React.Component {
             transport = this.props.youth.school_pm_transport;
         }
 
+        let currentPlacement = this.props.youth.current_placement_type;
+
         return (
             <tr>
                 <td className="mdl-data-table__cell--non-numeric">{this.wrapIndexLink(this.props.youth.name)}</td>
                 <td>{this.wrapIndexLink(formatDate(this.props.youth.dob))}</td>
                 <td>{this.wrapIndexLink(formatDate(this.props.youth.visit_start_date))}</td>
-                <td>{this.wrapIndexLink(this.props.youth.current_placement_type.name)}</td>
+                <td>{this.wrapIndexLink(currentPlacement[currentPlacement.length - 1].name)}</td>
                 <td>{this.wrapIndexLink(this.props.youth.school.school_name)}</td>
                 <td>{this.wrapIndexLink(transport)}</td>
                 <td>{this.wrapIndexLink(formatTime(pickupTime))}</td>

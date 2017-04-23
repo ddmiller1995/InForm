@@ -104,7 +104,7 @@ export default class extends React.Component {
                 <div id="dialog-descr">
                     <p>Extend stay for ${this.props.currentYouth.name}</p>
                     <p>Current extension days: 
-                        ${this.props.currentYouth.youth_visits[this.state.visitIndex].current_placement_type.current_placement_extension_days}
+                        ${this.props.currentYouth.youth_visits[this.state.visitIndex].current_placement_type[this.props.currentYouth.youth_visits[this.state.visitIndex].current_placement_type.length -1].current_placement_extension_days}
                     </p>
                     <p>Extend by 
                         <span>
@@ -133,7 +133,7 @@ export default class extends React.Component {
                 <div id="dialog-descr">
                     <p>Switch beds for ${this.props.currentYouth.name}</p>
                     <p>Current placement: 
-                        ${this.props.currentYouth.youth_visits[this.state.visitIndex].current_placement_type.name}
+                        ${this.props.currentYouth.youth_visits[this.state.visitIndex].current_placement_type[this.props.currentYouth.youth_visits[this.state.visitIndex].current_placement_type.length -1].name}
                     </p>
                     <p>New placement: 
                         <span><select className="mdl-select__input" id="placement-dropdown" name="placement"></select></span>
@@ -191,11 +191,13 @@ export default class extends React.Component {
     render() {
         let visitDates = [];
         let currentVisit;
+        let currentPlacement;
         if (this.props.currentYouth.youth_visits) {
             let visits = this.props.currentYouth.youth_visits;
             visitDates = this.getVisits(visits, visitDates);
 
             currentVisit = visits[this.state.visitIndex];
+            currentPlacement = currentVisit.current_placement_type[currentVisit.current_placement_type.length -1];
         }
 
         if (currentVisit == null) {
@@ -221,7 +223,7 @@ export default class extends React.Component {
                             <p>Name: <span className="value">{this.props.currentYouth.name}</span></p>
                             <p>Birthdate: <span className="value">{formatDate(this.props.currentYouth.dob)}</span></p>
                             <p>Age: <span className="value">{getDateDiff(this.props.currentYouth.dob, "years")}</span></p>
-                            <p>Ethnicity: <span className="value"></span></p>
+                            <p>Ethnicity: <span className="value">{this.props.currentYouth.ethnicity}</span></p>
                             <p>City: <span className="value">{currentVisit.city_of_origin || DEFAULT_VALUE}</span></p>
                         </div>
                     </div>
@@ -233,21 +235,19 @@ export default class extends React.Component {
                         <div className="inner-col">
                             <p>Entry Date: <span className="value">{formatDate(currentVisit.visit_start_date)}</span></p>
                             <p>Bed Nights: 
-                                <span className="value">
-                                    {getDateDiff(currentVisit.current_placement_type.current_placement_start_date, "days")}
-                                </span>
+                                <span className="value">{currentVisit.total_bed_nights}</span>
                             </p>
                             <p>Current Placement Date:  
                                 <span className="value"> 
-                                    {formatDate(currentVisit.current_placement_type.current_placement_start_date)}
+                                    {formatDate(currentPlacement.current_placement_start_date)}
                                 </span>
                             </p>
                             <p>Placement Type:  
-                                <span className="value"> {currentVisit.current_placement_type.name}</span>
+                                <span className="value"> {currentPlacement.name}</span>
                             </p>
                             <p>Estimated Stay:  
-                                <span className="value"> { currentVisit.current_placement_type.default_stay_length} days (+ 
-                                    { currentVisit.current_placement_type.current_placement_extension_days} day extension)
+                                <span className="value"> { currentPlacement.default_stay_length} days (+ 
+                                    { currentPlacement.current_placement_extension_days} day extension)
                                 </span>
                             </p>
                         </div>
@@ -295,7 +295,7 @@ export default class extends React.Component {
                     <div className="col-text">
                         <h4>Visit Notes</h4>
                         <hr className="youth-info-divider"/>
-                        <textarea name="notes" id="notes-input" cols="30" rows="10"></textarea>
+                        <textarea name="notes" id="notes-input" cols="30" rows="10" value={currentVisit.visit_notes}></textarea>
                         <button className="mdl-button mdl-js-button save-notes" onClick={() => this.saveNotes()}>Save</button>
                     </div>
                 </div>
