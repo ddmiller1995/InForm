@@ -341,17 +341,6 @@ class YouthModelTests(TestCase):
         self.assertEqual(youth_visit.exited_to, where_exited)
         self.assertEqual(youth_visit.permanent_housing, permanent_housing)
 
-# '''
-#         visit6_deadline_extended = YouthVisit.objects.create(
-#             youth_id=youth4,
-#             current_placement_start_date=timezone.now().date() - timedelta(days=22), # placed 22 days ago
-#             city_of_origin="Mountlake Terrace",
-#             current_placement_type=placement2, # 21 day deadline
-#             current_placement_extension_days=15 # given 15 day extension
-#         )
-#         estimated exit = -22 + 21 + 15
-# '''
-
     def test_youth_add_extension_success(self):
         '''Test that the add extension endpoint works as expected
         Testing with a youth visit that was
@@ -393,3 +382,23 @@ class YouthModelTests(TestCase):
             youth_visit.current_placement_start_date + 
             timedelta(days=youth_visit.current_placement_type.default_stay_length) +
             timedelta(days=youth_visit.current_placement_extension_days))
+
+    def test_youth_visit_edit_note_success(self):
+        client = Client()
+        youth_visit_id = 1
+
+        note = '''
+        blah blah
+        lorem ipsum notes
+        yay'''
+
+        url = reverse('youth-edit-note', args=[youth_visit_id])
+
+        response = client.post(url, {
+            'note': note
+        })
+
+        youth_visit = YouthVisit.objects.get(id=youth_visit_id)
+
+        self.assertEqual(response.status_code, 202)
+        self.assertEqual(youth_visit.notes, note)

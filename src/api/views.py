@@ -251,6 +251,30 @@ class YouthAddExtension(APIView):
 
         return Response({}, status=status.HTTP_202_ACCEPTED)
 
+class YouthEditNote(APIView):
+    def post(self, request, youth_visit_id, format=None):
+        try:
+            youth_visit = YouthVisit.objects.get(pk=youth_visit_id)
+        except YouthVisit.DoesNotExist:
+            response = Response(status=status.HTTP_404_NOT_FOUND)
+            response['error'] = 'Youth visit pk=%s does not exist' % youth_visit_id
+            return response
+
+        note = request.POST.get('note', None)
+        if not note:
+            response = Response(status=status.HTTP_400_BAD_REQUEST)
+            response['error'] = 'Missing POST param "note"'
+            return response
+
+        youth_visit.notes = note
+        youth_visit.save()
+
+        return Response({
+            'youth_visit_id': youth_visit_id,
+            'note': note
+        }, status=status.HTTP_202_ACCEPTED)
+
+
 class PlacementTypeList(APIView):
     '''~
     List all placement types
