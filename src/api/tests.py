@@ -7,6 +7,7 @@ from django.test import Client
 from django.urls import reverse
 
 from .models import *
+from .views import DATE_STRING_FORMAT
 
 class YouthModelTests(TestCase):
     '''Main test class for all Youth and YouthVisit model methods'''
@@ -271,3 +272,57 @@ class YouthModelTests(TestCase):
         self.assertEqual(youth_visit.current_placement_type.id, new_placement_type_id)
         self.assertEqual(youth_visit.current_placement_start_date, datetime.date(2017, 4, 20))
         self.assertEqual(youth_visit.current_placement_extension_days, 0)
+
+    def test_mark_exited_success(self):
+        client = Client()
+
+        youth_visit_id = 1
+        
+        exit_date = datetime.date(2017, 4, 20)
+        where_exited = 'ROOTS'
+        permanent_housing = False
+
+        url = reverse('youth-mark-exited', args=[youth_visit_id])
+
+        youth_visit = YouthVisit.objects.get(id=youth_visit_id)
+        self.assertEqual(youth_visit.visit_exit_date, None)
+
+        response = client.post(url, {
+            'exit_date_string': exit_date.strftime(DATE_STRING_FORMAT), # convert to correct date string format,
+            'where_exited': where_exited,
+            'permanent_housing': permanent_housing
+        })
+
+        youth_visit = YouthVisit.objects.get(id=youth_visit_id)
+
+        self.assertEqual(response.status_code, 202)
+        self.assertEqual(youth_visit.visit_exit_date, exit_date)
+        self.assertEqual(youth_visit.exited_to, where_exited)
+        self.assertEqual(youth_visit.permanent_housing, permanent_housing)
+
+    def test_mark_exited_success_2(self):
+        client = Client()
+
+        youth_visit_id = 1
+        
+        exit_date = datetime.date(2017, 4, 20)
+        where_exited = 'ROOTS'
+        permanent_housing = True
+
+        url = reverse('youth-mark-exited', args=[youth_visit_id])
+
+        youth_visit = YouthVisit.objects.get(id=youth_visit_id)
+        self.assertEqual(youth_visit.visit_exit_date, None)
+
+        response = client.post(url, {
+            'exit_date_string': exit_date.strftime(DATE_STRING_FORMAT), # convert to correct date string format,
+            'where_exited': where_exited,
+            'permanent_housing': permanent_housing
+        })
+
+        youth_visit = YouthVisit.objects.get(id=youth_visit_id)
+
+        self.assertEqual(response.status_code, 202)
+        self.assertEqual(youth_visit.visit_exit_date, exit_date)
+        self.assertEqual(youth_visit.exited_to, where_exited)
+        self.assertEqual(youth_visit.permanent_housing, permanent_housing)

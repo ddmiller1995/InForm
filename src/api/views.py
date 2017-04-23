@@ -168,6 +168,57 @@ class YouthChangePlacement(APIView):
 
         return Response(obj, status=status.HTTP_202_ACCEPTED)
         
+class YouthMarkExited(APIView):
+    '''
+    Mark a Youth as exited
+
+    Input:
+        * Exit date
+        * Where exited (string)
+        * permanent housing (bool)
+    '''
+    renderer_classes = (JSONRenderer, )
+
+    def post(self, request, youth_visit_id, format=None):
+        try:
+            youth_visit = YouthVisit.objects.get(pk=youth_visit_id)
+        except YouthVisit.DoesNotExist:
+            response = Response(status=status.HTTP_404_NOT_FOUND)
+            response['error'] = 'Youth visit pk=%s does not exist' % youth_visit_id
+            return response
+
+        exit_date_string = request.POST.get('exit_date_string', None)
+        if not exit_date_string:
+            response = Response(status=status.HTTP_400_BAD_REQUEST)
+            response['error'] = 'Missing POST param "exit_date_string"'
+            return response
+
+        where_exited = request.POST.get('where_exited', None)
+        if not where_exited:
+            response = Response(status=status.HTTP_400_BAD_REQUEST)
+            response['error'] = 'Missing POST param "where_exited"'
+            return response 
+
+        permanent_housing = request.POST.get('permanent_housing', None)
+        if not permanent_housing:
+            response = Response(status=status.HTTP_400_BAD_REQUEST)
+            response['error'] = 'Missing POST param "permanent_housing"'
+            return response
+        if not permanent_housing in ['true', 'True', 'false', 'False']:
+            response = Response(status=status.HTTP_406_NOT_ACCEPTABLE)
+            response['error'] = 'POST param "permanent_housing" should be a true or false value'
+            return response
+        permanent_housing = permanent_housing in ['true', 'True']
+
+
+        youth_visit.visit_exit_date = datetime.strptime(exit_date_string, DATE_STRING_FORMAT)
+        youth_visit.exited_to = where_exited
+        youth_visit.permanent_housing = permanent_housing
+        youth_visit.save()
+
+        obj = {}
+        return Response(obj, status=status.HTTP_202_ACCEPTED)
+
 class PlacementTypeList(APIView):
     '''
     List all placement types
@@ -184,7 +235,6 @@ class PlacementTypeList(APIView):
         placement_types = PlacementType.objects.all()
         serializer = PlacementTypeSerializer(placement_types, many=True)
         return Response(serializer.data)
-
 
 def api_docs(request):
     return render(request, 'api/docs.html')
