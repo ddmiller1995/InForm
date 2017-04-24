@@ -1,0 +1,13 @@
+/*$light-green: #8fbc49;
+$orange-accent: #E17000;*/
+ #header {
+     background: #8fbc49;;
+ }
+
+ div.breadcrumbs {
+     background: #E17000;
+ }
+
+#branding h1, #branding h1 a:link, #branding h1 a:visited {
+    color: white;
+}

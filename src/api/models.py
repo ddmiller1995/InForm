@@ -27,7 +27,7 @@ class PlacementType(models.Model):
     '''
     placement_type_name = models.CharField(max_length=64)
     default_stay_length = models.IntegerField() # expressed as days
-    supervision_ratio = models.FloatField(null=True, blank=True)
+    supervision_ratio = models.CharField(max_length=64, null=True, blank=True)
 
     def __str__(self):
         return self.placement_type_name
@@ -61,7 +61,7 @@ class Ethnicity(models.Model):
 
 class Youth(models.Model):
     '''Youth model'''
-    youth_name = models.CharField(max_length=256)
+    youth_name = models.CharField(max_length=256, help_text="Full name")
     date_of_birth = models.DateField('date born')
     ethnicity = models.ForeignKey(Ethnicity, on_delete=models.SET_NULL, null=True, blank=True)
     notes = models.TextField(null=True, blank=True)
@@ -106,23 +106,29 @@ class Youth(models.Model):
                 youth_visit = youth.latest_youth_visit()
             except YouthVisit.DoesNotExist:
                 continue
-            if youth_visit.visit_exit_date is None and today <= youth_visit.estimated_exit_date():
+            if youth_visit.is_active():
                 active_youth.append(youth)
 
         return active_youth
 
 
+USER_WARNING_DONT_EDIT_FIELD = "Don't edit this field directly in this admin page. Instead edit it through the main UI."
+
 class YouthVisit(models.Model):
     '''YouthVisit model'''
-    youth_id = models.ForeignKey(Youth, on_delete=models.CASCADE)
+    youth_id = models.ForeignKey(Youth, on_delete=models.CASCADE,
+        verbose_name='Youth',
+        help_text="If the Youth isn't in this dropdown already, you can add them with the green plus icon")
 
     # Required fields
-    visit_start_date = models.DateField('initial start date for the visit', default=timezone_date)
+    visit_start_date = models.DateField('initial start date for the visit', default=timezone_date,
+        help_text=USER_WARNING_DONT_EDIT_FIELD)
     current_placement_type = models.ForeignKey(PlacementType, on_delete=models.PROTECT)
     current_placement_start_date = models.DateField('placement start date', default=timezone_date)  
 
     # Non-required fields
-    current_placement_extension_days = models.IntegerField(default=0, blank=True)
+    current_placement_extension_days = models.IntegerField(default=0, blank=True,
+        help_text="Don't edit this field")
     city_of_origin = models.CharField(max_length=256, null=True, blank=True)
     state_of_origin = models.CharField(max_length=64, default='Washington', null=True, blank=True)
     guardian_name = models.CharField(max_length=256, null=True, blank=True)
@@ -159,6 +165,19 @@ class YouthVisit(models.Model):
 
     def __str__(self):
         return 'Youth: ' + self.youth_id.youth_name + ' - Placement date: ' + str(self.current_placement_start_date)
+
+    def is_active(self):
+        '''Return True if the Youth for this visit is still active'''
+        today = timezone.now().date()
+        return self.visit_exit_date is None
+    is_active.boolean = True
+    is_active.short_description = 'Is Active?'
+
+    def is_before_estimated_exited_date(self):
+        '''Return True if the today is before the youth's estimated exit date'''
+        today = timezone.now().date()
+        return today <= self.estimated_exit_date()
+
 
     def estimated_exit_date(self):
         '''Compute the current estimated exit date for this youth's visit

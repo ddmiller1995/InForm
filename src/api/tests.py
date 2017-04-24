@@ -3,7 +3,11 @@ import datetime
 from django.test import TestCase
 from django.utils import timezone
 
+from django.test import Client
+from django.urls import reverse
+
 from .models import *
+from .views import DATE_STRING_FORMAT
 
 class YouthModelTests(TestCase):
     '''Main test class for all Youth and YouthVisit model methods'''
@@ -18,10 +22,27 @@ class YouthModelTests(TestCase):
             youth_name="Bob",
             date_of_birth=datetime.date(1999, 3, 7),
         )
+
+        youth3 = Youth.objects.create(
+            youth_name="Sarah",
+            date_of_birth=datetime.date(1995, 4, 20)
+        )
+
+        youth4 = Youth.objects.create(
+            youth_name="Neville",
+            date_of_birth=datetime.date(1996, 3, 22)
+        )
+
         placement = PlacementType.objects.create(
             placement_type_name="Testing",
             default_stay_length=3
         )
+
+        placement2 = PlacementType.objects.create(
+            placement_type_name="RHY",
+            default_stay_length=21
+        )
+
         visit1 = YouthVisit.objects.create(
             youth_id=youth1,
             current_placement_start_date=datetime.date(2010, 1, 1),
@@ -40,6 +61,33 @@ class YouthModelTests(TestCase):
             city_of_origin="Seattle",
             current_placement_type=placement,
         )
+
+        visit4_exited_before_deadline = YouthVisit.objects.create(
+            youth_id=youth3,
+            current_placement_start_date=timezone.now().date() - timedelta(days=2), # placement deadline is 3 days
+            city_of_origin="Everett",
+            current_placement_type=placement,
+            visit_exit_date=timezone.now().date() # this youth should not be active b/c they have exit date
+        )
+
+        
+        visit5_exited_after_deadline = YouthVisit.objects.create(
+            youth_id=youth3,
+            current_placement_start_date=timezone.now().date() - timedelta(days=5), # placement deadline is 3 days
+            city_of_origin="Everett",
+            current_placement_type=placement,
+            visit_exit_date=timezone.now().date() # this youth should not be active b/c they have exit date
+        )
+
+        visit6_deadline_extended = YouthVisit.objects.create(
+            youth_id=youth4,
+            current_placement_start_date=timezone.now().date() - timedelta(days=22), # placed 22 days ago
+            city_of_origin="Mountlake Terrace",
+            current_placement_type=placement2, # 21 day deadline
+            current_placement_extension_days=15 # given 15 day extension
+        )
+
+        
         form_type1 = FormType.objects.create(form_type_name="Intake")
         form_type2 = FormType.objects.create(form_type_name="Outtake")
         form1 = Form.objects.create(form_name="Form 1", form_type_id=form_type1)
@@ -79,7 +127,8 @@ class YouthModelTests(TestCase):
         self.assertEqual(Youth.get_active_youth(), 
             [
                 Youth.objects.get(youth_name="John"),
-                Youth.objects.get(youth_name="Bob")        
+                Youth.objects.get(youth_name="Bob"),
+                Youth.objects.get(youth_name="Neville")        
             ]
         )
    
@@ -197,3 +246,159 @@ class YouthModelTests(TestCase):
     def test_overall_form_progress_in_progress_no_forms(self):
         visit = YouthVisit.objects.get(pk=3)
         self.assertEqual(visit.overall_form_progress(), 0.0)
+
+    def test_youth_visit_is_active_false(self):
+        visit = YouthVisit.objects.get(pk=1)
+        self.assertEqual(visit.is_active(), True)
+        # this youth was placed years ago, but his exit was never marked,
+        # so he should technically still be active
+        
+    def test_youth_visit_is_active_true(self):
+        visit = YouthVisit.objects.get(pk=2)
+        self.assertEqual(visit.is_active(), True)
+
+    def test_youth_visit_is_active_exited_before(self):
+        visit = YouthVisit.objects.get(pk=4)
+        self.assertEqual(visit.is_active(), False)
+
+    def test_youth_visit_is_active_exited_after(self):
+        visit = YouthVisit.objects.get(pk=5)
+        self.assertEqual(visit.is_active(), False)
+        
+        
+    def test_change_placement_type_success(self):
+        client = Client()
+
+        youth_visit_id = 1
+        new_placement_type_id = 2
+        new_placement_start_date = '2017-04-20'
+
+        url = reverse('youth-change-placement', args=[youth_visit_id])
+
+        response = client.post(url, {
+            'new_placement_type_id': new_placement_type_id,
+            'new_placement_start_date': new_placement_start_date
+        })
+
+        self.assertEqual(response.status_code, 202)
+
+        youth_visit = YouthVisit.objects.get(id=youth_visit_id)
+        self.assertEqual(youth_visit.current_placement_type.id, new_placement_type_id)
+        self.assertEqual(youth_visit.current_placement_start_date, datetime.date(2017, 4, 20))
+        self.assertEqual(youth_visit.current_placement_extension_days, 0)
+
+    def test_mark_exited_success(self):
+        client = Client()
+
+        youth_visit_id = 1
+        
+        exit_date = datetime.date(2017, 4, 20)
+        where_exited = 'ROOTS'
+        permanent_housing = False
+
+        url = reverse('youth-mark-exited', args=[youth_visit_id])
+
+        youth_visit = YouthVisit.objects.get(id=youth_visit_id)
+        self.assertEqual(youth_visit.visit_exit_date, None)
+
+        response = client.post(url, {
+            'exit_date_string': exit_date.strftime(DATE_STRING_FORMAT), # convert to correct date string format,
+            'where_exited': where_exited,
+            'permanent_housing': permanent_housing
+        })
+
+        youth_visit = YouthVisit.objects.get(id=youth_visit_id)
+
+        self.assertEqual(response.status_code, 202)
+        self.assertEqual(youth_visit.visit_exit_date, exit_date)
+        self.assertEqual(youth_visit.exited_to, where_exited)
+        self.assertEqual(youth_visit.permanent_housing, permanent_housing)
+
+    def test_mark_exited_success_2(self):
+        client = Client()
+
+        youth_visit_id = 1
+        
+        exit_date = datetime.date(2017, 4, 20)
+        where_exited = 'ROOTS'
+        permanent_housing = True
+
+        url = reverse('youth-mark-exited', args=[youth_visit_id])
+
+        youth_visit = YouthVisit.objects.get(id=youth_visit_id)
+        self.assertEqual(youth_visit.visit_exit_date, None)
+
+        response = client.post(url, {
+            'exit_date_string': exit_date.strftime(DATE_STRING_FORMAT), # convert to correct date string format,
+            'where_exited': where_exited,
+            'permanent_housing': permanent_housing
+        })
+
+        youth_visit = YouthVisit.objects.get(id=youth_visit_id)
+
+        self.assertEqual(response.status_code, 202)
+        self.assertEqual(youth_visit.visit_exit_date, exit_date)
+        self.assertEqual(youth_visit.exited_to, where_exited)
+        self.assertEqual(youth_visit.permanent_housing, permanent_housing)
+
+    def test_youth_add_extension_success(self):
+        '''Test that the add extension endpoint works as expected
+        Testing with a youth visit that was
+            * Placed 22 days ago
+            * Is given a 21 day deadline
+            * Was manually given a 15 day extension before this test
+
+        This test gives him a 15 day extension via the add extension endpoint
+        and tests that the youth visit's computed values are as expected afterwards
+        '''
+        client = Client()
+
+        youth_visit_id = 6
+        
+        extension = '15'
+
+        url = reverse('youth-add-extension', args=[youth_visit_id])
+
+        youth_visit = YouthVisit.objects.get(id=youth_visit_id)
+        self.assertEqual(youth_visit.current_placement_extension_days, 15)
+        self.assertEqual(youth_visit.is_active(), True)
+        self.assertEqual(youth_visit.is_before_estimated_exited_date(), True)
+        self.assertEqual(youth_visit.estimated_exit_date(), 
+            youth_visit.current_placement_start_date + 
+            timedelta(days=youth_visit.current_placement_type.default_stay_length) +
+            timedelta(days=youth_visit.current_placement_extension_days))
+
+        response = client.post(url, {
+            'extension': extension
+        })
+
+        youth_visit = YouthVisit.objects.get(id=youth_visit_id)
+
+        self.assertEqual(response.status_code, 202)
+        self.assertEqual(youth_visit.current_placement_extension_days, 30)
+        self.assertEqual(youth_visit.is_active(), True)
+        self.assertEqual(youth_visit.is_before_estimated_exited_date(), True)
+        self.assertEqual(youth_visit.estimated_exit_date(), 
+            youth_visit.current_placement_start_date + 
+            timedelta(days=youth_visit.current_placement_type.default_stay_length) +
+            timedelta(days=youth_visit.current_placement_extension_days))
+
+    def test_youth_visit_edit_note_success(self):
+        client = Client()
+        youth_visit_id = 1
+
+        note = '''
+        blah blah
+        lorem ipsum notes
+        yay'''
+
+        url = reverse('youth-edit-note', args=[youth_visit_id])
+
+        response = client.post(url, {
+            'note': note
+        })
+
+        youth_visit = YouthVisit.objects.get(id=youth_visit_id)
+
+        self.assertEqual(response.status_code, 202)
+        self.assertEqual(youth_visit.notes, note)

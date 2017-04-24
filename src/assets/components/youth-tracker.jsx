@@ -6,6 +6,18 @@ import "whatwg-fetch";
 const ALL_YOUTH_API = "/api/youth/?activeOnly=";
 let showActive = "true";
 
+let headers = [
+            "Name",
+            "DOB",
+            "Entry Date",
+            "Placement",
+            "School",
+            "School Transport",
+            "School Pickup",
+            "Form Progress",
+            "Planned Exit"
+            ];
+
 export default class extends React.Component {
     constructor(props) {
         super(props);
@@ -19,6 +31,37 @@ export default class extends React.Component {
             .catch(err => alert(err.message));
     }
 
+    // getHeaderColumns() {
+    //     return ([
+    //         "Name",
+    //         "DOB",
+    //         "Entry Date",
+    //         "Placement",
+    //         "School",
+    //         "School Transport",
+    //         "School Pickup",
+    //         "Form Progress",
+    //         "Planned Exit"
+    //     ]);
+    // }
+
+    addHeaderColumn(title) {
+        headers.push(title)
+    }
+
+    buildHeader() {
+        // let headers = this.getHeaderColumns();
+        let tr = document.querySelector(".header-row");
+
+        if (tr != null) {
+            headers.forEach(function(header) {
+                let th = document.createElement("th");
+                th.textContent = header;
+                tr.appendChild(th);
+            });
+        }
+    }
+
     getYouthData() {
         let rows;
         if (this.state.youth) { 
@@ -29,13 +72,13 @@ export default class extends React.Component {
 
     render() {
         let youthData = this.getYouthData();
-        console.log(this.state.youth);
 
         return (
             <table className="mdl-data-table mdl-js-data-tabled youth-tracker-container">
                 <thead>
-                    <tr>
-                        <th className="mdl-data-table__cell--non-numeric">Name</th>
+                    <tr className="header-row">
+                        {this.buildHeader()}
+                        {/*<th className="mdl-data-table__cell--non-numeric">Name</th>
                         <th>DOB</th>
                         <th>Entry Date</th>
                         <th>Placement</th>
@@ -43,7 +86,7 @@ export default class extends React.Component {
                         <th>School Transport</th>
                         <th>School Pickup</th>
                         <th>Form Progress</th>
-                        <th>Planned Exit</th>
+                        <th>Planned Exit</th>*/}
                     </tr>
                 </thead>
                 <tbody>
