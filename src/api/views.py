@@ -61,7 +61,7 @@ class YouthList(APIView):
             serialized_youth_visit = serialize_youth_visit(youth_visit)
 
             # merge both serialized objects, keep items from second object if conflicts
-            obj = {**serialized_youth, **serialized_youth_visit}
+            obj = {**serialized_youth_visit, **serialized_youth}
 
             json['youth'].append(obj)
 
