@@ -7,7 +7,7 @@ def serialize_youth(youth):
     'Serialize the youth object'
     obj = {}
 
-    obj['id'] = youth.pk
+    obj['youth_id'] = youth.pk
     obj['name'] = youth.youth_name
     obj['dob'] = youth.date_of_birth
     if youth.ethnicity is not None:
@@ -37,7 +37,7 @@ def serialize_youth_visit(youth_visit):
 
     obj = {}
 
-    obj['id'] = youth_visit.id
+    obj['youth_visit_id'] = youth_visit.id
     obj['visit_start_date'] = youth_visit.visit_start_date
     obj['city_of_origin'] = youth_visit.city_of_origin
     obj['guardian_name'] = youth_visit.guardian_name
