@@ -31,7 +31,7 @@ export default class extends React.Component {
                             <div className="header-divider"></div>
                             <a className="mdl-navigation__link" href="/admin">Admin</a>
                             <div className="header-divider"></div>
-                            <a className="mdl-navigation__link" href="#">Logout</a>
+                            <a className="mdl-navigation__link" href="/admin/logout">Logout</a>
                         </nav>
                     </div>
                 </header>
