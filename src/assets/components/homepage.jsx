@@ -24,7 +24,7 @@ export default class extends React.Component {
                     </a>
                 </div>*/}
                 <header className="mdl-layout__header">
-                    <div className="mdl-layout__header-row homepage-fix">
+                    <div className="mdl-layout__header-row header-fix">
                             <nav className="mdl-navigation homepage-bar">
                                 <IndexLink className="mdl-navigation__link progress-link" to="/progress" activeClassName="active">Progress Report</IndexLink>
                                 <div className="header-divider"></div>

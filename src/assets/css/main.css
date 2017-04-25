@@ -28,10 +28,6 @@
 .homepage-bar {
   width: 100%; }
 
-.homepage-fix {
-  position: relative;
-  padding: 0; }
-
 .mdl-data-table.mdl-js-data-tabled.youth-tracker-container {
   display: table;
   position: relative;
@@ -287,5 +283,9 @@ a.mdl-navigation__link.active {
 
 body {
   background-color: #8fbc49; }
+
+.header-fix {
+  position: relative;
+  padding: 0; }
 
 /*# sourceMappingURL=main.css.map */
