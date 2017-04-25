@@ -12,7 +12,7 @@ export default class extends React.Component {
     render() {
         return (
             <div className="container">
-                <div className="homepage-links">
+                {/*<div className="homepage-links">
                     <IndexLink className="progress-link" to="/progress" activeClassName="active">Progress Report</IndexLink>
                     <a href="#presentation" className="presentation-link">Presentation View</a>
                 </div>
@@ -22,7 +22,25 @@ export default class extends React.Component {
                         <i className="material-icons">add</i>
                         Add Youth
                     </a>
-                </div>
+                </div>*/}
+                <header className="mdl-layout__header">
+                    <div className="mdl-layout__header-row homepage-fix">
+                            <nav className="mdl-navigation homepage-bar">
+                                <IndexLink className="mdl-navigation__link progress-link" to="/progress" activeClassName="active">Progress Report</IndexLink>
+                                <div className="header-divider"></div>
+                                <a href="#presentation" className="mdl-navigation__link presentation-link">Presentation View</a>
+                                <div className="add-youth">
+                                    <a className="mdl-navigation__link" href="/admin/api/youthvisit/add/">
+                                        <i className="material-icons">add</i>
+                                        Add Youth
+                                    </a>
+                                </div>
+                            </nav>
+                        </div>
+                    <div className="">
+                        
+                    </div>
+                </header>
 
                 <YouthTracker />
             </div>
