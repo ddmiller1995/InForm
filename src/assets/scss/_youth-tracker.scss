@@ -20,6 +20,12 @@
 }
 
 .youth-tracker-container {
+    width: 100%;
+
+    tbody tr:focus, tbody tr:hover {
+        background-color: lightgray;
+    }
+
     #mdl-dialog {
         width: 375px;
 
@@ -36,6 +42,10 @@
             }
         }
     }
+}
+
+.youth-table {
+    width: 100%;
 }
 
 .youth-tracker-container #mdl-dialog input[type="radio"] {

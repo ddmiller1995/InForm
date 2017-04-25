@@ -26,10 +26,35 @@ export default class extends React.Component {
                 className="mdl-navigation__link" 
                 to="/youth"
                 key={data} 
-                onClick={() => store.dispatch(setCurrentYouth(this.props.youth))}>
+                onClick={() => this.registerYouth()}>
                 {data}
             </IndexLink>
         );
+    }
+
+    registerYouth() {
+        store.dispatch(setCurrentYouth(this.props.youth));
+        window.location.reload();
+    }
+
+    postExit() {
+        let visitID = that.props.currentYouth.youth_visits[that.state.visitIndex].youth_visit_id;
+        let url = "/api/visit/" + visitID + "/change-placement/";
+        let placementID = document.getElementById("placement-dropdown").value;
+        let placementStartDate = document.getElementById("date-input").value;
+        let data = new FormData();
+        data.append("new_placement_type_id", placementID);
+        data.append("new_placement_start_date", placementStartDate);
+
+        fetch(url, {
+            method: "POST",
+            body: data
+        }).then((resp) => {
+            console.log(resp);
+            window.location.reload();
+        }).catch(err => {
+            alert(err);
+        })
     }
 
     toggleModal() {
@@ -41,6 +66,12 @@ export default class extends React.Component {
         // @param1: parent container that dialog child will be added and removed from
         // @param2: index of dialog in childNodes array
         registerDialog(".youth-tracker-container", 2);
+        // create post request on "save", then close modal
+        document.getElementById("dialog-submit").addEventListener("click", function () {
+            postExit();
+            let dialog = document.querySelector("dialog");
+            closeDialog(dialog, ".youth-info-container", 5);
+        });
     }
 
     buildDialog() {
@@ -60,15 +91,15 @@ export default class extends React.Component {
                     <p>Where did they exit to? <span><input id="exited-to-input" type="text"></input></span></p>
                     <p>Permanent Housing? 
                         <span> 
-                         Yes <input id="yes-checkbox" name="housing" type="radio" value="true"></input>
-                         No <input id="no-checkbox" name="housing" type="radio" value="false"></input>
-                         Unknown <input id="unknown-checkbox" name="housing" type="radio" value="null"></input>
+                         <input id="yes-checkbox" name="housing" type="radio" value="true"></input>Yes 
+                         <input id="no-checkbox" name="housing" type="radio" value="false"></input>No 
+                         <input id="unknown-checkbox" name="housing" type="radio" value="null"></input>Unknown 
                         </span>
                     </p>
                 </div>
                 <div id="dialog-actions">
                     <button type="button" id="dialog-submit">Save</button>
-                    <button type="button" id="dialog-close">Close</button>
+                    <button type="button" id="dialog-close">Cancel</button>
                 </div>
             </dialog>
         `);
