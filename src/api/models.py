@@ -169,10 +169,15 @@ class YouthVisit(models.Model):
     def is_active(self):
         '''Return True if the Youth for this visit is still active'''
         today = timezone.now().date()
-        return self.visit_exit_date is None and today <= self.estimated_exit_date()
-
+        return self.visit_exit_date is None
     is_active.boolean = True
     is_active.short_description = 'Is Active?'
+
+    def is_before_estimated_exited_date(self):
+        '''Return True if the today is before the youth's estimated exit date'''
+        today = timezone.now().date()
+        return today <= self.estimated_exit_date()
+
 
     def estimated_exit_date(self):
         '''Compute the current estimated exit date for this youth's visit

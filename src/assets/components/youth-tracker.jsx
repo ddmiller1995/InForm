@@ -6,18 +6,6 @@ import "whatwg-fetch";
 const ALL_YOUTH_API = "/api/youth/?activeOnly=";
 let showActive = "true";
 
-let headers = [
-            "Name",
-            "DOB",
-            "Entry Date",
-            "Placement",
-            "School",
-            "School Transport",
-            "School Pickup",
-            "Form Progress",
-            "Planned Exit"
-            ];
-
 export default class extends React.Component {
     constructor(props) {
         super(props);
@@ -29,37 +17,6 @@ export default class extends React.Component {
             .then(response => response.json())
             .then(data => this.setState({ youth: data }))
             .catch(err => alert(err.message));
-    }
-
-    // getHeaderColumns() {
-    //     return ([
-    //         "Name",
-    //         "DOB",
-    //         "Entry Date",
-    //         "Placement",
-    //         "School",
-    //         "School Transport",
-    //         "School Pickup",
-    //         "Form Progress",
-    //         "Planned Exit"
-    //     ]);
-    // }
-
-    addHeaderColumn(title) {
-        headers.push(title)
-    }
-
-    buildHeader() {
-        // let headers = this.getHeaderColumns();
-        let tr = document.querySelector(".header-row");
-
-        if (tr != null) {
-            headers.forEach(function(header) {
-                let th = document.createElement("th");
-                th.textContent = header;
-                tr.appendChild(th);
-            });
-        }
     }
 
     getYouthData() {
@@ -77,16 +34,16 @@ export default class extends React.Component {
             <table className="mdl-data-table mdl-js-data-tabled youth-tracker-container">
                 <thead>
                     <tr className="header-row">
-                        {this.buildHeader()}
-                        {/*<th className="mdl-data-table__cell--non-numeric">Name</th>
+                        <th className="mdl-data-table__cell--non-numeric">Name</th>
                         <th>DOB</th>
                         <th>Entry Date</th>
                         <th>Placement</th>
                         <th>School</th>
                         <th>School Transport</th>
-                        <th>School Pickup</th>
+                        <th>Pickup/Dropoff</th>
                         <th>Form Progress</th>
-                        <th>Planned Exit</th>*/}
+                        <th>Estimated Exit</th>
+                        <th>Exit Date</th>
                     </tr>
                 </thead>
                 <tbody>

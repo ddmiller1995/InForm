@@ -50,9 +50,13 @@
             }
 
             .case {
-                width: 55%;
+                width: 65%;
                 border-left: 1px solid black;
                 border-top: none;
+
+                .inner-col {
+                    padding-right: 0px;
+                }
             }
         }
     }
@@ -65,9 +69,13 @@
         .material-icons {
             padding: 0 3px 3px 0;
         }
+
+        .mdl-navigation__link {
+            color: black;
+        }
     }
 
-    .extend, .change-beds {
+    .extend, .change-beds, .edit-youth {
         text-transform: none;
         line-height: 1;
     }
@@ -121,12 +129,12 @@
     box-shadow: 0 9px 46px 8px rgba(0,0,0,.14), 
         0 11px 15px -7px rgba(0,0,0,.12), 
         0 24px 38px 3px rgba(0,0,0,.2);
-    width: 280px;
+    width: 290px;
 
     #dialog-title {
         padding: 24px 24px 0;
         margin: 0;
-        font-size: 2.5rem;
+        font-size: 30px;
     }
 
     #dialog-descr {
@@ -165,4 +173,27 @@
             margin-right: 8px;
         }
     }
+
+    #extend-input, #switch-input {
+        width: 50px;
+        margin: 0 5px;
+    }
+
+    #date-input {
+        width: 115px;
+        margin: 0 5px;
+    }
+}
+
+#notes-input {
+    width: 96%;
+    margin: 1%;
+    margin-bottom: 3%;
+}
+
+.save-notes {
+    position: absolute;
+    bottom: 0; 
+    right: 25px;
+    text-transform: none;
 }

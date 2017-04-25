@@ -168,8 +168,115 @@ class YouthChangePlacement(APIView):
 
         return Response(obj, status=status.HTTP_202_ACCEPTED)
         
-class PlacementTypeList(APIView):
+class YouthMarkExited(APIView):
     '''
+    Mark a Youth as exited
+
+    Input:
+        * Exit date
+        * Where exited (string)
+        * permanent housing (bool)
+    '''
+    renderer_classes = (JSONRenderer, )
+
+    def post(self, request, youth_visit_id, format=None):
+        try:
+            youth_visit = YouthVisit.objects.get(pk=youth_visit_id)
+        except YouthVisit.DoesNotExist:
+            response = Response(status=status.HTTP_404_NOT_FOUND)
+            response['error'] = 'Youth visit pk=%s does not exist' % youth_visit_id
+            return response
+
+        exit_date_string = request.POST.get('exit_date_string', None)
+        if not exit_date_string:
+            response = Response(status=status.HTTP_400_BAD_REQUEST)
+            response['error'] = 'Missing POST param "exit_date_string"'
+            return response
+
+        where_exited = request.POST.get('where_exited', None)
+        if not where_exited:
+            response = Response(status=status.HTTP_400_BAD_REQUEST)
+            response['error'] = 'Missing POST param "where_exited"'
+            return response 
+
+        permanent_housing = request.POST.get('permanent_housing', None)
+        if not permanent_housing:
+            response = Response(status=status.HTTP_400_BAD_REQUEST)
+            response['error'] = 'Missing POST param "permanent_housing"'
+            return response
+        if not permanent_housing in ['true', 'True', 'false', 'False']:
+            response = Response(status=status.HTTP_406_NOT_ACCEPTABLE)
+            response['error'] = 'POST param "permanent_housing" should be a true or false value'
+            return response
+        permanent_housing = permanent_housing in ['true', 'True']
+
+
+        youth_visit.visit_exit_date = datetime.strptime(exit_date_string, DATE_STRING_FORMAT)
+        youth_visit.exited_to = where_exited
+        youth_visit.permanent_housing = permanent_housing
+        youth_visit.save()
+
+        obj = {}
+        return Response(obj, status=status.HTTP_202_ACCEPTED)
+
+class YouthAddExtension(APIView):
+    '''
+    Add an extension to a Youth Visit
+    '''
+    def post(self, request, youth_visit_id, format=None):
+        try:
+            youth_visit = YouthVisit.objects.get(pk=youth_visit_id)
+        except YouthVisit.DoesNotExist:
+            response = Response(status=status.HTTP_404_NOT_FOUND)
+            response['error'] = 'Youth visit pk=%s does not exist' % youth_visit_id
+            return response
+
+        extension = request.POST.get('extension', None)
+        if not extension:
+            response = Response(status=status.HTTP_400_BAD_REQUEST)
+            response['error'] = 'Missing POST param "extension"'
+            return response
+
+        try:
+            extension = int(extension)
+        except ValueError:
+            msg = 'Non int POST param passed to add extension endpoint'
+            logger.warn(msg)
+            response = Response(status=status.HTTP_406_NOT_ACCEPTABLE)
+            response['error'] = msg
+            return response  
+
+        youth_visit.current_placement_extension_days += int(extension)
+        youth_visit.save()
+
+        return Response({}, status=status.HTTP_202_ACCEPTED)
+
+class YouthEditNote(APIView):
+    def post(self, request, youth_visit_id, format=None):
+        try:
+            youth_visit = YouthVisit.objects.get(pk=youth_visit_id)
+        except YouthVisit.DoesNotExist:
+            response = Response(status=status.HTTP_404_NOT_FOUND)
+            response['error'] = 'Youth visit pk=%s does not exist' % youth_visit_id
+            return response
+
+        note = request.POST.get('note', None)
+        if not note:
+            response = Response(status=status.HTTP_400_BAD_REQUEST)
+            response['error'] = 'Missing POST param "note"'
+            return response
+
+        youth_visit.notes = note
+        youth_visit.save()
+
+        return Response({
+            'youth_visit_id': youth_visit_id,
+            'note': note
+        }, status=status.HTTP_202_ACCEPTED)
+
+
+class PlacementTypeList(APIView):
+    '''~
     List all placement types
 
     Supported HTTP methods: GET
@@ -184,7 +291,6 @@ class PlacementTypeList(APIView):
         placement_types = PlacementType.objects.all()
         serializer = PlacementTypeSerializer(placement_types, many=True)
         return Response(serializer.data)
-
 
 def api_docs(request):
     return render(request, 'api/docs.html')

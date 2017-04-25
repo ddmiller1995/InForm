@@ -17,6 +17,10 @@
 
 .exit-btn {
     position: absolute;
-    right: 0;
+    right: 10px;
     top: 10px;
+
+    .exit-icon {
+        font-size: 35px;
+    }
 }
