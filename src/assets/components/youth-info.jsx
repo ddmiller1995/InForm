@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import {Link, IndexLink} from "react-router";
-import { formatDate, getDateDiff, formatTime, registerDialog } from '../util.js'
+import { formatDate, getDateDiff, formatTime, registerDialog, closeDialog } from '../util.js'
 import "whatwg-fetch";
 
 var moment = require("moment");
@@ -14,14 +14,15 @@ export default class extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            visitIndex: 0
+            visitIndex: 0,
         };
     }
 
     componentDidMount() {
         fetch(PLACEMENT_API)
             .then(response => response.json())
-            .then(data => this.setState({ placement_types: data }))
+            .then(data => this.setState({ 
+                placement_types: data}))
             .catch(err => alert(err.message));
     }
 
@@ -33,7 +34,6 @@ export default class extends React.Component {
         });
 
         selectedVisit = visitDates[this.state.visitIndex].key;
-
         return visitDates;
     }
 
@@ -67,7 +67,8 @@ export default class extends React.Component {
                     <i className="material-icons">hotel</i>Change Beds
                 </button>
                 <button className="mdl-button mdl-js-button edit-youth">
-                    <a className="mdl-navigation__link" href={"/admin/api/youthvisit/" + this.props.currentYouth.id + "/change/"}>
+                    <a className="mdl-navigation__link" href={"/admin/api/youthvisit/" + 
+                        this.props.currentYouth.youth_visits[this.state.visitIndex].id + "/change/"}>
                         <i className="material-icons">mode_edit</i>
                         Edit Visit Details
                     </a>
@@ -78,11 +79,14 @@ export default class extends React.Component {
 
     toggleModal(action) {
         let that = this;
+        let postFunction;
         let div;
         if (action === "extend") {
             div = this.buildExtendModal();
+            postFunction = this.postExtend;
         } else {
             div = this.buildSwitchModal();
+            postFunction = this.postSwitch;
         }
         // if dialog doesn't exist, append it
         if (document.getElementById("mdl-dialog") == null) {
@@ -94,6 +98,12 @@ export default class extends React.Component {
         // @param1: parent container that dialog child will be added and removed from
         // @param2: index of dialog in childNodes array
         registerDialog(".youth-info-container", 5);
+        // create post request on "save", then close modal
+        document.getElementById("dialog-submit").addEventListener("click", function () {
+            postFunction(that);
+            let dialog = document.querySelector("dialog");
+            closeDialog(dialog, ".youth-info-container", 5);
+        });
     }
 
     buildExtendModal() {
@@ -179,13 +189,65 @@ export default class extends React.Component {
             this.state.placement_types.forEach(function(type) {
                 let option = document.createElement("option");
                 option.textContent = type.placement_type_name;
+                option.value = type.id;
                 change.appendChild(option);
             });
         }
     }
 
-    saveNotes() {
-        console.log("here");
+    postExtend(that) {
+        let visitID = that.props.currentYouth.youth_visits[that.state.visitIndex].id;
+        let url = "/api/visit/" + visitID + "/add-extension/";
+        let extension = document.getElementById("extend-input").value;
+        let data = new FormData();
+        data.append("extension", extension);
+
+        fetch(url, {
+            method: "POST",
+            body: data
+        }).then(function(response) {
+            console.log(response);
+            window.location.reload();
+        }).catch(err => {
+            alert(err);
+        })
+    }
+
+    postSwitch(that) {
+        let visitID = that.props.currentYouth.youth_visits[that.state.visitIndex].id;
+        let url = "/api/visit/" + visitID + "/change-placement/";
+        let placementID = document.getElementById("placement-dropdown").value;
+        let placementStartDate = document.getElementById("date-input").value;
+        let data = new FormData();
+        data.append("new_placement_type_id", placementID);
+        data.append("new_placement_start_date", placementStartDate);
+
+        fetch(url, {
+            method: "POST",
+            body: data
+        }).then((resp) => {
+            console.log(resp);
+            window.location.reload();
+        }).catch(err => {
+            alert(err);
+        })
+    }
+
+    postNotes() {
+        let visitID = this.props.currentYouth.youth_visits[this.state.visitIndex].id;
+        let url = "/api/visit/" + visitID + "/edit-note/";
+        let notes = document.getElementById("notes-input").value;
+        let data = new FormData();
+        data.append("note", notes);
+
+        fetch(url, {
+            method: "POST",
+            body: data
+        }).then(response => {
+            console.log(response);
+        }).catch(ex => {
+            console.log(ex);
+        })
     }
 
     render() {
@@ -223,7 +285,7 @@ export default class extends React.Component {
                             <p>Name: <span className="value">{this.props.currentYouth.name}</span></p>
                             <p>Birthdate: <span className="value">{formatDate(this.props.currentYouth.dob)}</span></p>
                             <p>Age: <span className="value">{getDateDiff(this.props.currentYouth.dob, "years")}</span></p>
-                            <p>Ethnicity: <span className="value">{this.props.currentYouth.ethnicity}</span></p>
+                            <p>Ethnicity: <span className="value">{this.props.currentYouth.ethnicity || DEFAULT_VALUE}</span></p>
                             <p>City: <span className="value">{currentVisit.city_of_origin || DEFAULT_VALUE}</span></p>
                         </div>
                     </div>
@@ -295,8 +357,11 @@ export default class extends React.Component {
                     <div className="col-text">
                         <h4>Visit Notes</h4>
                         <hr className="youth-info-divider"/>
-                        <textarea name="notes" id="notes-input" cols="30" rows="10" value={currentVisit.visit_notes}></textarea>
-                        <button className="mdl-button mdl-js-button save-notes" onClick={() => this.saveNotes()}>Save</button>
+                        <textarea name="notes" id="notes-input" cols="30" rows="10" defaultValue={currentVisit.visit_notes}></textarea>
+                        <button 
+                            className="mdl-button mdl-js-button save-notes" 
+                            onClick={() => this.postNotes()}>Save
+                        </button>
                     </div>
                 </div>
             </div>

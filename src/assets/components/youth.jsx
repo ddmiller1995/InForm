@@ -12,7 +12,7 @@ export default class extends React.Component {
         this.state = {youth: {}};
     }
 
-     componentDidMount() {
+    componentDidMount() {
         this.unsub = store.subscribe(() => this.setState(store.getState()));
 
         fetch(GET_YOUTH_API + YOUTH_ID.currentYouth.id)

@@ -26,10 +26,35 @@ export default class extends React.Component {
                 className="mdl-navigation__link" 
                 to="/youth"
                 key={data} 
-                onClick={() => store.dispatch(setCurrentYouth(this.props.youth))}>
+                onClick={() => this.registerYouth()}>
                 {data}
             </IndexLink>
         );
+    }
+
+    registerYouth() {
+        store.dispatch(setCurrentYouth(this.props.youth));
+        window.location.reload();
+    }
+
+    postExit() {
+        let visitID = that.props.currentYouth.youth_visits[that.state.visitIndex].id;
+        let url = "/api/visit/" + visitID + "/change-placement/";
+        let placementID = document.getElementById("placement-dropdown").value;
+        let placementStartDate = document.getElementById("date-input").value;
+        let data = new FormData();
+        data.append("new_placement_type_id", placementID);
+        data.append("new_placement_start_date", placementStartDate);
+
+        fetch(url, {
+            method: "POST",
+            body: data
+        }).then((resp) => {
+            console.log(resp);
+            window.location.reload();
+        }).catch(err => {
+            alert(err);
+        })
     }
 
     toggleModal() {
@@ -41,6 +66,12 @@ export default class extends React.Component {
         // @param1: parent container that dialog child will be added and removed from
         // @param2: index of dialog in childNodes array
         registerDialog(".youth-tracker-container", 2);
+        // create post request on "save", then close modal
+        document.getElementById("dialog-submit").addEventListener("click", function () {
+            postExit();
+            let dialog = document.querySelector("dialog");
+            closeDialog(dialog, ".youth-info-container", 5);
+        });
     }
 
     buildDialog() {
@@ -88,6 +119,7 @@ export default class extends React.Component {
         }
 
         let currentPlacement = this.props.youth.current_placement_type;
+        console.log(this.props.youth);
 
         return (
             <tr>

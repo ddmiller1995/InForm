@@ -31,10 +31,14 @@ export function registerDialog(parentNode, child) {
 
         dialog.showModal();
         document.getElementById("dialog-close").addEventListener("click", function () {
-            dialog.open = "true";
-            dialog.close();
-            let parent = document.querySelector(parentNode);
-            parent.removeChild(parent.childNodes[child]);
+            closeDialog(dialog, parentNode, child);
         });
     }
+}
+
+export function closeDialog(dialog, parentNode, child) {
+    dialog.open = "true";
+    dialog.close();
+    let parent = document.querySelector(parentNode);
+    parent.removeChild(parent.childNodes[child]);
 }
