@@ -25,6 +25,12 @@ urlpatterns = [
         name='youth-change-placement'),
     url(r'^visit/(?P<youth_visit_id>[0-9]+)/change-placement/$', views.YouthChangePlacement.as_view(), \
         name='youth-change-placement'),
+    url(r'^visit/(?P<youth_visit_id>[0-9]+)/mark-exited/$', views.YouthMarkExited.as_view(), \
+        name='youth-mark-exited'),
+    url(r'^visit/(?P<youth_visit_id>[0-9]+)/add-extension/$', views.YouthAddExtension.as_view(), \
+        name='youth-add-extension'),
+    url(r'^visit/(?P<youth_visit_id>[0-9]+)/edit-note/$', views.YouthEditNote.as_view(), \
+        name='youth-edit-note'),
     url(r'docs/$', views.api_docs, name='docs')
 ]
 urlpatterns = format_suffix_patterns(urlpatterns)

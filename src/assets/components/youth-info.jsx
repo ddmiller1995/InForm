@@ -1,9 +1,12 @@
 import React from "react";
+import ReactDOM from "react-dom";
 import {Link, IndexLink} from "react-router";
-import { formatDate, getDateDiff } from '../util.js'
+import { formatDate, getDateDiff, formatTime, registerDialog } from '../util.js'
 import "whatwg-fetch";
 
+var moment = require("moment");
 
+const PLACEMENT_API = "/api/placement-type";
 const DEFAULT_VALUE = "Not Provided"
 let selectedVisit;
 
@@ -15,6 +18,14 @@ export default class extends React.Component {
         };
     }
 
+    componentDidMount() {
+        fetch(PLACEMENT_API)
+            .then(response => response.json())
+            .then(data => this.setState({ placement_types: data }))
+            .catch(err => alert(err.message));
+    }
+
+    // populate the visit date dropdown with all the visits of this particular youth
     getVisits(visits, visitDates) {
         visits.forEach(function(visit) {
             let key = visit.visit_start_date;
@@ -26,6 +37,7 @@ export default class extends React.Component {
         return visitDates;
     }
 
+    // grab the visit date currently selected in the visit dropdown
     getSelectedVisit(evt) {
         let that = this;
         let dropdown = document.querySelector(".mdl-select__input");
@@ -47,31 +59,145 @@ export default class extends React.Component {
     renderActionButtons() {
         return (
             <div className="youth-action-buttons">
-                <button className="mdl-button mdl-js-button extend">
+                <button className="mdl-button mdl-js-button extend" onClick={() => this.toggleModal("extend")}>
                     <i className="material-icons">schedule</i>Extend Stay
                 </button>
-                {/*<span className="extend-input"><label htmlFor="extend-input">Extend:</label>
-                    <input id="extend-input" type="text" autoFocus/>
-                </span>*/}
 
-                <button className="mdl-button mdl-js-button change-beds">
+                <button className="mdl-button mdl-js-button change-beds" onClick={() => this.toggleModal("switch")}>
                     <i className="material-icons">hotel</i>Change Beds
                 </button>
-                {/*<span className="bed-input"><label htmlFor="bed-input">Change:</label>
-                    <input id="bed-input" type="text" autoFocus/>
-                </span>*/}
+                <button className="mdl-button mdl-js-button edit-youth">
+                    <a className="mdl-navigation__link" href={"/admin/api/youthvisit/" + this.props.currentYouth.id + "/change/"}>
+                        <i className="material-icons">mode_edit</i>
+                        Edit Visit Details
+                    </a>
+                </button>
             </div>
         );
     }
+
+    toggleModal(action) {
+        let that = this;
+        let div;
+        if (action === "extend") {
+            div = this.buildExtendModal();
+        } else {
+            div = this.buildSwitchModal();
+        }
+        // if dialog doesn't exist, append it
+        if (document.getElementById("mdl-dialog") == null) {
+            document.querySelector(".youth-info-container").appendChild(div.firstElementChild);
+        } 
+
+        this.changeEstimatedDate();
+        this.setPlacementTypes();
+        // @param1: parent container that dialog child will be added and removed from
+        // @param2: index of dialog in childNodes array
+        registerDialog(".youth-info-container", 5);
+    }
+
+    buildExtendModal() {
+        let div = document.createElement("div");
+        let modal = (`
+            <dialog id="mdl-dialog">
+                <h4 id="dialog-title">Extend Stay</h4>
+                <div id="dialog-descr">
+                    <p>Extend stay for ${this.props.currentYouth.name}</p>
+                    <p>Current extension days: 
+                        ${this.props.currentYouth.youth_visits[this.state.visitIndex].current_placement_type[this.props.currentYouth.youth_visits[this.state.visitIndex].current_placement_type.length -1].current_placement_extension_days}
+                    </p>
+                    <p>Extend by 
+                        <span>
+                            <input id="extend-input" type="number" value="15"></input>
+                        </span> days
+                    </p>
+                    <p>New estimated exit: <span id="new-estimate"></span></p>
+                </div>
+                <div id="dialog-actions">
+                    <button type="button" id="dialog-submit">Save</button>
+                    <button type="button" id="dialog-close">Close</button>
+                </div>
+            </dialog>
+        `);
+
+        div.innerHTML = modal;
+        return div;
+    }
     
+    buildSwitchModal() {
+        let div = document.createElement("div");
+        let today = moment().format("YYYY-MM-DD");
+        let modal = (`
+            <dialog id="mdl-dialog">
+                <h4 id="dialog-title">Switch Beds</h4>
+                <div id="dialog-descr">
+                    <p>Switch beds for ${this.props.currentYouth.name}</p>
+                    <p>Current placement: 
+                        ${this.props.currentYouth.youth_visits[this.state.visitIndex].current_placement_type[this.props.currentYouth.youth_visits[this.state.visitIndex].current_placement_type.length -1].name}
+                    </p>
+                    <p>New placement: 
+                        <span><select className="mdl-select__input" id="placement-dropdown" name="placement"></select></span>
+                    </p>
+                    <p>Transfer Date: <span><input id="date-input" type="date" value=`+today+`></input></span></p>
+                </div>
+                <div id="dialog-actions">
+                    <button type="button" id="dialog-submit">Save</button>
+                    <button type="button" id="dialog-close">Close</button>
+                </div>
+            </dialog>
+        `);
+
+        div.innerHTML = modal;
+        return div;
+    }
+
+    // on the extend modal, update the estimated exit date according to the user-inputted
+    // extend days
+    changeEstimatedDate() {
+        let exit = this.props.currentYouth.youth_visits[this.state.visitIndex].estimated_exit_date;
+        let extend = document.getElementById("extend-input");
+        if (extend != null) {
+            let update = function updateEstimate() {
+                let date = new Date(exit);
+                let day = date.getDate() + parseInt(extend.value);
+                let month = date.getMonth() + 1;
+                let year = date.getFullYear();
+
+                let newExit = document.getElementById("new-estimate");
+                newExit.textContent = month + "/" + day + "/" + year;
+            };
+            update();
+
+            extend.addEventListener("input", update);
+        }
+    }
+
+    // on the switch modal, populate the dropdown with all the placement types
+    setPlacementTypes() {
+        let change = document.getElementById("placement-dropdown");
+        if (change != null) {
+            this.state.placement_types.forEach(function(type) {
+                let option = document.createElement("option");
+                option.textContent = type.placement_type_name;
+                change.appendChild(option);
+            });
+        }
+    }
+
+    saveNotes() {
+        console.log("here");
+    }
+
     render() {
         let visitDates = [];
         let currentVisit;
+        let currentPlacement;
         if (this.props.currentYouth.youth_visits) {
             let visits = this.props.currentYouth.youth_visits;
             visitDates = this.getVisits(visits, visitDates);
 
             currentVisit = visits[this.state.visitIndex];
+            currentPlacement = currentVisit.current_placement_type[currentVisit.current_placement_type.length -1];
         }
 
         if (currentVisit == null) {
@@ -97,7 +223,7 @@ export default class extends React.Component {
                             <p>Name: <span className="value">{this.props.currentYouth.name}</span></p>
                             <p>Birthdate: <span className="value">{formatDate(this.props.currentYouth.dob)}</span></p>
                             <p>Age: <span className="value">{getDateDiff(this.props.currentYouth.dob, "years")}</span></p>
-                            <p>Ethnicity: <span className="value"></span></p>
+                            <p>Ethnicity: <span className="value">{this.props.currentYouth.ethnicity}</span></p>
                             <p>City: <span className="value">{currentVisit.city_of_origin || DEFAULT_VALUE}</span></p>
                         </div>
                     </div>
@@ -107,23 +233,33 @@ export default class extends React.Component {
                             <hr className="youth-info-divider"/>
                         </div>
                         <div className="inner-col">
-                            <p>Case Manager: <span className="value">{currentVisit.case_manager.username || DEFAULT_VALUE}</span></p>
-                            <p>Personal Counselor: <span className="value">{currentVisit.personal_counselor.username || DEFAULT_VALUE}</span></p>
-                            <p>Placement Date: 
-                                <span className="value"> {formatDate(currentVisit.current_placement_type.current_placement_start_date)}</span>
+                            <p>Entry Date: <span className="value">{formatDate(currentVisit.visit_start_date)}</span></p>
+                            <p>Bed Nights: 
+                                <span className="value">{currentVisit.total_bed_nights}</span>
                             </p>
-                            <p>Placement:  
-                                <span className="value"> {currentVisit.current_placement_type.name}
-                                    <span className="value"> - { currentVisit.current_placement_type.default_stay_length} days</span>
-                                    <span className="value"> - { currentVisit.current_placement_type.current_placement_extension_days} extension days</span>
+                            <p>Current Placement Date:  
+                                <span className="value"> 
+                                    {formatDate(currentPlacement.current_placement_start_date)}
                                 </span>
                             </p>
-                            <p>Expected Exit: <span className="value">{formatDate(currentVisit.estimated_exit_date)}</span></p>
+                            <p>Placement Type:  
+                                <span className="value"> {currentPlacement.name}</span>
+                            </p>
+                            <p>Estimated Stay:  
+                                <span className="value"> { currentPlacement.default_stay_length} days (+ 
+                                    { currentPlacement.current_placement_extension_days} day extension)
+                                </span>
+                            </p>
                         </div>
                         <div className="inner-col">
+                            <p>Case Manager: <span className="value">{currentVisit.case_manager.name || DEFAULT_VALUE}</span></p>
+                            <p>Personal Counselor: <span className="value">{currentVisit.personal_counselor.name || DEFAULT_VALUE}</span></p>
+                            <p>Social Worker: <span className="value">{currentVisit.social_worker || DEFAULT_VALUE}</span></p>
                             <p>Referred By: <span className="value">{currentVisit.referred_by || DEFAULT_VALUE}</span></p>
-                            <p>Social Worker: <span className="value"></span></p>
-                            <p>Bed Nights: <span className="value">{getDateDiff(currentVisit.current_placement_type.current_placement_start_date, "days")}</span></p>
+                        </div>
+                        <div className="inner-col">
+                            <p>Estimated Exit: <span className="value">{formatDate(currentVisit.estimated_exit_date)}</span></p>
+                            <p>Actual Exit: <span className="value">{formatDate(currentVisit.visit_exit_date) || "N/A"}</span></p>
                             <p>Where Exited: <span className="value">{currentVisit.exited_to || DEFAULT_VALUE}</span></p>
                             <p>Permanent Housing: <span className="value">{currentVisit.permanent_housing || DEFAULT_VALUE}</span></p>
                         </div>
@@ -141,23 +277,26 @@ export default class extends React.Component {
                     </div>
                     <div className="inner-col">
                         <p>AM Transport: <span className="value">{currentVisit.school_am_transport || DEFAULT_VALUE}</span></p>
-                        <p>AM Pickup Time: <span className="value"></span></p>
+                        <p>AM Pickup Time: <span className="value">{formatTime(currentVisit.school_am_pickup_time) || DEFAULT_VALUE}</span></p>
                         <p>AM Phone: <span className="value">{currentVisit.school_am_phone || DEFAULT_VALUE}</span></p>
                     </div>
                     <div className="inner-col">
                         <p>PM Transport: <span className="value">{currentVisit.school_pm_transport || DEFAULT_VALUE}</span></p>
-                        <p>PM Dropoff Time: <span className="value">{currentVisit.school_pm_dropoff_time || DEFAULT_VALUE}</span></p>
+                        <p>PM Dropoff Time: <span className="value">{formatTime(currentVisit.school_pm_dropoff_time) || DEFAULT_VALUE}</span></p>
                         <p>PM Phone: <span className="value">{currentVisit.school_pm_phone || DEFAULT_VALUE}</span></p>
                     </div>
                     <div className="inner-col">
-                        <p>Date Requested: <span className="value"></span></p>
-                        <p>MKV Complete: <span className="value"></span></p>
+                        <p>Date Requested: 
+                                <span className="value">{formatDate(currentVisit.school_date_requested) || DEFAULT_VALUE}</span></p>
+                        <p>MKV Complete: <span className="value">{currentVisit.school_mkv_complete || DEFAULT_VALUE}</span></p>
                     </div>
                 </div>
                 <div className="youth-row">
                     <div className="col-text">
-                        <h4>Notes</h4>
+                        <h4>Visit Notes</h4>
                         <hr className="youth-info-divider"/>
+                        <textarea name="notes" id="notes-input" cols="30" rows="10" value={currentVisit.visit_notes}></textarea>
+                        <button className="mdl-button mdl-js-button save-notes" onClick={() => this.saveNotes()}>Save</button>
                     </div>
                 </div>
             </div>

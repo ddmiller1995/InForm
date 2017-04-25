@@ -38,14 +38,36 @@
 
 .mdl-data-table.mdl-js-data-tabled th, .mdl-data-table.mdl-js-data-tabled td {
   text-align: left; }
+.mdl-data-table.mdl-js-data-tabled .exit-column {
+  padding: 0 0 0 5px; }
+
+.add-exit {
+  text-transform: none;
+  padding: 0; }
+  .add-exit .add-exit-icon {
+    padding-bottom: 3px; }
 
 .youth-tracker-container {
   width: 100%; }
   .youth-tracker-container tbody tr:focus, .youth-tracker-container tbody tr:hover {
     background-color: lightgray; }
+  .youth-tracker-container #mdl-dialog {
+    width: 375px; }
+    .youth-tracker-container #mdl-dialog #exit-warning {
+      word-wrap: break-word;
+      white-space: normal;
+      padding: 15px 15px 0 15px; }
+      .youth-tracker-container #mdl-dialog #exit-warning p {
+        line-height: 20px;
+        color: red;
+        font-size: 12px;
+        text-align: center; }
 
 .youth-table {
   width: 100%; }
+
+.youth-tracker-container #mdl-dialog input[type="radio"] {
+  margin-right: 10px; }
 
 .youth-detail-container {
   border: 1px solid gainsboro;
@@ -93,15 +115,23 @@ h4 {
       font-weight: 300; }
     @media (min-width: 1160px) {
       .youth-info-container .youth-row .youth-col {
-        width: 40%;
+        width: 25%;
         flex-grow: 1; }
       .youth-info-container .youth-row .case {
-        width: 55%;
+        width: 65%;
         border-left: 1px solid black;
-        border-top: none; } }
+        border-top: none; }
+        .youth-info-container .youth-row .case .inner-col {
+          padding-right: 0px; } }
   .youth-info-container .youth-action-buttons {
-    display: inline-block; }
-  .youth-info-container .extend, .youth-info-container .change-beds {
+    position: absolute;
+    right: 0;
+    top: 38px; }
+    .youth-info-container .youth-action-buttons .material-icons {
+      padding: 0 3px 3px 0; }
+    .youth-info-container .youth-action-buttons .mdl-navigation__link {
+      color: black; }
+  .youth-info-container .extend, .youth-info-container .change-beds, .youth-info-container .edit-youth {
     text-transform: none;
     line-height: 1; }
 
@@ -144,6 +174,55 @@ h4 {
   display: inline-block;
   max-width: 0.1px; }
 
+#mdl-dialog {
+  border: 1px solid gray;
+  box-shadow: 0 9px 46px 8px rgba(0, 0, 0, 0.14), 0 11px 15px -7px rgba(0, 0, 0, 0.12), 0 24px 38px 3px rgba(0, 0, 0, 0.2);
+  width: 290px; }
+  #mdl-dialog #dialog-title {
+    padding: 24px 24px 0;
+    margin: 0;
+    font-size: 30px; }
+  #mdl-dialog #dialog-descr {
+    padding: 20px 24px 24px;
+    color: rgba(0, 0, 0, 0.54); }
+    #mdl-dialog #dialog-descr p {
+      margin: 0 0 16px;
+      letter-spacing: 0;
+      font-size: 14px; }
+  #mdl-dialog #dialog-actions {
+    padding: 8px 8px 8px 24px;
+    display: flex;
+    flex-flow: row-reverse wrap; }
+    #mdl-dialog #dialog-actions #dialog-submit, #mdl-dialog #dialog-actions #dialog-close {
+      font-size: 12px;
+      background: 0 0;
+      border: none;
+      border-radius: 2px;
+      min-width: 64px;
+      padding: 0 16px;
+      overflow: hidden;
+      cursor: pointer;
+      line-height: 36px; }
+    #mdl-dialog #dialog-actions #dialog-close {
+      margin-right: 8px; }
+  #mdl-dialog #extend-input, #mdl-dialog #switch-input {
+    width: 50px;
+    margin: 0 5px; }
+  #mdl-dialog #date-input {
+    width: 115px;
+    margin: 0 5px; }
+
+#notes-input {
+  width: 96%;
+  margin: 1%;
+  margin-bottom: 3%; }
+
+.save-notes {
+  position: absolute;
+  bottom: 0;
+  right: 25px;
+  text-transform: none; }
+
 .kanban-board {
   margin: 40px;
   border: 1px solid black;
@@ -160,7 +239,7 @@ h4 {
 .presentation-container {
   position: relative;
   width: 90%;
-  margin: 20px auto 0 auto; }
+  margin: 50px auto 0 auto; }
 
 .overlay {
   position: absolute;
@@ -169,6 +248,13 @@ h4 {
   z-index: 10;
   width: 100%;
   height: 100%; }
+
+.exit-btn {
+  position: absolute;
+  right: 10px;
+  top: 10px; }
+  .exit-btn .exit-icon {
+    font-size: 35px; }
 
 .container {
   margin: 3%; }

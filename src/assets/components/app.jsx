@@ -9,6 +9,16 @@ export default class extends React.Component {
     }
 
     render() {
+        if (this.props.location.pathname === "/presentation") {
+            return (
+                <div>
+                    <main>
+                        {this.props.children}
+                    </main>
+                </div>
+            );
+        }
+
         return (
             <div className="mdl-layout mdl-js-layout mdl-layout--fixed-header">
                 <header className="mdl-layout__header">
