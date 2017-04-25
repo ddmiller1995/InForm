@@ -115,7 +115,7 @@ export default class extends React.Component {
                 </div>
                 <div id="dialog-actions">
                     <button type="button" id="dialog-submit">Save</button>
-                    <button type="button" id="dialog-close">Close</button>
+                    <button type="button" id="dialog-close">Cancel</button>
                 </div>
             </dialog>
         `);
@@ -142,7 +142,7 @@ export default class extends React.Component {
                 </div>
                 <div id="dialog-actions">
                     <button type="button" id="dialog-submit">Save</button>
-                    <button type="button" id="dialog-close">Close</button>
+                    <button type="button" id="dialog-close">Cancel</button>
                 </div>
             </dialog>
         `);
