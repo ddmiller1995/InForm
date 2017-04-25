@@ -68,7 +68,7 @@ export default class extends React.Component {
                 </button>
                 <button className="mdl-button mdl-js-button edit-youth">
                     <a className="mdl-navigation__link" href={"/admin/api/youthvisit/" + 
-                        this.props.currentYouth.youth_visits[this.state.visitIndex].id + "/change/"}>
+                        this.props.currentYouth.youth_visits[this.state.visitIndex].youth_visit_id + "/change/"}>
                         <i className="material-icons">mode_edit</i>
                         Edit Visit Details
                     </a>
@@ -196,7 +196,7 @@ export default class extends React.Component {
     }
 
     postExtend(that) {
-        let visitID = that.props.currentYouth.youth_visits[that.state.visitIndex].id;
+        let visitID = that.props.currentYouth.youth_visits[that.state.visitIndex].youth_visit_id;
         let url = "/api/visit/" + visitID + "/add-extension/";
         let extension = document.getElementById("extend-input").value;
         let data = new FormData();
@@ -214,7 +214,7 @@ export default class extends React.Component {
     }
 
     postSwitch(that) {
-        let visitID = that.props.currentYouth.youth_visits[that.state.visitIndex].id;
+        let visitID = that.props.currentYouth.youth_visits[that.state.visitIndex].youth_visit_id;
         let url = "/api/visit/" + visitID + "/change-placement/";
         let placementID = document.getElementById("placement-dropdown").value;
         let placementStartDate = document.getElementById("date-input").value;
@@ -234,7 +234,7 @@ export default class extends React.Component {
     }
 
     postNotes() {
-        let visitID = this.props.currentYouth.youth_visits[this.state.visitIndex].id;
+        let visitID = this.props.currentYouth.youth_visits[this.state.visitIndex].youth_visit_id;
         let url = "/api/visit/" + visitID + "/edit-note/";
         let notes = document.getElementById("notes-input").value;
         let data = new FormData();

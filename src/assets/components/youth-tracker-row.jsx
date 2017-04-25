@@ -38,7 +38,7 @@ export default class extends React.Component {
     }
 
     postExit() {
-        let visitID = that.props.currentYouth.youth_visits[that.state.visitIndex].id;
+        let visitID = that.props.currentYouth.youth_visits[that.state.visitIndex].youth_visit_id;
         let url = "/api/visit/" + visitID + "/change-placement/";
         let placementID = document.getElementById("placement-dropdown").value;
         let placementStartDate = document.getElementById("date-input").value;
@@ -119,7 +119,6 @@ export default class extends React.Component {
         }
 
         let currentPlacement = this.props.youth.current_placement_type;
-        console.log(this.props.youth);
 
         return (
             <tr>
