@@ -12,17 +12,6 @@ export default class extends React.Component {
     render() {
         return (
             <div className="container youth-detail-container">
-                {/*<div className="homepage-links">
-                    <IndexLink className="progress-link" to="/progress" activeClassName="active">Progress Report</IndexLink>
-                    <a href="#presentation" className="presentation-link">Presentation View</a>
-                </div>
-
-                <div className="add-youth-btn">
-                    <a className="mdl-navigation__link" href="/admin/api/youthvisit/add/">
-                        <i className="material-icons">add</i>
-                        Add Youth
-                    </a>
-                </div>*/}
                 <header className="mdl-layout__header">
                     <div className="mdl-layout__header-row header-fix">
                             <nav className="mdl-navigation homepage-bar">

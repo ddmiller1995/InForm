@@ -23,7 +23,6 @@ export default class extends React.Component {
             <div className="mdl-layout mdl-js-layout mdl-layout--fixed-header">
                 <header className="mdl-layout__header">
                     <div className="mdl-layout__header-row header-fix">
-                        {/*<span className="mdl-layout-title">Youth Haven Portal</span>*/}
                         <a className="mdl-navigation__link navbar-logo" href="#"><img className="navbar-logo" href="#" src="/static/components/img/informlogo.png" alt="Inform"/></a>
                         <div className="mdl-layout-spacer"></div>
                         <nav className="mdl-navigation">
