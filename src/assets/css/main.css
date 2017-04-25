@@ -9,6 +9,9 @@
 
 .navbar-logo {
   height: inherit; }
+  .navbar-logo img {
+    position: relative;
+    top: -2px; }
 
 .header-divider {
   border-right: 1px solid #16222c;
@@ -209,7 +212,7 @@ h4 {
     width: 50px;
     margin: 0 5px; }
   #mdl-dialog #date-input {
-    width: 115px;
+    width: inherit;
     margin: 0 5px; }
 
 #notes-input {
