@@ -7,6 +7,12 @@
   .mdl-layout__header-row .mdl-navigation__link {
     color: #8fbc49; }
 
+.navbar-logo {
+  height: inherit; }
+  .navbar-logo img {
+    position: relative;
+    top: -2px; }
+
 .header-divider {
   border-right: 1px solid #16222c;
   height: 25px; }
@@ -19,17 +25,32 @@
     color: #E17000;
     padding: 15px; }
 
+.homepage-bar {
+  width: 100%; }
+
 .mdl-data-table.mdl-js-data-tabled.youth-tracker-container {
   display: table;
   position: relative;
-  width: 90%;
-  margin: 80px auto 0 auto; }
+  width: 100%;
+  margin: auto; }
 
-.add-youth-btn {
+/* margin: 80px auto 0 auto; */
+/* copied this over from youth-info, close but not the same */
+.add-youth {
   position: absolute;
-  right: 115px;
-  top: 120px; }
+  right: 0; }
+  .add-youth .material-icons {
+    padding: 0 3px 3px 0; }
+  .add-youth .mdl-navigation__link {
+    color: black; }
 
+/*
+.add-youth-btn {
+    position: absolute;
+    right: 115px;
+    top: 120px;
+}
+*/
 .mdl-navigation__link .material-icons {
   padding-bottom: 3px; }
 
@@ -44,24 +65,33 @@
   .add-exit .add-exit-icon {
     padding-bottom: 3px; }
 
-.youth-tracker-container #mdl-dialog {
-  width: 375px; }
-  .youth-tracker-container #mdl-dialog #exit-warning {
-    word-wrap: break-word;
-    white-space: normal;
-    padding: 15px 15px 0 15px; }
-    .youth-tracker-container #mdl-dialog #exit-warning p {
-      line-height: 20px;
-      color: red;
-      font-size: 12px;
-      text-align: center; }
+.youth-tracker-container {
+  width: 100%; }
+  .youth-tracker-container tbody tr:focus, .youth-tracker-container tbody tr:hover {
+    background-color: lightgray; }
+  .youth-tracker-container #mdl-dialog {
+    width: 375px; }
+    .youth-tracker-container #mdl-dialog #exit-warning {
+      word-wrap: break-word;
+      white-space: normal;
+      padding: 15px 15px 0 15px; }
+      .youth-tracker-container #mdl-dialog #exit-warning p {
+        line-height: 20px;
+        color: red;
+        font-size: 12px;
+        text-align: center; }
+
+.youth-table {
+  width: 100%; }
 
 .youth-tracker-container #mdl-dialog input[type="radio"] {
   margin-right: 10px; }
 
 .youth-detail-container {
-  border: 1px solid black;
-  margin: 15px; }
+  border: 1px solid gainsboro;
+  margin: 15px;
+  box-shadow: 0 9px 46px 8px rgba(0, 0, 0, 0.14), 0 11px 15px -7px rgba(0, 0, 0, 0.12), 0 24px 38px 3px rgba(0, 0, 0, 0.2);
+  background-color: white; }
   .youth-detail-container .mdl-layout__header {
     box-shadow: none; }
   .youth-detail-container .mdl-layout__header-row {
@@ -197,7 +227,7 @@ h4 {
     width: 50px;
     margin: 0 5px; }
   #mdl-dialog #date-input {
-    width: 115px;
+    width: inherit;
     margin: 0 5px; }
 
 #notes-input {
@@ -250,5 +280,12 @@ h4 {
 a.mdl-navigation__link.active {
   color: #E17000;
   font-weight: 700; }
+
+body {
+  background-color: #8fbc49; }
+
+.header-fix {
+  position: relative;
+  padding: 0; }
 
 /*# sourceMappingURL=main.css.map */

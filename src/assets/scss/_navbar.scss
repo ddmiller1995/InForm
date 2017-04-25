@@ -13,6 +13,16 @@
     }
 }
 
+.navbar-logo {
+    height: inherit;
+
+    img {
+        // not the ideal solution
+        position:relative;
+        top: -2px;
+    }
+}
+
 .header-divider {
      border-right:1px solid #16222c; 
      height:25px;

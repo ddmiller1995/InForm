@@ -15,3 +15,12 @@ a.mdl-navigation__link.active {
     color: $orange-accent;
     font-weight: 700;
 }
+
+body {
+    background-color: $light-green;
+}
+
+.header-fix {
+    position: relative;
+    padding: 0;
+}

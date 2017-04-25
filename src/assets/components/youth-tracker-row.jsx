@@ -91,15 +91,15 @@ export default class extends React.Component {
                     <p>Where did they exit to? <span><input id="exited-to-input" type="text"></input></span></p>
                     <p>Permanent Housing? 
                         <span> 
-                         Yes <input id="yes-checkbox" name="housing" type="radio" value="true"></input>
-                         No <input id="no-checkbox" name="housing" type="radio" value="false"></input>
-                         Unknown <input id="unknown-checkbox" name="housing" type="radio" value="null"></input>
+                         <input id="yes-checkbox" name="housing" type="radio" value="true"></input>Yes 
+                         <input id="no-checkbox" name="housing" type="radio" value="false"></input>No 
+                         <input id="unknown-checkbox" name="housing" type="radio" value="null"></input>Unknown 
                         </span>
                     </p>
                 </div>
                 <div id="dialog-actions">
                     <button type="button" id="dialog-submit">Save</button>
-                    <button type="button" id="dialog-close">Close</button>
+                    <button type="button" id="dialog-close">Cancel</button>
                 </div>
             </dialog>
         `);

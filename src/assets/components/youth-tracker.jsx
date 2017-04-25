@@ -31,7 +31,7 @@ export default class extends React.Component {
         let youthData = this.getYouthData();
 
         return (
-            <table className="mdl-data-table mdl-js-data-tabled youth-tracker-container">
+            <table className="mdl-data-table mdl-js-data-tabled youth-table youth-tracker-container">
                 <thead>
                     <tr className="header-row">
                         <th className="mdl-data-table__cell--non-numeric">Name</th>
