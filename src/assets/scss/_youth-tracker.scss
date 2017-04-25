@@ -8,6 +8,10 @@
 
 .youth-tracker-container {
     width: 100%;
+
+    tbody tr:focus, tbody tr:hover {
+        background-color: lightgray;
+    }
 }
 
 .youth-table {

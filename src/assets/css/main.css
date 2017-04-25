@@ -7,6 +7,9 @@
   .mdl-layout__header-row .mdl-navigation__link {
     color: #8fbc49; }
 
+.navbar-logo {
+  height: inherit; }
+
 .header-divider {
   border-right: 1px solid #16222c;
   height: 25px; }
@@ -38,13 +41,17 @@
 
 .youth-tracker-container {
   width: 100%; }
+  .youth-tracker-container tbody tr:focus, .youth-tracker-container tbody tr:hover {
+    background-color: lightgray; }
 
 .youth-table {
   width: 100%; }
 
 .youth-detail-container {
-  border: 1px solid black;
-  margin: 15px; }
+  border: 1px solid gainsboro;
+  margin: 15px;
+  box-shadow: 0 9px 46px 8px rgba(0, 0, 0, 0.14), 0 11px 15px -7px rgba(0, 0, 0, 0.12), 0 24px 38px 3px rgba(0, 0, 0, 0.2);
+  background-color: white; }
   .youth-detail-container .mdl-layout__header {
     box-shadow: none; }
   .youth-detail-container .mdl-layout__header-row {
