@@ -11,7 +11,7 @@ export default class extends React.Component {
       
     render() {
         return (
-            <div className="container">
+            <div className="container youth-detail-container">
                 {/*<div className="homepage-links">
                     <IndexLink className="progress-link" to="/progress" activeClassName="active">Progress Report</IndexLink>
                     <a href="#presentation" className="presentation-link">Presentation View</a>
