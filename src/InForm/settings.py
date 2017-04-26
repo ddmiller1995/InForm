@@ -176,3 +176,5 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.BrowsableAPIRenderer',
     )
 }
+
+LOGIN_URL = '/admin/login/'

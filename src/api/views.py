@@ -4,6 +4,7 @@ from datetime import datetime
 from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from rest_framework import status
 from rest_framework.decorators import api_view
@@ -19,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 DATE_STRING_FORMAT = '%Y-%m-%d' # YYYY-MM-DD
 
-class YouthList(APIView):
+class YouthList(LoginRequiredMixin, APIView):
     '''View for the list youth endpoint
 
     GET /api/youth
@@ -29,7 +30,7 @@ class YouthList(APIView):
     '''
 
     renderer_classes = (JSONRenderer, )
-
+    
     def get(self, request, format=None):
 
         json = {
@@ -67,7 +68,7 @@ class YouthList(APIView):
 
         return Response(json, status=status.HTTP_200_OK)
 
-class YouthDetail(APIView):
+class YouthDetail(LoginRequiredMixin, APIView):
     '''View for the youth detail endpoint
 
 
@@ -91,7 +92,7 @@ class YouthDetail(APIView):
         return Response(json, status=status.HTTP_200_OK)
 
 
-class YouthChangePlacement(APIView):
+class YouthChangePlacement(LoginRequiredMixin, APIView):
     '''Change youth placement type
 
     Supported HTTP methods: POST
@@ -168,7 +169,7 @@ class YouthChangePlacement(APIView):
 
         return Response(obj, status=status.HTTP_202_ACCEPTED)
         
-class YouthMarkExited(APIView):
+class YouthMarkExited(LoginRequiredMixin, APIView):
     '''
     Mark a Youth as exited
 
@@ -219,7 +220,7 @@ class YouthMarkExited(APIView):
         obj = {}
         return Response(obj, status=status.HTTP_202_ACCEPTED)
 
-class YouthAddExtension(APIView):
+class YouthAddExtension(LoginRequiredMixin, APIView):
     '''
     Add an extension to a Youth Visit
     '''
@@ -251,7 +252,7 @@ class YouthAddExtension(APIView):
 
         return Response({}, status=status.HTTP_202_ACCEPTED)
 
-class YouthEditNote(APIView):
+class YouthEditNote(LoginRequiredMixin, APIView):
     def post(self, request, youth_visit_id, format=None):
         try:
             youth_visit = YouthVisit.objects.get(pk=youth_visit_id)
@@ -275,7 +276,7 @@ class YouthEditNote(APIView):
         }, status=status.HTTP_202_ACCEPTED)
 
 
-class PlacementTypeList(APIView):
+class PlacementTypeList(LoginRequiredMixin, APIView):
     '''~
     List all placement types
 
