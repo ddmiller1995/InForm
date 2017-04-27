@@ -1,7 +1,7 @@
 import React from 'react';
 import {store, setCurrentYouth} from "./shared-state.js";
 import {Link, IndexLink} from "react-router";
-import { formatDate, formatTime, registerDialog } from '../util.js'
+import { formatDate, formatTime, registerDialog, closeDialog } from '../util.js'
 import "whatwg-fetch";
 
 var moment = require("moment");
@@ -38,13 +38,14 @@ export default class extends React.Component {
     }
 
     postExit() {
-        let visitID = that.props.currentYouth.youth_visits[that.state.visitIndex].youth_visit_id;
-        let url = "/api/visit/" + visitID + "/change-placement/";
-        let placementID = document.getElementById("placement-dropdown").value;
-        let placementStartDate = document.getElementById("date-input").value;
+        let url = "/api/visit/" + this.props.youth.youth_visit_id + "/mark-exited/";
+        let exitDate = document.getElementById("date-input").value;
+        let whereExited = document.getElementById("exited-to-input").value;
+        let permHousing = $('input[name="housing"]:checked').val();
         let data = new FormData();
-        data.append("new_placement_type_id", placementID);
-        data.append("new_placement_start_date", placementStartDate);
+        data.append("exit_date_string", exitDate);
+        data.append("where_exited", whereExited);
+        data.append("permanent_housing", permHousing);
 
         fetch(url, {
             method: "POST",
@@ -58,6 +59,7 @@ export default class extends React.Component {
     }
 
     toggleModal() {
+        let that = this;
         let div = this.buildDialog();
         // if dialog doesn't exist, append it
         if (document.getElementById("mdl-dialog") == null) {
@@ -68,9 +70,9 @@ export default class extends React.Component {
         registerDialog(".youth-tracker-container", 2);
         // create post request on "save", then close modal
         document.getElementById("dialog-submit").addEventListener("click", function () {
-            postExit();
+            that.postExit();
             let dialog = document.querySelector("dialog");
-            closeDialog(dialog, ".youth-info-container", 5);
+            closeDialog(dialog, ".youth-tracker-container", 2);
         });
     }
 
@@ -93,7 +95,7 @@ export default class extends React.Component {
                         <span> 
                          <input id="yes-checkbox" name="housing" type="radio" value="true"></input>Yes 
                          <input id="no-checkbox" name="housing" type="radio" value="false"></input>No 
-                         <input id="unknown-checkbox" name="housing" type="radio" value="null"></input>Unknown 
+                         <input id="unknown-checkbox" name="housing" type="radio" value="Not Provided"></input>Unknown 
                         </span>
                     </p>
                 </div>

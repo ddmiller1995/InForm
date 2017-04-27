@@ -6,10 +6,20 @@ import "whatwg-fetch";
 export default class extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            checked: true
+        };
+    }
+
+    toggleCheckbox() {
+        this.setState({
+            checked: !this.state.checked
+        })
     }
       
     render() {
+        let isChecked = this.state.checked ? "checked" : "";
+        
         return (
             <div className="container youth-detail-container">
                 <header className="mdl-layout__header">
@@ -18,6 +28,10 @@ export default class extends React.Component {
                                 <IndexLink className="mdl-navigation__link progress-link" to="/progress" activeClassName="active">Progress Report</IndexLink>
                                 <div className="header-divider"></div>
                                 <a href="#presentation" className="mdl-navigation__link presentation-link">Presentation View</a>
+                                <div id="show-active">
+                                    <input id="active-only" type="checkbox" onChange={() => this.toggleCheckbox()} checked={this.state.checked}></input>
+                                    <label htmlFor="active-only">Show active</label>
+                                </div>
                                 <div className="add-youth">
                                     <a className="mdl-navigation__link" href="/admin/api/youthvisit/add/">
                                         <i className="material-icons">add</i>
@@ -26,9 +40,6 @@ export default class extends React.Component {
                                 </div>
                             </nav>
                         </div>
-                    <div className="">
-                        
-                    </div>
                 </header>
 
                 <YouthTracker />
