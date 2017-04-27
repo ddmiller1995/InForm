@@ -134,7 +134,7 @@ export default class extends React.Component {
                 <td>{this.wrapIndexLink(this.props.youth.overall_form_progress)}</td>
                 <td>{this.wrapIndexLink(formatDate(this.props.youth.estimated_exit_date))}</td>
                 <td className="exit-column">
-                    {this.props.visit_exit_date ||
+                    {formatDate(this.props.youth.visit_exit_date) ||
                     <button className="mdl-button mdl-js-button add-exit" onClick={() => this.toggleModal()}>
                         <i className="material-icons add-exit-icon">add</i>Add
                     </button>}
