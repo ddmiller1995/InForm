@@ -42,6 +42,7 @@ export default class extends React.Component {
         let exitDate = document.getElementById("date-input").value;
         let whereExited = document.getElementById("exited-to-input").value;
         let permHousing = $('input[name="housing"]:checked').val();
+        console.log(permHousing);
         let data = new FormData();
         data.append("exit_date_string", exitDate);
         data.append("where_exited", whereExited);
@@ -110,6 +111,22 @@ export default class extends React.Component {
         return div;
     }
 
+    checkIfPresentationMode() {
+        let parent = document.querySelector("thead").parentNode.className;
+        if (parent.includes("presentation")) {
+            return
+        } else {
+            return (
+                <td className="exit-column">
+                    {formatDate(this.props.youth.visit_exit_date) ||
+                    <button className="mdl-button mdl-js-button add-exit" onClick={() => this.toggleModal()}>
+                        <i className="material-icons add-exit-icon">add</i>Add
+                    </button>}
+                </td>
+            );
+        }
+    }
+
     render() {
         // show AM school info 12AM-11:59AM, otherwise show PM
         let hour = new Date().getHours();
@@ -121,6 +138,7 @@ export default class extends React.Component {
         }
 
         let currentPlacement = this.props.youth.current_placement_type;
+        let exitColumn = this.checkIfPresentationMode();
 
         return (
             <tr>
@@ -133,12 +151,7 @@ export default class extends React.Component {
                 <td>{this.wrapIndexLink(formatTime(pickupTime))}</td>
                 <td>{this.wrapIndexLink(this.props.youth.overall_form_progress)}</td>
                 <td>{this.wrapIndexLink(formatDate(this.props.youth.estimated_exit_date))}</td>
-                <td className="exit-column">
-                    {formatDate(this.props.youth.visit_exit_date) ||
-                    <button className="mdl-button mdl-js-button add-exit" onClick={() => this.toggleModal()}>
-                        <i className="material-icons add-exit-icon">add</i>Add
-                    </button>}
-                </td>
+                {exitColumn}
             </tr>
         );
     } 

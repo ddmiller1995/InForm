@@ -3,7 +3,7 @@ import {Link, IndexLink} from "react-router";
 import YouthTrackerRow from "./youth-tracker-row.jsx";
 import "whatwg-fetch";
 
-const ALL_YOUTH_API = "/api/youth/";
+const ALL_YOUTH_API = "/api/youth/?activeOnly=true";
 
 export default class extends React.Component {
     constructor(props) {
@@ -49,7 +49,6 @@ export default class extends React.Component {
                             <th>Intake Forms</th>
                             <th>Outtake Forms</th>
                             <th>Planned Exit</th>
-                            <th>Exit Date</th>
                         </tr>
                     </thead>
                     <tbody>
