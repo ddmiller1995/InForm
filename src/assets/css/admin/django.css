@@ -1,0 +1,17 @@
+/*$light-green: #8fbc49;
+$orange-accent: #E17000;*/
+ #header {
+     background: #8fbc49;
+ }
+
+ div.breadcrumbs {
+     background: #6FA99A;
+ }
+
+caption, h2, .submit-row input {
+    background: #8fbc49 !important;
+}
+
+#branding h1, #branding h1 a:link, #branding h1 a:visited {
+    color: white;
+}

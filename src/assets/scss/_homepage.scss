@@ -1,6 +1,53 @@
 @import "variables";
 
-.progress-link, .presentation-link {
-    color: $orange-accent;
-    padding: 15px;
+.homepage-links {
+    position: absolute;
+    top: 120px;
+    left: 100px;
+
+    .progress-link, .presentation-link {
+        color: $orange-accent;
+        padding: 15px;
+    }
 }
+
+.homepage-bar {
+    width:100%;
+}
+
+.mdl-data-table.mdl-js-data-tabled.youth-tracker-container {
+    display: table;
+    position: relative;
+    width: 100%;
+    margin: auto;
+}
+
+.add-youth {
+        position: absolute;
+        right: 0;
+
+        .material-icons {
+            padding: 0 3px 3px 0;
+        }
+
+        .mdl-navigation__link {
+            color: black;
+        }
+}
+
+#show-active {
+    position: absolute;
+    right: 135px;
+
+    #active-only {
+        margin: 7px;
+    }
+}
+
+
+.mdl-navigation__link .material-icons {
+    padding-bottom: 3px;
+}
+
+
+

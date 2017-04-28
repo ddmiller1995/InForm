@@ -9,3 +9,5 @@ src/assets/.sass-cache/*
 *main.css.map
 .idea/*
 src/api/migrations/
+src/log.txt
+npm-debug.log

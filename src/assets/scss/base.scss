@@ -2,13 +2,25 @@
 @import "homepage";
 @import "youth-tracker";
 @import "youth-details";
+@import "youth-info";
+@import "youth-progress";
 @import "variables";
+@import "presentation";
 
 .container {
-    margin: 15px;
+    margin: 3%;
 }
 
 a.mdl-navigation__link.active {
     color: $orange-accent;
     font-weight: 700;
+}
+
+body {
+    background-color: $light-green;
+}
+
+.header-fix {
+    position: relative;
+    padding: 0;
 }

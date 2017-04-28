@@ -5,7 +5,8 @@ var config = require('./webpack.config')
 new WebpackDevServer(webpack(config), {
   publicPath: config.output.publicPath,
   watchOptions: {
-    poll: true
+    poll: true,
+    ignored: /node_modules/
   },
   hot: true,
   inline: true,

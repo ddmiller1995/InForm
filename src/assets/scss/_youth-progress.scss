@@ -1,0 +1,17 @@
+@import "variables";
+
+.kanban-board {
+    margin: 40px;
+    border: 1px solid black;
+    height: 500px;
+    overflow: auto;
+    display: flex;
+    flex: 1;
+    flex-flow: row;
+
+    .col1, .col2, .col3 {
+        border: 1px solid black;
+        height: 500px;
+        width: calc(100% / 3);
+    }
+}

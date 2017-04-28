@@ -1,8 +1,10 @@
 @import "variables";
 
 .youth-detail-container {
-    border: 1px solid black;
+    border: 1px solid rgb(220,220,220);
     margin: 15px;
+    box-shadow: 0 9px 46px 8px rgba(0, 0, 0, 0.14), 0 11px 15px -7px rgba(0, 0, 0, 0.12), 0 24px 38px 3px rgba(0, 0, 0, 0.2);
+    background-color: white;
 
     .mdl-layout__header {
         box-shadow: none;
@@ -16,11 +18,11 @@
         margin: 0 15px;
     }
 
-    .youth-info-divider {
-        border-color: $light-green;
-        width: 40%;
+    .mdl-select.mdl-js-select {
+        padding-bottom: 20px;
     }
 }
- h4 {
-     text-align: left;
- }
+
+h4 {
+    text-align: left;
+}

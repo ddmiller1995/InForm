@@ -1,13 +1,25 @@
-from api.models import Youth, YouthVisit
-from api.serializers import YouthSerializer
-from rest_framework.views import APIView
-from rest_framework.response import Response
+import logging
+from datetime import datetime
+
+from django.http import Http404, JsonResponse
+from django.shortcuts import get_object_or_404, render
+from django.views.decorators.csrf import csrf_exempt
+
 from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.renderers import JSONRenderer
 
-from django.http import JsonResponse, Http404
-from django.shortcuts import get_object_or_404
+from api.models import PlacementType, Youth, YouthVisit
+from api.serializers import (PlacementTypeSerializer, serialize_youth,
+                             serialize_youth_visit)
 
-def youth_list(request):
+logger = logging.getLogger(__name__)
+
+DATE_STRING_FORMAT = '%Y-%m-%d' # YYYY-MM-DD
+
+class YouthList(APIView):
     '''View for the list youth endpoint
 
     GET /api/youth
@@ -15,128 +27,270 @@ def youth_list(request):
         Param: search=john (optional search param filters search results)
         Returns: Array of youth objects
     '''
-    json = {
-        'youth': []
-    }
 
-    active_only = False
-    if 'activeOnly' in request.GET:
-        active_only = request.GET['activeOnly'].lower()
-        active_only = active_only == 'true'
+    renderer_classes = (JSONRenderer, )
 
-    youth_list = Youth.GetActiveYouth() if active_only else Youth.objects.all()
+    def get(self, request, format=None):
 
-    searchQuery = False
-    if 'search' in request.GET:
-        search = request.GET['search']
-        # insert code here to filter youth_list
-
-    for youth in youth_list:
-
-        obj = { # Youth fields
-            'id': youth.pk,
-            'name': youth.youth_name,
-            'dob': youth.date_of_birth,
-            'ethnicity': youth.ethnicity,
+        json = {
+            'youth': []
         }
 
-        youth_visit = None
-        try:
-            # TODO: should change this later to "get most recent visit", since a youth could have multiple visits
-            youth_visit = YouthVisit.objects.get(youth_id=youth) 
+        active_only = False
+        if 'activeOnly' in request.query_params:
+            active_only = request.query_params['activeOnly'].lower()
+            active_only = active_only == 'true'
 
-            obj['placement_date'] = youth_visit.placement_date
-            obj['city_of_origin'] = youth_visit.city_of_origin
-            obj['guardian_name'] = youth_visit.guardian_name
-            obj['placement_type'] = {
-                'placement_type_name': youth_visit.placement_type.placement_type_name,
-                'default_stay_length': youth_visit.placement_type.default_stay_length
-            }
-            obj['referred_by'] = youth_visit.referred_by
-            obj['permanent_housing'] = youth_visit.permanent_housing
-            obj['exited_to'] = youth_visit.exited_to
-            obj['case_manager'] = {
-                'first_name': youth_visit.case_manager.first_name,
-                'last_name': youth_visit.case_manager.last_name,
-                'username': youth_visit.case_manager.username,
-            }
-            obj['personal_counselor'] = {
-                'first_name': youth_visit.personal_counselor.first_name,
-                'last_name': youth_visit.personal_counselor.last_name,
-                'username': youth_visit.personal_counselor.username,
-            }
-            obj['school'] = {
-                'school_name': youth_visit.school.school_name,
-                'school_district': youth_visit.school.school_district,
-                'school_phone': youth_visit.school.school_phone,
-            }
+        youth_list = Youth.get_active_youth() if active_only else Youth.objects.all()
 
-            obj['school_am_transport'] = youth_visit.school_am_transport
-            obj['school_am_pickup_time'] = youth_visit.school_am_pickup_time
-            obj['school_am_phone'] = youth_visit.school_am_phone
-            obj['school_pm_transport'] = youth_visit.school_pm_transport
-            obj['school_pm_dropoff_time'] = youth_visit.school_pm_dropoff_time
-            obj['school_pm_phone'] = youth_visit.school_pm_phone
+        searchQuery = False
+        if 'search' in request.query_params:
+            search = request.query_params['search']
+            # insert code here to filter youth_list
 
-        except YouthVisit.DoesNotExist:
-            pass # idk why this would happen, but it could
+        for youth in youth_list:
 
+            serialized_youth = serialize_youth(youth)
 
-        json['youth'].append(obj)
-    return JsonResponse(json)
+            try:
+                youth_visit = youth.latest_youth_visit()
+            except YouthVisit.DoesNotExist:
+                logger.warn(f'Youth with pk={youth.pk} doesn"t have any youth_visits')
+                continue
 
-def youth_detail(request, youth_id):
+            serialized_youth_visit = serialize_youth_visit(youth_visit)
+
+            # merge both serialized objects, keep items from second object if conflicts
+            obj = {**serialized_youth_visit, **serialized_youth}
+
+            json['youth'].append(obj)
+
+        return Response(json, status=status.HTTP_200_OK)
+
+class YouthDetail(APIView):
     '''View for the youth detail endpoint
 
 
     GET /api/youth/ (pk is an int which represents a youth's primary key)
         Returns: Youth object for the youth with that PK
     '''
-    youth = get_object_or_404(Youth, pk=youth_id)
-    obj = {# more fields need to be added to response
-        'id': youth.pk,
-        'name': youth.youth_name,
-        'dob': youth.date_of_birth,
-        'ethnicity': youth.ethnicity
-    }
-    return JsonResponse(obj)
 
-def youth_detail_chart(request, youth_id):
-    '''View for the list youth endpoint
+    renderer_classes = (JSONRenderer, )
 
-    PUT /api/youth/PK/progress-chart
-        (create or update operation for the progress chart.
-        Once a user presses "save changes", the front end will persist changes with this PUT request)
-        Returns: response code 201
+    def get(self, request, youth_id, format=None):
+        youth = get_object_or_404(Youth, pk=youth_id)
+        json = serialize_youth(youth)
+
+        youth_visits = []
+        for youth_visit in YouthVisit.objects.filter(youth_id=youth).order_by('-current_placement_start_date'):
+            serialized_youth_visit = serialize_youth_visit(youth_visit)
+            youth_visits.append(serialized_youth_visit)
+
+        json['youth_visits'] = youth_visits 
+
+        return Response(json, status=status.HTTP_200_OK)
+
+
+class YouthChangePlacement(APIView):
+    '''Change youth placement type
+
+    Supported HTTP methods: POST
+    
+    Params:
+        - youth_visit_id is parsed from the url and represents the pk
+            of the youth_visit whose placement we are going to change
+        - new_placement_type_id is a POST param that is required. It 
+            is the pk of the placement_type that is going to be set on
+            the youth_visit
+
+            NOTE: You may need to first query the /api/placement-type endpoint
+            to get all of the placement types and their PKs 
+
+    Success:
+        - If the request was succesfull, you will receive a
+            HTTP_202_ACCEPTED response
+    Failure:
+        - If the request does not include a valid youth_visit_id,
+            you will get a HTTP_404_NOT_FOUND response
+        - If the request does not include a new_placement_type_id
+            POST param, you will receive a HTTP_400_BAD_REQUEST response
+        - If the request does not include a valid new_placement_type_id,
+            you will receive a HTTP_404_NOT_FOUND response
+
+        - All failure responses will have a "error" header with an
+            error message
     '''
 
-    if request.method == 'PUT' or True: # or True for debugging with GET, replace with PUT only in prod
-        youth = get_object_or_404(Youth, pk=youth_id)
-        obj = {# more fields need to be added to response
-            'id': youth.pk,
-            'name': youth.youth_name,
-            'dob': youth.date_of_birth,
-            'ethnicity': youth.ethnicity,
-            'stuff': True
+    renderer_classes = (JSONRenderer, )
+
+    def post(self, request, youth_visit_id, format=None):
+        # year/month/day YYYY-MM-DD
+        try:
+            youth_visit = YouthVisit.objects.get(pk=youth_visit_id)
+        except YouthVisit.DoesNotExist:
+            response = Response(status=status.HTTP_404_NOT_FOUND)
+            response['error'] = 'Youth visit pk=%s does not exist' % youth_visit_id
+            return response
+
+        new_placement_type_id = request.POST.get('new_placement_type_id', None)
+
+        if not new_placement_type_id:
+            response = Response(status=status.HTTP_400_BAD_REQUEST)
+            response['error'] = 'Missing POST param "new_placement_type_id"'
+            return response
+            
+        try:
+            new_placement_type = PlacementType.objects.get(pk=new_placement_type_id)
+        except PlacementType.DoesNotExist:
+            response = Response(status=status.HTTP_404_NOT_FOUND)
+            response['error'] = 'Placement type pk=%s does not exist' % new_placement_type_id
+            return response
+
+
+        new_placement_start_date_string = request.POST.get('new_placement_start_date', None)
+
+        if not new_placement_start_date_string:
+            response = Response(status=status.HTTP_400_BAD_REQUEST)
+            response['error'] = 'Missing POST param "new_placement_start_date"'
+            return response
+            
+        youth_visit.current_placement_type = new_placement_type
+        youth_visit.current_placement_extension_days = 0
+        
+        youth_visit.current_placement_start_date = datetime.strptime(new_placement_start_date_string, DATE_STRING_FORMAT)
+        youth_visit.save()
+
+        obj = {
+            'updated_youth_visit_id': youth_visit.id,
+            'new_placement_type_id': new_placement_type.id,
+            'new_placement_start_date': youth_visit.current_placement_start_date.strftime(DATE_STRING_FORMAT)
         }
-        return JsonResponse(obj)
-    else:
-        raise Http404
+
+        return Response(obj, status=status.HTTP_202_ACCEPTED)
+        
+class YouthMarkExited(APIView):
+    '''
+    Mark a Youth as exited
+
+    Input:
+        * Exit date
+        * Where exited (string)
+        * permanent housing (bool)
+    '''
+    renderer_classes = (JSONRenderer, )
+
+    def post(self, request, youth_visit_id, format=None):
+        try:
+            youth_visit = YouthVisit.objects.get(pk=youth_visit_id)
+        except YouthVisit.DoesNotExist:
+            response = Response(status=status.HTTP_404_NOT_FOUND)
+            response['error'] = 'Youth visit pk=%s does not exist' % youth_visit_id
+            return response
+
+        exit_date_string = request.POST.get('exit_date_string', None)
+        if not exit_date_string:
+            response = Response(status=status.HTTP_400_BAD_REQUEST)
+            response['error'] = 'Missing POST param "exit_date_string"'
+            return response
+
+        where_exited = request.POST.get('where_exited', None)
+        if not where_exited:
+            response = Response(status=status.HTTP_400_BAD_REQUEST)
+            response['error'] = 'Missing POST param "where_exited"'
+            return response 
+
+        permanent_housing = request.POST.get('permanent_housing', None)
+        if not permanent_housing:
+            response = Response(status=status.HTTP_400_BAD_REQUEST)
+            response['error'] = 'Missing POST param "permanent_housing"'
+            return response
+        if not permanent_housing in ['true', 'True', 'false', 'False']:
+            response = Response(status=status.HTTP_406_NOT_ACCEPTABLE)
+            response['error'] = 'POST param "permanent_housing" should be a true or false value'
+            return response
+        permanent_housing = permanent_housing in ['true', 'True']
 
 
+        youth_visit.visit_exit_date = datetime.strptime(exit_date_string, DATE_STRING_FORMAT)
+        youth_visit.exited_to = where_exited
+        youth_visit.permanent_housing = permanent_housing
+        youth_visit.save()
 
-class YouthList(APIView):
-    """
-    List all youths, or create a new youth.
-    """
+        obj = {}
+        return Response(obj, status=status.HTTP_202_ACCEPTED)
+
+class YouthAddExtension(APIView):
+    '''
+    Add an extension to a Youth Visit
+    '''
+    def post(self, request, youth_visit_id, format=None):
+        try:
+            youth_visit = YouthVisit.objects.get(pk=youth_visit_id)
+        except YouthVisit.DoesNotExist:
+            response = Response(status=status.HTTP_404_NOT_FOUND)
+            response['error'] = 'Youth visit pk=%s does not exist' % youth_visit_id
+            return response
+
+        extension = request.POST.get('extension', None)
+        if not extension:
+            response = Response(status=status.HTTP_400_BAD_REQUEST)
+            response['error'] = 'Missing POST param "extension"'
+            return response
+
+        try:
+            extension = int(extension)
+        except ValueError:
+            msg = 'Non int POST param passed to add extension endpoint'
+            logger.warn(msg)
+            response = Response(status=status.HTTP_406_NOT_ACCEPTABLE)
+            response['error'] = msg
+            return response  
+
+        youth_visit.current_placement_extension_days += int(extension)
+        youth_visit.save()
+
+        return Response({}, status=status.HTTP_202_ACCEPTED)
+
+class YouthEditNote(APIView):
+    def post(self, request, youth_visit_id, format=None):
+        try:
+            youth_visit = YouthVisit.objects.get(pk=youth_visit_id)
+        except YouthVisit.DoesNotExist:
+            response = Response(status=status.HTTP_404_NOT_FOUND)
+            response['error'] = 'Youth visit pk=%s does not exist' % youth_visit_id
+            return response
+
+        note = request.POST.get('note', None)
+        if not note:
+            response = Response(status=status.HTTP_400_BAD_REQUEST)
+            response['error'] = 'Missing POST param "note"'
+            return response
+
+        youth_visit.notes = note
+        youth_visit.save()
+
+        return Response({
+            'youth_visit_id': youth_visit_id,
+            'note': note
+        }, status=status.HTTP_202_ACCEPTED)
+
+
+class PlacementTypeList(APIView):
+    '''~
+    List all placement types
+
+    Supported HTTP methods: GET
+    
+    GET /api/placement-type returns JSON response
+    
+    '''
+
+    renderer_classes = (JSONRenderer, )
+
     def get(self, request, format=None):
-        youths = Youth.objects.all()
-        serializer = YouthSerializer(youths, many=True)
+        placement_types = PlacementType.objects.all()
+        serializer = PlacementTypeSerializer(placement_types, many=True)
         return Response(serializer.data)
 
-    def post(self, request, format=None):
-        serializer = YouthSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+def api_docs(request):
+    return render(request, 'api/docs.html')

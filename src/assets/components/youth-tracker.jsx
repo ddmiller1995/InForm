@@ -1,6 +1,10 @@
 import React from 'react';
+import {Link, IndexLink} from "react-router";
 import YouthTrackerRow from "./youth-tracker-row.jsx";
 import "whatwg-fetch";
+
+const ALL_YOUTH_API = "/api/youth/?activeOnly=";
+let showActive = true;
 
 export default class extends React.Component {
     constructor(props) {
@@ -9,53 +13,57 @@ export default class extends React.Component {
     }
 
     componentDidMount() {
-        let data = [{
-            name: "John Smith",
-            DOB: "11/12/2001",
-            ethnicity: "African American",
-            city: "Tukwila",
-            entryDate: "2/13/2017",
-            intakeProgress: "Progress",
-            outtakeProgress: "Progress",
-            caseGoalProgress: "Progress",
-            expectedExit: "3/2/2017"
-        }];
+        fetch(ALL_YOUTH_API + showActive)
+            .then(response => response.json())
+            .then(data => this.setState({ youth: data }))
+            .catch(err => alert(err.message));
 
-        this.setState({
-            youth: data
-        });
+        this.registerActiveOnly();
     }
 
     getYouthData() {
         let rows;
         if (this.state.youth) { 
-            rows = this.state.youth.map(youth => <YouthTrackerRow key={youth.name} youth={youth} />);
+            rows = this.state.youth.youth.map(youth => <YouthTrackerRow key={youth.name} youth={youth} />);
         }
         return rows;
+    }
+
+    registerActiveOnly() {
+        let that = this;
+        $("#active-only").change(function() {
+            showActive = !showActive;
+
+            fetch(ALL_YOUTH_API + showActive)
+                .then(response => response.json())
+                .then(data => that.setState({ youth: data }))
+                .catch(err => alert(err.message));
+        });
     }
 
     render() {
         let youthData = this.getYouthData();
 
         return (
-            <div className="youth-tracker-container">
-                <table className="mdl-data-table mdl-js-data-tabled">
-                    <thead>
-                        <tr>
-                            <th className="mdl-data-table__cell--non-numeric">Name</th>
-                            <th>DOB</th>
-                            <th>Entry Date</th>
-                            <th>Intake Forms</th>
-                            <th>Outtake Forms</th>
-                            <th>Case Goals</th>
-                            <th>Planned Exit</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {youthData}
-                    </tbody>
-                </table>
-            </div>
+            <table className="mdl-data-table mdl-js-data-tabled youth-table youth-tracker-container">
+                <thead>
+                    <tr className="header-row">
+                        <th className="mdl-data-table__cell--non-numeric">Name</th>
+                        <th>DOB</th>
+                        <th>Entry Date</th>
+                        <th>Placement</th>
+                        <th>School</th>
+                        <th>School Transport</th>
+                        <th>Pickup/Dropoff</th>
+                        <th>Form Progress</th>
+                        <th>Estimated Exit</th>
+                        <th>Exit Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {youthData}
+                </tbody>
+            </table>
         );
     } 
 }
