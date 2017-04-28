@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404, render
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.mixins import LoginRequiredMixin
 
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -20,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 DATE_STRING_FORMAT = '%Y-%m-%d' # YYYY-MM-DD
 
-class YouthList(LoginRequiredMixin, APIView):
+class YouthList(APIView):
     '''View for the list youth endpoint
 
     GET /api/youth
@@ -30,7 +31,8 @@ class YouthList(LoginRequiredMixin, APIView):
     '''
 
     renderer_classes = (JSONRenderer, )
-    
+    # permission_classes = (IsAuthenticated,)
+
     def get(self, request, format=None):
 
         json = {
@@ -68,7 +70,7 @@ class YouthList(LoginRequiredMixin, APIView):
 
         return Response(json, status=status.HTTP_200_OK)
 
-class YouthDetail(LoginRequiredMixin, APIView):
+class YouthDetail(APIView):
     '''View for the youth detail endpoint
 
 
@@ -77,6 +79,7 @@ class YouthDetail(LoginRequiredMixin, APIView):
     '''
 
     renderer_classes = (JSONRenderer, )
+    # permission_classes = (IsAuthenticated,)
 
     def get(self, request, youth_id, format=None):
         youth = get_object_or_404(Youth, pk=youth_id)
@@ -92,7 +95,7 @@ class YouthDetail(LoginRequiredMixin, APIView):
         return Response(json, status=status.HTTP_200_OK)
 
 
-class YouthChangePlacement(LoginRequiredMixin, APIView):
+class YouthChangePlacement(APIView):
     '''Change youth placement type
 
     Supported HTTP methods: POST
@@ -123,6 +126,7 @@ class YouthChangePlacement(LoginRequiredMixin, APIView):
     '''
 
     renderer_classes = (JSONRenderer, )
+    # permission_classes = (IsAuthenticated,)
 
     def post(self, request, youth_visit_id, format=None):
         # year/month/day YYYY-MM-DD
@@ -169,7 +173,7 @@ class YouthChangePlacement(LoginRequiredMixin, APIView):
 
         return Response(obj, status=status.HTTP_202_ACCEPTED)
         
-class YouthMarkExited(LoginRequiredMixin, APIView):
+class YouthMarkExited(APIView):
     '''
     Mark a Youth as exited
 
@@ -179,6 +183,7 @@ class YouthMarkExited(LoginRequiredMixin, APIView):
         * permanent housing (bool)
     '''
     renderer_classes = (JSONRenderer, )
+    # permission_classes = (IsAuthenticated,)
 
     def post(self, request, youth_visit_id, format=None):
         try:
@@ -220,10 +225,14 @@ class YouthMarkExited(LoginRequiredMixin, APIView):
         obj = {}
         return Response(obj, status=status.HTTP_202_ACCEPTED)
 
-class YouthAddExtension(LoginRequiredMixin, APIView):
+class YouthAddExtension(APIView):
     '''
     Add an extension to a Youth Visit
     '''
+
+    renderer_classes = (JSONRenderer, )
+    # permission_classes = (IsAuthenticated,)
+
     def post(self, request, youth_visit_id, format=None):
         try:
             youth_visit = YouthVisit.objects.get(pk=youth_visit_id)
@@ -252,7 +261,12 @@ class YouthAddExtension(LoginRequiredMixin, APIView):
 
         return Response({}, status=status.HTTP_202_ACCEPTED)
 
-class YouthEditNote(LoginRequiredMixin, APIView):
+class YouthEditNote(APIView):
+    '''Edit a Youth visit's note
+    '''
+    renderer_classes = (JSONRenderer, )
+    # permission_classes = (IsAuthenticated,)
+
     def post(self, request, youth_visit_id, format=None):
         try:
             youth_visit = YouthVisit.objects.get(pk=youth_visit_id)
@@ -276,7 +290,7 @@ class YouthEditNote(LoginRequiredMixin, APIView):
         }, status=status.HTTP_202_ACCEPTED)
 
 
-class PlacementTypeList(LoginRequiredMixin, APIView):
+class PlacementTypeList(APIView):
     '''~
     List all placement types
 
@@ -287,6 +301,7 @@ class PlacementTypeList(LoginRequiredMixin, APIView):
     '''
 
     renderer_classes = (JSONRenderer, )
+    # permission_classes = (IsAuthenticated,)
 
     def get(self, request, format=None):
         placement_types = PlacementType.objects.all()
