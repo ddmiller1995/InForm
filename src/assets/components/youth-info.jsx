@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import {Link, IndexLink} from "react-router";
-import { formatDate, getDateDiff, formatTime, registerDialog, closeDialog } from '../util.js'
+import { formatDate, getDateDiff, formatTime, registerDialog, closeDialog, postRequest } from '../util.js'
 import "whatwg-fetch";
 
 var moment = require("moment");
@@ -114,7 +114,7 @@ export default class extends React.Component {
                 <div id="dialog-descr">
                     <p>Extend stay for ${this.props.currentYouth.name}</p>
                     <p>Current extension days: 
-                        ${this.props.currentYouth.youth_visits[this.state.visitIndex].current_placement_type[this.props.currentYouth.youth_visits[this.state.visitIndex].current_placement_type.length -1].current_placement_extension_days}
+                        ${this.props.currentYouth.youth_visits[this.state.visitIndex].current_placement_type.current_placement_extension_days}
                     </p>
                     <p>Extend by 
                         <span>
@@ -143,7 +143,7 @@ export default class extends React.Component {
                 <div id="dialog-descr">
                     <p>Switch beds for ${this.props.currentYouth.name}</p>
                     <p>Current placement: 
-                        ${this.props.currentYouth.youth_visits[this.state.visitIndex].current_placement_type[this.props.currentYouth.youth_visits[this.state.visitIndex].current_placement_type.length -1].name}
+                        ${this.props.currentYouth.youth_visits[this.state.visitIndex].current_placement_type.name}
                     </p>
                     <p>New placement: 
                         <span><select className="mdl-select__input" id="placement-dropdown" name="placement"></select></span>
@@ -202,15 +202,7 @@ export default class extends React.Component {
         let data = new FormData();
         data.append("extension", extension);
 
-        fetch(url, {
-            method: "POST",
-            body: data
-        }).then(function(response) {
-            console.log(response);
-            window.location.reload();
-        }).catch(err => {
-            alert(err);
-        })
+        postRequest(url, data, "unable to add extension");
     }
 
     postSwitch(that) {
@@ -222,15 +214,7 @@ export default class extends React.Component {
         data.append("new_placement_type_id", placementID);
         data.append("new_placement_start_date", placementStartDate);
 
-        fetch(url, {
-            method: "POST",
-            body: data
-        }).then((resp) => {
-            console.log(resp);
-            window.location.reload();
-        }).catch(err => {
-            alert(err);
-        })
+        postRequest(url, data, "unable to switch beds");
     }
 
     postNotes() {
@@ -240,14 +224,7 @@ export default class extends React.Component {
         let data = new FormData();
         data.append("note", notes);
 
-        fetch(url, {
-            method: "POST",
-            body: data
-        }).then(response => {
-            console.log(response);
-        }).catch(ex => {
-            console.log(ex);
-        })
+        postRequest(url, data, "unable to save notes");
     }
 
     render() {
@@ -259,7 +236,6 @@ export default class extends React.Component {
             visitDates = this.getVisits(visits, visitDates);
 
             currentVisit = visits[this.state.visitIndex];
-            currentPlacement = currentVisit.current_placement_type[currentVisit.current_placement_type.length -1];
         }
 
         if (currentVisit == null) {
@@ -301,15 +277,15 @@ export default class extends React.Component {
                             </p>
                             <p>Current Placement Date:  
                                 <span className="value"> 
-                                    {formatDate(currentPlacement.current_placement_start_date)}
+                                    {formatDate(currentVisit.current_placement_type.current_placement_start_date)}
                                 </span>
                             </p>
                             <p>Placement Type:  
-                                <span className="value"> {currentPlacement.name}</span>
+                                <span className="value"> {currentVisit.current_placement_type.name}</span>
                             </p>
                             <p>Estimated Stay:  
-                                <span className="value"> { currentPlacement.default_stay_length} days (+ 
-                                    { currentPlacement.current_placement_extension_days} day extension)
+                                <span className="value"> { currentVisit.current_placement_type.default_stay_length} days (+ 
+                                    { currentVisit.current_placement_type.current_placement_extension_days} day extension)
                                 </span>
                             </p>
                         </div>
