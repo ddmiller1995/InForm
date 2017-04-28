@@ -35,6 +35,16 @@
         }
 }
 
+#show-active {
+    position: absolute;
+    right: 135px;
+
+    #active-only {
+        margin: 7px;
+    }
+}
+
+
 .mdl-navigation__link .material-icons {
     padding-bottom: 3px;
 }
