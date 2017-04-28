@@ -3,15 +3,23 @@
 .kanban-board {
     margin: 40px;
     border: 1px solid black;
-    height: 500px;
-    overflow: auto;
+    min-height: 500px;
+    overflow: visible;
     display: flex;
     flex: 1;
     flex-flow: row;
 
-    .col1, .col2, .col3 {
-        border: 1px solid black;
-        height: 500px;
+    .col {
+        border-right: 1px solid black;
         width: calc(100% / 3);
+
+        .demo-card-wide.mdl-card {
+            width: 90%;
+            margin: 20px auto;
+        }
+    }
+
+    .col:nth-of-type(3) {
+        border-right: none;
     }
 }

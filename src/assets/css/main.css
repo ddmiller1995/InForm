@@ -214,15 +214,19 @@ h4 {
 .kanban-board {
   margin: 40px;
   border: 1px solid black;
-  height: 500px;
-  overflow: auto;
+  min-height: 500px;
+  overflow: visible;
   display: flex;
   flex: 1;
   flex-flow: row; }
-  .kanban-board .col1, .kanban-board .col2, .kanban-board .col3 {
-    border: 1px solid black;
-    height: 500px;
+  .kanban-board .col {
+    border-right: 1px solid black;
     width: calc(100% / 3); }
+    .kanban-board .col .demo-card-wide.mdl-card {
+      width: 90%;
+      margin: 20px auto; }
+  .kanban-board .col:nth-of-type(3) {
+    border-right: none; }
 
 .presentation-container {
   position: relative;
