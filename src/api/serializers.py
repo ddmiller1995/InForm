@@ -82,6 +82,22 @@ def serialize_youth_visit(youth_visit):
     return obj
 
 
+def serialize_form_youth_visit(form_youth_vist):
+    'Serialize the form_youth_visit object'
+
+    obj = {}
+
+    obj['form_name'] = form_youth_visit.form_id.form_name
+    obj['form_type'] = form_youth_vist.form_id.form_type_id.form_type_name
+    obj['form_description'] = form_youth_visit.form_id.form_description
+    obj['default_due_date'] = form_youth_visit.form_id.default_due_date
+    obj['required'] = form_youth_visit.form_id.required
+    obj['status'] = form_youth_visit.status
+    obj['completed_by'] = serialize_user(form_youth_visit.user_id)
+
+    return obj
+    
+
 class PlacementTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = PlacementType

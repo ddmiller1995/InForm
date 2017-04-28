@@ -11,9 +11,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.renderers import JSONRenderer
 
-from api.models import PlacementType, Youth, YouthVisit
+from api.models import PlacementType, Youth, YouthVisit, FormYouthVisit
 from api.serializers import (PlacementTypeSerializer, serialize_youth,
-                             serialize_youth_visit)
+                             serialize_youth_visit, serialize_form_youth_visit)
 
 logger = logging.getLogger(__name__)
 
@@ -87,6 +87,18 @@ class YouthDetail(APIView):
             youth_visits.append(serialized_youth_visit)
 
         json['youth_visits'] = youth_visits 
+
+        return Response(json, status=status.HTTP_200_OK)
+
+class YouthForms(APIView):
+
+    def get(self, request, youth_id, format=None):
+        youth = get_object_or_404(Youth, pk=youth_id)
+        latest_youth_visit_id = youth.latest_youth_visit().pk
+        json = []
+        for form_youth_visit in FormYouthVisit.objects.filter(youth_visit_id=latest_youth_visit_id):
+            serialized_form_youth_visit - serialize_form_youth_visit(form_youth_visit)
+            json.append(serialized_form_youth_visit)
 
         return Response(json, status=status.HTTP_200_OK)
 
