@@ -4,7 +4,7 @@ import YouthTrackerRow from "./youth-tracker-row.jsx";
 import "whatwg-fetch";
 
 const ALL_YOUTH_API = "/api/youth/?activeOnly=";
-let showActive = "true";
+let showActive = true;
 
 export default class extends React.Component {
     constructor(props) {
@@ -17,6 +17,8 @@ export default class extends React.Component {
             .then(response => response.json())
             .then(data => this.setState({ youth: data }))
             .catch(err => alert(err.message));
+
+        this.registerActiveOnly();
     }
 
     getYouthData() {
@@ -27,11 +29,23 @@ export default class extends React.Component {
         return rows;
     }
 
+    registerActiveOnly() {
+        let that = this;
+        $("#active-only").change(function() {
+            showActive = !showActive;
+
+            fetch(ALL_YOUTH_API + showActive)
+                .then(response => response.json())
+                .then(data => that.setState({ youth: data }))
+                .catch(err => alert(err.message));
+        });
+    }
+
     render() {
         let youthData = this.getYouthData();
 
         return (
-            <table className="mdl-data-table mdl-js-data-tabled youth-tracker-container">
+            <table className="mdl-data-table mdl-js-data-tabled youth-table youth-tracker-container">
                 <thead>
                     <tr className="header-row">
                         <th className="mdl-data-table__cell--non-numeric">Name</th>

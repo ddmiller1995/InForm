@@ -53,7 +53,7 @@ def serialize_youth_visit(youth_visit):
         'default_stay_length': youth_visit.current_placement_type.default_stay_length,
         'current_placement_start_date': youth_visit.current_placement_start_date,
         'current_placement_extension_days': youth_visit.current_placement_extension_days
-    },
+    }
     obj['estimated_exit_date'] = youth_visit.estimated_exit_date()
     if youth_visit.school is not None:
         obj['school'] = {

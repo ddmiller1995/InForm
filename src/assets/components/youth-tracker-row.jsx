@@ -1,7 +1,7 @@
 import React from 'react';
 import {store, setCurrentYouth} from "./shared-state.js";
 import {Link, IndexLink} from "react-router";
-import { formatDate, formatTime, registerDialog } from '../util.js'
+import { formatDate, formatTime, registerDialog, closeDialog, postRequest } from '../util.js'
 import "whatwg-fetch";
 
 var moment = require("moment");
@@ -38,26 +38,20 @@ export default class extends React.Component {
     }
 
     postExit() {
-        let visitID = that.props.currentYouth.youth_visits[that.state.visitIndex].youth_visit_id;
-        let url = "/api/visit/" + visitID + "/change-placement/";
-        let placementID = document.getElementById("placement-dropdown").value;
-        let placementStartDate = document.getElementById("date-input").value;
+        let url = "/api/visit/" + this.props.youth.youth_visit_id + "/mark-exited/";
+        let exitDate = document.getElementById("date-input").value;
+        let whereExited = document.getElementById("exited-to-input").value;
+        let permHousing = $('input[name="housing"]:checked').val();
         let data = new FormData();
-        data.append("new_placement_type_id", placementID);
-        data.append("new_placement_start_date", placementStartDate);
+        data.append("exit_date_string", exitDate);
+        data.append("where_exited", whereExited);
+        data.append("permanent_housing", permHousing);
 
-        fetch(url, {
-            method: "POST",
-            body: data
-        }).then((resp) => {
-            console.log(resp);
-            window.location.reload();
-        }).catch(err => {
-            alert(err);
-        })
+        postRequest(url, data, "unable to add exit date");
     }
 
     toggleModal() {
+        let that = this;
         let div = this.buildDialog();
         // if dialog doesn't exist, append it
         if (document.getElementById("mdl-dialog") == null) {
@@ -68,9 +62,9 @@ export default class extends React.Component {
         registerDialog(".youth-tracker-container", 2);
         // create post request on "save", then close modal
         document.getElementById("dialog-submit").addEventListener("click", function () {
-            postExit();
+            that.postExit();
             let dialog = document.querySelector("dialog");
-            closeDialog(dialog, ".youth-info-container", 5);
+            closeDialog(dialog, ".youth-tracker-container", 2);
         });
     }
 
@@ -91,21 +85,37 @@ export default class extends React.Component {
                     <p>Where did they exit to? <span><input id="exited-to-input" type="text"></input></span></p>
                     <p>Permanent Housing? 
                         <span> 
-                         Yes <input id="yes-checkbox" name="housing" type="radio" value="true"></input>
-                         No <input id="no-checkbox" name="housing" type="radio" value="false"></input>
-                         Unknown <input id="unknown-checkbox" name="housing" type="radio" value="null"></input>
+                         <input id="yes-checkbox" name="housing" type="radio" value="true"></input>Yes 
+                         <input id="no-checkbox" name="housing" type="radio" value="false"></input>No 
+                         <input id="unknown-checkbox" name="housing" type="radio" value="Not Provided"></input>Unknown 
                         </span>
                     </p>
                 </div>
                 <div id="dialog-actions">
                     <button type="button" id="dialog-submit">Save</button>
-                    <button type="button" id="dialog-close">Close</button>
+                    <button type="button" id="dialog-close">Cancel</button>
                 </div>
             </dialog>
         `);
 
         div.innerHTML = modal;
         return div;
+    }
+
+    checkIfPresentationMode() {
+        let parent = document.querySelector("thead").parentNode.className;
+        if (parent.includes("presentation")) {
+            return
+        } else {
+            return (
+                <td className="exit-column">
+                    {formatDate(this.props.youth.visit_exit_date) ||
+                    <button className="mdl-button mdl-js-button add-exit" onClick={() => this.toggleModal()}>
+                        <i className="material-icons add-exit-icon">add</i>Add
+                    </button>}
+                </td>
+            );
+        }
     }
 
     render() {
@@ -119,24 +129,20 @@ export default class extends React.Component {
         }
 
         let currentPlacement = this.props.youth.current_placement_type;
+        let exitColumn = this.checkIfPresentationMode();
 
         return (
             <tr>
                 <td className="mdl-data-table__cell--non-numeric">{this.wrapIndexLink(this.props.youth.name)}</td>
                 <td>{this.wrapIndexLink(formatDate(this.props.youth.dob))}</td>
                 <td>{this.wrapIndexLink(formatDate(this.props.youth.visit_start_date))}</td>
-                <td>{this.wrapIndexLink(currentPlacement[currentPlacement.length - 1].name)}</td>
+                <td>{this.wrapIndexLink(currentPlacement.name)}</td>
                 <td>{this.wrapIndexLink(this.props.youth.school.school_name)}</td>
                 <td>{this.wrapIndexLink(transport)}</td>
                 <td>{this.wrapIndexLink(formatTime(pickupTime))}</td>
                 <td>{this.wrapIndexLink(this.props.youth.overall_form_progress)}</td>
                 <td>{this.wrapIndexLink(formatDate(this.props.youth.estimated_exit_date))}</td>
-                <td className="exit-column">
-                    {this.props.visit_exit_date ||
-                    <button className="mdl-button mdl-js-button add-exit" onClick={() => this.toggleModal()}>
-                        <i className="material-icons add-exit-icon">add</i>Add
-                    </button>}
-                </td>
+                {exitColumn}
             </tr>
         );
     } 

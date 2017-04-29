@@ -42,3 +42,15 @@ export function closeDialog(dialog, parentNode, child) {
     let parent = document.querySelector(parentNode);
     parent.removeChild(parent.childNodes[child]);
 }
+
+export function postRequest(url, data, errMessage) {
+        fetch(url, {
+            method: "POST",
+            body: data
+        }).then((resp) => {
+            console.log(resp);
+            window.location.reload();
+        }).catch(err => {
+            alert(errMessage + ": " + err);
+        })
+}
