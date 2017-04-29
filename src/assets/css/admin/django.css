@@ -12,6 +12,14 @@ caption, h2, .submit-row input {
     background: #8fbc49 !important;
 }
 
+.submit-row {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    background: transparent !important;
+    border: none;
+}
+
 #branding h1, #branding h1 a:link, #branding h1 a:visited {
     color: white;
 }

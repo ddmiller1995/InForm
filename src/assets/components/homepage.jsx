@@ -30,7 +30,7 @@ export default class extends React.Component {
                                 <a href="#presentation" className="mdl-navigation__link presentation-link">Presentation View</a>
                                 <div id="show-active">
                                     <input id="active-only" type="checkbox" onChange={() => this.toggleCheckbox()} checked={this.state.checked}></input>
-                                    <label htmlFor="active-only">Show active</label>
+                                    <label htmlFor="active-only">Show Active Only</label>
                                 </div>
                                 <div className="add-youth">
                                     <a className="mdl-navigation__link" href="/admin/api/youthvisit/add/">
