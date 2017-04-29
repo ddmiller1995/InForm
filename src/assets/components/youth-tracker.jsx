@@ -45,7 +45,7 @@ export default class extends React.Component {
         let youthData = this.getYouthData();
 
         return (
-            <table className="mdl-data-table mdl-js-data-tabled youth-table youth-tracker-container">
+            <table className="mdl-data-table mdl-js-data-tabled youth-tracker-container">
                 <thead>
                     <tr className="header-row">
                         <th className="mdl-data-table__cell--non-numeric">Name</th>
@@ -53,8 +53,9 @@ export default class extends React.Component {
                         <th>Entry Date</th>
                         <th>Placement</th>
                         <th>School</th>
-                        <th>School Transport</th>
-                        <th>Pickup/Dropoff</th>
+                        <th>AM Transport</th>
+                        <th>PM Transport</th>
+                        <th>AM Pickup/PM Dropoff</th>
                         <th>Form Progress</th>
                         <th>Estimated Exit</th>
                         <th>Exit Date</th>

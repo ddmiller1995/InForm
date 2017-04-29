@@ -261,7 +261,8 @@ export default class extends React.Component {
                             <p>Name: <span className="value">{this.props.currentYouth.name}</span></p>
                             <p>Birthdate: <span className="value">{formatDate(this.props.currentYouth.dob)}</span></p>
                             <p>Age: <span className="value">{getDateDiff(this.props.currentYouth.dob, "years")}</span></p>
-                            <p>Ethnicity: <span className="value">{this.props.currentYouth.ethnicity || DEFAULT_VALUE}</span></p>
+                            <p>Guardian: <span className="value">{currentVisit.guardian_name + " (relationship)" 
+                                || DEFAULT_VALUE}</span></p>
                             <p>City: <span className="value">{currentVisit.city_of_origin || DEFAULT_VALUE}</span></p>
                         </div>
                     </div>
@@ -315,18 +316,20 @@ export default class extends React.Component {
                     </div>
                     <div className="inner-col">
                         <p>AM Transport: <span className="value">{currentVisit.school_am_transport || DEFAULT_VALUE}</span></p>
-                        <p>AM Pickup Time: <span className="value">{formatTime(currentVisit.school_am_pickup_time) || DEFAULT_VALUE}</span></p>
+                        <p>AM Pickup Time: <span className="value">{formatTime(currentVisit.school_am_pickup_time) + " AM" 
+                            || DEFAULT_VALUE}</span></p>
                         <p>AM Phone: <span className="value">{currentVisit.school_am_phone || DEFAULT_VALUE}</span></p>
                     </div>
                     <div className="inner-col">
                         <p>PM Transport: <span className="value">{currentVisit.school_pm_transport || DEFAULT_VALUE}</span></p>
-                        <p>PM Dropoff Time: <span className="value">{formatTime(currentVisit.school_pm_dropoff_time) || DEFAULT_VALUE}</span></p>
+                        <p>PM Dropoff Time: <span className="value">{formatTime(currentVisit.school_pm_dropoff_time) + " PM" 
+                            || DEFAULT_VALUE}</span></p>
                         <p>PM Phone: <span className="value">{currentVisit.school_pm_phone || DEFAULT_VALUE}</span></p>
                     </div>
                     <div className="inner-col">
                         <p>Date Requested: 
                                 <span className="value">{formatDate(currentVisit.school_date_requested) || DEFAULT_VALUE}</span></p>
-                        <p>MKV Complete: <span className="value">{currentVisit.school_mkv_complete || DEFAULT_VALUE}</span></p>
+                        <p>MKV/Enroll Complete: <span className="value">{currentVisit.school_mkv_complete || DEFAULT_VALUE}</span></p>
                     </div>
                 </div>
                 <div className="youth-row">

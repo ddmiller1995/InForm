@@ -25,8 +25,6 @@ export default class extends React.Component {
                 <header className="mdl-layout__header">
                     <div className="mdl-layout__header-row header-fix">
                             <nav className="mdl-navigation homepage-bar">
-                                <IndexLink className="mdl-navigation__link progress-link" to="/progress" activeClassName="active">Progress Report</IndexLink>
-                                <div className="header-divider"></div>
                                 <a href="#presentation" className="mdl-navigation__link presentation-link">Presentation View</a>
                                 <div id="show-active">
                                     <input id="active-only" type="checkbox" onChange={() => this.toggleCheckbox()} checked={this.state.checked}></input>

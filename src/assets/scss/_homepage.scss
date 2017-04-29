@@ -5,7 +5,7 @@
     top: 120px;
     left: 100px;
 
-    .progress-link, .presentation-link {
+    .presentation-link {
         color: $orange-accent;
         padding: 15px;
     }
@@ -38,6 +38,7 @@
 #show-active {
     position: absolute;
     right: 135px;
+    color: black;
 
     #active-only {
         margin: 7px;

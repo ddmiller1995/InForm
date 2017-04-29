@@ -43,12 +43,13 @@ export default class extends React.Component {
                             <th className="mdl-data-table__cell--non-numeric">Name</th>
                             <th>DOB</th>
                             <th>Entry Date</th>
+                            <th>Placement</th>
                             <th>School</th>
-                            <th>School Transport</th>
-                            <th>School Pickup</th>
-                            <th>Intake Forms</th>
-                            <th>Outtake Forms</th>
-                            <th>Planned Exit</th>
+                            <th>AM Transport</th>
+                            <th>PM Transport</th>
+                            <th>AM Pickup/PM Dropoff</th>
+                            <th>Form Progress</th>
+                            <th>Estimated Exit</th>
                         </tr>
                     </thead>
                     <tbody>
