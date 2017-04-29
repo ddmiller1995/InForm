@@ -4,7 +4,9 @@ from datetime import datetime
 from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.mixins import LoginRequiredMixin
 
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -29,6 +31,7 @@ class YouthList(APIView):
     '''
 
     renderer_classes = (JSONRenderer, )
+    # permission_classes = (IsAuthenticated,)
 
     def get(self, request, format=None):
 
@@ -76,6 +79,7 @@ class YouthDetail(APIView):
     '''
 
     renderer_classes = (JSONRenderer, )
+    # permission_classes = (IsAuthenticated,)
 
     def get(self, request, youth_id, format=None):
         youth = get_object_or_404(Youth, pk=youth_id)
@@ -122,6 +126,7 @@ class YouthChangePlacement(APIView):
     '''
 
     renderer_classes = (JSONRenderer, )
+    # permission_classes = (IsAuthenticated,)
 
     def post(self, request, youth_visit_id, format=None):
         # year/month/day YYYY-MM-DD
@@ -178,6 +183,7 @@ class YouthMarkExited(APIView):
         * permanent housing (bool)
     '''
     renderer_classes = (JSONRenderer, )
+    # permission_classes = (IsAuthenticated,)
 
     def post(self, request, youth_visit_id, format=None):
         try:
@@ -223,6 +229,10 @@ class YouthAddExtension(APIView):
     '''
     Add an extension to a Youth Visit
     '''
+
+    renderer_classes = (JSONRenderer, )
+    # permission_classes = (IsAuthenticated,)
+
     def post(self, request, youth_visit_id, format=None):
         try:
             youth_visit = YouthVisit.objects.get(pk=youth_visit_id)
@@ -252,6 +262,11 @@ class YouthAddExtension(APIView):
         return Response({}, status=status.HTTP_202_ACCEPTED)
 
 class YouthEditNote(APIView):
+    '''Edit a Youth visit's note
+    '''
+    renderer_classes = (JSONRenderer, )
+    # permission_classes = (IsAuthenticated,)
+
     def post(self, request, youth_visit_id, format=None):
         try:
             youth_visit = YouthVisit.objects.get(pk=youth_visit_id)
@@ -286,6 +301,7 @@ class PlacementTypeList(APIView):
     '''
 
     renderer_classes = (JSONRenderer, )
+    # permission_classes = (IsAuthenticated,)
 
     def get(self, request, format=None):
         placement_types = PlacementType.objects.all()

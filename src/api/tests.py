@@ -5,6 +5,9 @@ from django.utils import timezone
 
 from django.test import Client
 from django.urls import reverse
+from django.contrib.auth.models import User
+
+from rest_framework.test import APIClient
 
 from .models import *
 from .views import DATE_STRING_FORMAT
@@ -14,6 +17,9 @@ class YouthModelTests(TestCase):
 
     def setUp(self):
         '''Runs before all of the actual tests, so these entities can be referenced by test'''
+
+        self.user = User.objects.create(username='test')
+
         youth1 = Youth.objects.create(
             youth_name="John",
             date_of_birth=datetime.date(1995, 12, 25),
@@ -267,7 +273,10 @@ class YouthModelTests(TestCase):
         
         
     def test_change_placement_type_success(self):
-        client = Client()
+        client = APIClient()
+        client.force_authenticate(self.user)
+
+        # client.login(username='youthhaven', password='youthforce')
 
         youth_visit_id = 1
         new_placement_type_id = 2
@@ -288,7 +297,8 @@ class YouthModelTests(TestCase):
         self.assertEqual(youth_visit.current_placement_extension_days, 0)
 
     def test_mark_exited_success(self):
-        client = Client()
+        client = APIClient()
+        client.force_authenticate(self.user)
 
         youth_visit_id = 1
         
@@ -315,7 +325,8 @@ class YouthModelTests(TestCase):
         self.assertEqual(youth_visit.permanent_housing, permanent_housing)
 
     def test_mark_exited_success_2(self):
-        client = Client()
+        client = APIClient()
+        client.force_authenticate(self.user)
 
         youth_visit_id = 1
         
@@ -351,7 +362,8 @@ class YouthModelTests(TestCase):
         This test gives him a 15 day extension via the add extension endpoint
         and tests that the youth visit's computed values are as expected afterwards
         '''
-        client = Client()
+        client = APIClient()
+        client.force_authenticate(self.user)
 
         youth_visit_id = 6
         
@@ -384,7 +396,9 @@ class YouthModelTests(TestCase):
             timedelta(days=youth_visit.current_placement_extension_days))
 
     def test_youth_visit_edit_note_success(self):
-        client = Client()
+        client = APIClient()
+        client.force_authenticate(self.user)
+
         youth_visit_id = 1
 
         note = '''
