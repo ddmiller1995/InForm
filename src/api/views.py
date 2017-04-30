@@ -210,11 +210,16 @@ class YouthMarkExited(APIView):
             response = Response(status=status.HTTP_400_BAD_REQUEST)
             response['error'] = 'Missing POST param "permanent_housing"'
             return response
-        if not permanent_housing in ['true', 'True', 'false', 'False']:
+        if permanent_housing == 'true':
+            permanent_housing = True
+        elif permanent_housing == 'false':
+            permanent_housing = False
+        elif permanent_housing == 'unknown':
+            permanent_housing = None
+        else:
             response = Response(status=status.HTTP_406_NOT_ACCEPTABLE)
             response['error'] = 'POST param "permanent_housing" should be a true or false value'
             return response
-        permanent_housing = permanent_housing in ['true', 'True']
 
 
         youth_visit.visit_exit_date = datetime.strptime(exit_date_string, DATE_STRING_FORMAT)
