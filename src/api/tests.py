@@ -353,7 +353,8 @@ class YouthModelTests(TestCase):
         self.assertEqual(youth_visit.permanent_housing, True)
 
     def test_mark_exited_success_3(self):
-        client = Client()
+        client = APIClient()
+        client.force_authenticate(self.user)
 
         youth_visit_id = 1
         
