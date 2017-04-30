@@ -294,7 +294,7 @@ class YouthModelTests(TestCase):
         
         exit_date = datetime.date(2017, 4, 20)
         where_exited = 'ROOTS'
-        permanent_housing = False
+        permanent_housing = 'false'
 
         url = reverse('youth-mark-exited', args=[youth_visit_id])
 
@@ -312,7 +312,7 @@ class YouthModelTests(TestCase):
         self.assertEqual(response.status_code, 202)
         self.assertEqual(youth_visit.visit_exit_date, exit_date)
         self.assertEqual(youth_visit.exited_to, where_exited)
-        self.assertEqual(youth_visit.permanent_housing, permanent_housing)
+        self.assertEqual(youth_visit.permanent_housing, False)
 
     def test_mark_exited_success_2(self):
         client = Client()
@@ -321,7 +321,7 @@ class YouthModelTests(TestCase):
         
         exit_date = datetime.date(2017, 4, 20)
         where_exited = 'ROOTS'
-        permanent_housing = True
+        permanent_housing = 'true'
 
         url = reverse('youth-mark-exited', args=[youth_visit_id])
 
@@ -339,7 +339,34 @@ class YouthModelTests(TestCase):
         self.assertEqual(response.status_code, 202)
         self.assertEqual(youth_visit.visit_exit_date, exit_date)
         self.assertEqual(youth_visit.exited_to, where_exited)
-        self.assertEqual(youth_visit.permanent_housing, permanent_housing)
+        self.assertEqual(youth_visit.permanent_housing, True)
+
+    def test_mark_exited_success_3(self):
+        client = Client()
+
+        youth_visit_id = 1
+        
+        exit_date = datetime.date(2017, 4, 20)
+        where_exited = 'ROOTS'
+        permanent_housing = 'unknown'
+
+        url = reverse('youth-mark-exited', args=[youth_visit_id])
+
+        youth_visit = YouthVisit.objects.get(id=youth_visit_id)
+        self.assertEqual(youth_visit.visit_exit_date, None)
+
+        response = client.post(url, {
+            'exit_date_string': exit_date.strftime(DATE_STRING_FORMAT), # convert to correct date string format,
+            'where_exited': where_exited,
+            'permanent_housing': permanent_housing
+        })
+
+        youth_visit = YouthVisit.objects.get(id=youth_visit_id)
+
+        self.assertEqual(response.status_code, 202)
+        self.assertEqual(youth_visit.visit_exit_date, exit_date)
+        self.assertEqual(youth_visit.exited_to, where_exited)
+        self.assertEqual(youth_visit.permanent_housing, None)
 
     def test_youth_add_extension_success(self):
         '''Test that the add extension endpoint works as expected
