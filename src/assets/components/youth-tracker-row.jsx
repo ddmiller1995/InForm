@@ -47,7 +47,7 @@ export default class extends React.Component {
         data.append("where_exited", whereExited);
         data.append("permanent_housing", permHousing);
 
-        postRequest(url, data, "unable to add exit date");
+        postRequest(url, data);
     }
 
     toggleModal() {
@@ -87,7 +87,7 @@ export default class extends React.Component {
                         <span> 
                          <input id="yes-checkbox" name="housing" type="radio" value="true"></input>Yes 
                          <input id="no-checkbox" name="housing" type="radio" value="false"></input>No 
-                         <input id="unknown-checkbox" name="housing" type="radio" value="Not Provided"></input>Unknown 
+                         <input id="unknown-checkbox" name="housing" type="radio" value="unknown"></input>Unknown 
                         </span>
                     </p>
                 </div>
@@ -123,7 +123,6 @@ export default class extends React.Component {
         let to = moment(this.props.youth.estimated_exit_date, "YYYY-MM-DD");
         let duration = to.diff(from, 'days')     
 
-        console.log(duration);
         if (duration <= 3) {
             return "three-days";
         } else if (duration <= 7) {

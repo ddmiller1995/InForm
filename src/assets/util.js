@@ -44,7 +44,25 @@ export function closeDialog(dialog, parentNode, child) {
     parent.removeChild(parent.childNodes[child]);
 }
 
-export function postRequest(url, data, errMessage) {
+export function getRequest(url, that, prop) {
+    let csrf_token = Cookies.get('csrftoken');
+
+    fetch(url, {
+        method: "GET",
+        credentials: "same-origin",
+        headers: {
+            "X-CSRFToken": csrf_token,
+        }
+    }).then(function(response) {
+        return response.json();
+    }).then(function(data) {
+        that.setState({ [prop]: data});
+    }).catch(function(ex) {
+        console.log("parsing failed", ex);
+    });
+}
+
+export function postRequest(url, data) {
     let csrf_token = Cookies.get('csrftoken');
 
     fetch(url, {

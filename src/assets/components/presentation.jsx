@@ -1,5 +1,6 @@
 import React from 'react';
 import {Link, IndexLink} from "react-router";
+import { getRequest } from '../util.js'
 import YouthTrackerRow from "./youth-tracker-row.jsx";
 import "whatwg-fetch";
 
@@ -12,10 +13,7 @@ export default class extends React.Component {
     }
 
     componentDidMount() {
-        fetch(ALL_YOUTH_API)
-            .then(response => response.json())
-            .then(data => this.setState({ youth: data }))
-            .catch(err => alert(err.message));
+        let data = getRequest(ALL_YOUTH_API, this, "youth");
     }
 
     getYouthData() {

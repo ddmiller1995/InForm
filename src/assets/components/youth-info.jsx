@@ -1,7 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import {Link, IndexLink} from "react-router";
-import { formatDate, getDateDiff, formatTime, registerDialog, closeDialog, postRequest } from '../util.js'
+import { formatDate, getDateDiff, formatTime, registerDialog, 
+    closeDialog, postRequest, getRequest } from '../util.js'
 import "whatwg-fetch";
 
 var moment = require("moment");
@@ -19,11 +20,7 @@ export default class extends React.Component {
     }
 
     componentDidMount() {
-        fetch(PLACEMENT_API)
-            .then(response => response.json())
-            .then(data => this.setState({ 
-                placement_types: data}))
-            .catch(err => alert(err.message));
+        let data = getRequest(PLACEMENT_API, this, "placement_types");
     }
 
     // populate the visit date dropdown with all the visits of this particular youth
@@ -202,7 +199,7 @@ export default class extends React.Component {
         let data = new FormData();
         data.append("extension", extension);
 
-        postRequest(url, data, "unable to add extension");
+        postRequest(url, data);
     }
 
     postSwitch(that) {
@@ -214,7 +211,7 @@ export default class extends React.Component {
         data.append("new_placement_type_id", placementID);
         data.append("new_placement_start_date", placementStartDate);
 
-        postRequest(url, data, "unable to switch beds");
+        postRequest(url, data);
     }
 
     postNotes() {
@@ -224,7 +221,7 @@ export default class extends React.Component {
         let data = new FormData();
         data.append("note", notes);
 
-        postRequest(url, data, "unable to save notes");
+        postRequest(url, data);
     }
 
     render() {
