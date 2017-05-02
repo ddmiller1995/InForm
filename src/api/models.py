@@ -276,7 +276,13 @@ class FormYouthVisit(models.Model):
             (DONE, DONE)
         )
     )
-    notes = models.TextField(null=True, blank=True)    
+    notes = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return 'Youth Visit ID: ' + str(self.youth_visit_id.id) + ' - Form Name: ' + self.form_id.form_name
+
+    def days_remaining(self):
+        result = self.form_id.default_due_date - (timezone.now().date() - self.youth_visit_id.visit_start_date).days
+        if result < 0:
+            return 0
+        return result

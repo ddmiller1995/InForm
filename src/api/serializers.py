@@ -94,6 +94,7 @@ def serialize_form_youth_visit(form_youth_vist):
     obj['required'] = form_youth_visit.form_id.required
     obj['status'] = form_youth_visit.status
     obj['completed_by'] = serialize_user(form_youth_visit.user_id)
+    obj['days_remaining'] = form_youth_visit.days_remaining()
 
     return obj
     

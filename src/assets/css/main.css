@@ -213,20 +213,28 @@ h4 {
 
 .kanban-board {
   margin: 40px;
-  border: 1px solid black;
+  border: 1px solid #ccc;
   min-height: 500px;
   overflow: visible;
   display: flex;
   flex: 1;
   flex-flow: row; }
   .kanban-board .col {
-    border-right: 1px solid black;
-    width: calc(100% / 3); }
+    width: calc(100% / 3);
+    background-color: #E7E7E7; }
     .kanban-board .col .demo-card-wide.mdl-card {
       width: 90%;
       margin: 20px auto; }
   .kanban-board .col:nth-of-type(3) {
     border-right: none; }
+  .kanban-board .mdl-layout__header {
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12); }
+    .kanban-board .mdl-layout__header .mdl-layout-title {
+      margin: 0px auto; }
+  .kanban-board .mdl-card {
+    min-height: 165px; }
+  .kanban-board .align-right {
+    float: right; }
 
 .presentation-container {
   position: relative;
