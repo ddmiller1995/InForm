@@ -313,5 +313,33 @@ class PlacementTypeList(APIView):
         serializer = PlacementTypeSerializer(placement_types, many=True)
         return Response(serializer.data)
 
+
+class ExportYouthVisits(APIView):
+    '''Export youth visit data'''
+
+    renderer_classes = (JSONRenderer, )
+
+    def get(self, request, format=None):
+
+        json = {
+            'youth': []
+        }
+
+        # youth_list = Youth.objects.all()
+        youth_visit_list = YouthVisit.objects.all().order_by('-visit_start_date')
+
+        for youth_visit in youth_visit_list:
+
+            serialized_youth = serialize_youth(youth_visit.youth_id)
+
+            serialized_youth_visit = serialize_youth_visit(youth_visit)
+
+            # merge both serialized objects, keep items from second object if conflicts
+            obj = {**serialized_youth_visit, **serialized_youth}
+
+            json['youth'].append(obj)
+
+        return Response(json, status=status.HTTP_200_OK)
+
 def api_docs(request):
     return render(request, 'api/docs.html')
