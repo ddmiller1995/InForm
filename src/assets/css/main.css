@@ -21,7 +21,7 @@
   position: absolute;
   top: 120px;
   left: 100px; }
-  .homepage-links .progress-link, .homepage-links .presentation-link {
+  .homepage-links .presentation-link {
     color: #E17000;
     padding: 15px; }
 
@@ -44,7 +44,8 @@
 
 #show-active {
   position: absolute;
-  right: 135px; }
+  right: 135px;
+  color: black; }
   #show-active #active-only {
     margin: 7px; }
 
@@ -53,8 +54,18 @@
 
 .mdl-data-table.mdl-js-data-tabled th, .mdl-data-table.mdl-js-data-tabled td {
   text-align: left; }
+.mdl-data-table.mdl-js-data-tabled .seven-days .mdl-navigation__link {
+  color: #3f51b5; }
+.mdl-data-table.mdl-js-data-tabled .three-days .mdl-navigation__link {
+  color: red; }
 .mdl-data-table.mdl-js-data-tabled .exit-column {
   padding: 0 0 0 5px; }
+
+.mdl-data-table tbody tr:nth-child(2n) {
+  background-color: white; }
+
+.mdl-data-table tbody tr:nth-child(2n+1) {
+  background-color: #e0e0e0; }
 
 .add-exit {
   text-transform: none;
@@ -77,9 +88,6 @@
         color: red;
         font-size: 12px;
         text-align: center; }
-
-.youth-table {
-  width: 100%; }
 
 .youth-tracker-container #mdl-dialog input[type="radio"] {
   margin-right: 10px; }

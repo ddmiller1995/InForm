@@ -1,10 +1,14 @@
 import logging
 from datetime import datetime
+import csv
 
-from django.http import Http404, JsonResponse
+from django.http import Http404, JsonResponse, HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core import serializers
 
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -13,7 +17,7 @@ from rest_framework.renderers import JSONRenderer
 
 from api.models import PlacementType, Youth, YouthVisit
 from api.serializers import (PlacementTypeSerializer, serialize_youth,
-                             serialize_youth_visit)
+                             serialize_youth_visit, youth_field_names, youth_visit_field_names)
 
 logger = logging.getLogger(__name__)
 
@@ -29,6 +33,7 @@ class YouthList(APIView):
     '''
 
     renderer_classes = (JSONRenderer, )
+    # permission_classes = (IsAuthenticated,)
 
     def get(self, request, format=None):
 
@@ -76,6 +81,7 @@ class YouthDetail(APIView):
     '''
 
     renderer_classes = (JSONRenderer, )
+    # permission_classes = (IsAuthenticated,)
 
     def get(self, request, youth_id, format=None):
         youth = get_object_or_404(Youth, pk=youth_id)
@@ -122,6 +128,7 @@ class YouthChangePlacement(APIView):
     '''
 
     renderer_classes = (JSONRenderer, )
+    # permission_classes = (IsAuthenticated,)
 
     def post(self, request, youth_visit_id, format=None):
         # year/month/day YYYY-MM-DD
@@ -178,6 +185,7 @@ class YouthMarkExited(APIView):
         * permanent housing (bool)
     '''
     renderer_classes = (JSONRenderer, )
+    # permission_classes = (IsAuthenticated,)
 
     def post(self, request, youth_visit_id, format=None):
         try:
@@ -204,11 +212,16 @@ class YouthMarkExited(APIView):
             response = Response(status=status.HTTP_400_BAD_REQUEST)
             response['error'] = 'Missing POST param "permanent_housing"'
             return response
-        if not permanent_housing in ['true', 'True', 'false', 'False']:
+        if permanent_housing == 'true':
+            permanent_housing = True
+        elif permanent_housing == 'false':
+            permanent_housing = False
+        elif permanent_housing == 'unknown':
+            permanent_housing = None
+        else:
             response = Response(status=status.HTTP_406_NOT_ACCEPTABLE)
             response['error'] = 'POST param "permanent_housing" should be a true or false value'
             return response
-        permanent_housing = permanent_housing in ['true', 'True']
 
 
         youth_visit.visit_exit_date = datetime.strptime(exit_date_string, DATE_STRING_FORMAT)
@@ -223,6 +236,10 @@ class YouthAddExtension(APIView):
     '''
     Add an extension to a Youth Visit
     '''
+
+    renderer_classes = (JSONRenderer, )
+    # permission_classes = (IsAuthenticated,)
+
     def post(self, request, youth_visit_id, format=None):
         try:
             youth_visit = YouthVisit.objects.get(pk=youth_visit_id)
@@ -252,6 +269,11 @@ class YouthAddExtension(APIView):
         return Response({}, status=status.HTTP_202_ACCEPTED)
 
 class YouthEditNote(APIView):
+    '''Edit a Youth visit's note
+    '''
+    renderer_classes = (JSONRenderer, )
+    # permission_classes = (IsAuthenticated,)
+
     def post(self, request, youth_visit_id, format=None):
         try:
             youth_visit = YouthVisit.objects.get(pk=youth_visit_id)
@@ -286,11 +308,119 @@ class PlacementTypeList(APIView):
     '''
 
     renderer_classes = (JSONRenderer, )
+    # permission_classes = (IsAuthenticated,)
 
     def get(self, request, format=None):
         placement_types = PlacementType.objects.all()
         serializer = PlacementTypeSerializer(placement_types, many=True)
         return Response(serializer.data)
+
+
+class ExportYouthVisits(APIView):
+    '''Export youth visit data as CSV
+    
+    Export flattened youth_visit objects, ordered by descending visit start date'''
+
+    renderer_classes = (JSONRenderer, )
+
+    def get(self, request, format=None):
+        # Create the HttpResponse object with the appropriate CSV header.
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="somefilename.csv"'
+
+        writer = csv.writer(response)
+
+        column_names = youth_field_names + youth_visit_field_names
+        writer.writerow(column_names)
+        
+
+        youth_visit_list = YouthVisit.objects.all().order_by('-visit_start_date')
+
+        if youth_visit_list.count() == 0:
+            logger.error("Tried to output to CSV but there is no data yet.")
+            # Warn the user about what happened
+            # Maybe redirect to an error page
+            raise Http404 # placeholder
+
+        for youth_visit in youth_visit_list:
+            row = []
+
+            # Youth table
+            row.append(youth_visit.youth_id.id)
+            row.append(youth_visit.youth_id.youth_name)
+            row.append(youth_visit.youth_id.date_of_birth)
+            row.append(youth_visit.youth_id.ethnicity)
+            row.append(youth_visit.youth_id.notes)
+
+            # YouthVisit table
+            row.append(youth_visit.id)
+            
+            row.append(youth_visit.visit_start_date)
+            # YouthVisit.PlacementType
+            row.append(youth_visit.current_placement_type.id)
+            row.append(youth_visit.current_placement_type.placement_type_name)
+            row.append(youth_visit.current_placement_type.default_stay_length)
+            row.append(youth_visit.current_placement_type.supervision_ratio)
+            row.append(youth_visit.current_placement_start_date)
+            row.append(youth_visit.current_placement_extension_days)
+            row.append(youth_visit.city_of_origin)
+            row.append(youth_visit.state_of_origin)
+            row.append(youth_visit.guardian_name)
+            row.append(youth_visit.referred_by)
+            row.append(youth_visit.social_worker)
+            row.append(youth_visit.visit_exit_date)
+            row.append(youth_visit.permanent_housing)
+            row.append(youth_visit.exited_to)
+
+            # YouthVisit.User
+            if (youth_visit.case_manager):
+                row.append(youth_visit.case_manager.id)
+                row.append(youth_visit.case_manager.get_full_name())
+                row.append(youth_visit.case_manager.username)
+            else:
+                row.append('')
+                row.append('')
+                row.append('')   
+
+
+            # YouthVisit.User
+            if (youth_visit.personal_counselor):
+                row.append(youth_visit.personal_counselor.id)
+                row.append(youth_visit.personal_counselor.get_full_name())
+                row.append(youth_visit.personal_counselor.username)
+            else:
+                row.append('')
+                row.append('')
+                row.append('')   
+
+            # YouthVisit.School
+            if (youth_visit.school):
+                row.append(youth_visit.school.id)
+                row.append(youth_visit.school.school_name)
+                row.append(youth_visit.school.school_district)
+                row.append(youth_visit.school.school_phone)
+                row.append(youth_visit.school.notes)
+            else:
+                row.append('')
+                row.append('')
+                row.append('') 
+                row.append('')
+                row.append('')   
+
+            row.append(youth_visit.school_am_transport)
+            row.append(youth_visit.school_am_pickup_time)
+            row.append(youth_visit.school_am_phone)
+            row.append(youth_visit.school_pm_transport)
+            row.append(youth_visit.school_pm_dropoff_time)
+            row.append(youth_visit.school_pm_phone)
+            row.append(youth_visit.school_date_requested)
+            row.append(youth_visit.school_mkv_complete)
+            row.append(youth_visit.notes)
+
+
+            writer.writerow(row)
+
+        return response
 
 def api_docs(request):
     return render(request, 'api/docs.html')

@@ -3,11 +3,31 @@
 .mdl-data-table.mdl-js-data-tabled {
     th, td {
         text-align: left;
+
+    }
+
+    .seven-days {
+        .mdl-navigation__link {
+            color: rgb(63,81,181);
+        }
+    }
+
+    .three-days {
+        .mdl-navigation__link {
+            color: red;
+        }
     }
 
     .exit-column {
         padding: 0 0 0 5px;
     }
+}
+
+.mdl-data-table tbody tr:nth-child(2n) {
+    background-color: white;
+}
+.mdl-data-table tbody tr:nth-child(2n+1) {
+    background-color: #e0e0e0;
 }
 
 .add-exit {
@@ -42,10 +62,6 @@
             }
         }
     }
-}
-
-.youth-table {
-    width: 100%;
 }
 
 .youth-tracker-container #mdl-dialog input[type="radio"] {

@@ -1,7 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import {Link, IndexLink} from "react-router";
-import { formatDate, getDateDiff, formatTime, registerDialog, closeDialog, postRequest } from '../util.js'
+import { formatDate, getDateDiff, formatTime, registerDialog, 
+    closeDialog, postRequest, getRequest } from '../util.js'
 import "whatwg-fetch";
 
 var moment = require("moment");
@@ -19,11 +20,7 @@ export default class extends React.Component {
     }
 
     componentDidMount() {
-        fetch(PLACEMENT_API)
-            .then(response => response.json())
-            .then(data => this.setState({ 
-                placement_types: data}))
-            .catch(err => alert(err.message));
+        let data = getRequest(PLACEMENT_API, this, "placement_types");
     }
 
     // populate the visit date dropdown with all the visits of this particular youth
@@ -202,7 +199,7 @@ export default class extends React.Component {
         let data = new FormData();
         data.append("extension", extension);
 
-        postRequest(url, data, "unable to add extension");
+        postRequest(url, data);
     }
 
     postSwitch(that) {
@@ -214,7 +211,7 @@ export default class extends React.Component {
         data.append("new_placement_type_id", placementID);
         data.append("new_placement_start_date", placementStartDate);
 
-        postRequest(url, data, "unable to switch beds");
+        postRequest(url, data);
     }
 
     postNotes() {
@@ -224,7 +221,7 @@ export default class extends React.Component {
         let data = new FormData();
         data.append("note", notes);
 
-        postRequest(url, data, "unable to save notes");
+        postRequest(url, data);
     }
 
     render() {
@@ -261,7 +258,8 @@ export default class extends React.Component {
                             <p>Name: <span className="value">{this.props.currentYouth.name}</span></p>
                             <p>Birthdate: <span className="value">{formatDate(this.props.currentYouth.dob)}</span></p>
                             <p>Age: <span className="value">{getDateDiff(this.props.currentYouth.dob, "years")}</span></p>
-                            <p>Ethnicity: <span className="value">{this.props.currentYouth.ethnicity || DEFAULT_VALUE}</span></p>
+                            <p>Guardian: <span className="value">{currentVisit.guardian_name + " (relationship)" 
+                                || DEFAULT_VALUE}</span></p>
                             <p>City: <span className="value">{currentVisit.city_of_origin || DEFAULT_VALUE}</span></p>
                         </div>
                     </div>
@@ -315,18 +313,20 @@ export default class extends React.Component {
                     </div>
                     <div className="inner-col">
                         <p>AM Transport: <span className="value">{currentVisit.school_am_transport || DEFAULT_VALUE}</span></p>
-                        <p>AM Pickup Time: <span className="value">{formatTime(currentVisit.school_am_pickup_time) || DEFAULT_VALUE}</span></p>
+                        <p>AM Pickup Time: <span className="value">{formatTime(currentVisit.school_am_pickup_time) + " AM" 
+                            || DEFAULT_VALUE}</span></p>
                         <p>AM Phone: <span className="value">{currentVisit.school_am_phone || DEFAULT_VALUE}</span></p>
                     </div>
                     <div className="inner-col">
                         <p>PM Transport: <span className="value">{currentVisit.school_pm_transport || DEFAULT_VALUE}</span></p>
-                        <p>PM Dropoff Time: <span className="value">{formatTime(currentVisit.school_pm_dropoff_time) || DEFAULT_VALUE}</span></p>
+                        <p>PM Dropoff Time: <span className="value">{formatTime(currentVisit.school_pm_dropoff_time) + " PM" 
+                            || DEFAULT_VALUE}</span></p>
                         <p>PM Phone: <span className="value">{currentVisit.school_pm_phone || DEFAULT_VALUE}</span></p>
                     </div>
                     <div className="inner-col">
                         <p>Date Requested: 
                                 <span className="value">{formatDate(currentVisit.school_date_requested) || DEFAULT_VALUE}</span></p>
-                        <p>MKV Complete: <span className="value">{currentVisit.school_mkv_complete || DEFAULT_VALUE}</span></p>
+                        <p>MKV/Enroll Complete: <span className="value">{currentVisit.school_mkv_complete || DEFAULT_VALUE}</span></p>
                     </div>
                 </div>
                 <div className="youth-row">
