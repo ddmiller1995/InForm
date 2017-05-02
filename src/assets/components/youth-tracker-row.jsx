@@ -1,7 +1,7 @@
 import React from 'react';
 import {store, setCurrentYouth} from "./shared-state.js";
 import {Link, IndexLink} from "react-router";
-import { formatDate, formatTime, registerDialog, closeDialog } from '../util.js'
+import { formatDate, formatTime, registerDialog, closeDialog, postRequest } from '../util.js'
 import "whatwg-fetch";
 
 var moment = require("moment");
@@ -42,21 +42,12 @@ export default class extends React.Component {
         let exitDate = document.getElementById("date-input").value;
         let whereExited = document.getElementById("exited-to-input").value;
         let permHousing = $('input[name="housing"]:checked').val();
-        console.log(permHousing);
         let data = new FormData();
         data.append("exit_date_string", exitDate);
         data.append("where_exited", whereExited);
         data.append("permanent_housing", permHousing);
 
-        fetch(url, {
-            method: "POST",
-            body: data
-        }).then((resp) => {
-            console.log(resp);
-            window.location.reload();
-        }).catch(err => {
-            alert(err);
-        })
+        postRequest(url, data, "unable to add exit date");
     }
 
     toggleModal() {
@@ -145,7 +136,7 @@ export default class extends React.Component {
                 <td className="mdl-data-table__cell--non-numeric">{this.wrapIndexLink(this.props.youth.name)}</td>
                 <td>{this.wrapIndexLink(formatDate(this.props.youth.dob))}</td>
                 <td>{this.wrapIndexLink(formatDate(this.props.youth.visit_start_date))}</td>
-                <td>{this.wrapIndexLink(currentPlacement[currentPlacement.length - 1].name)}</td>
+                <td>{this.wrapIndexLink(currentPlacement.name)}</td>
                 <td>{this.wrapIndexLink(this.props.youth.school.school_name)}</td>
                 <td>{this.wrapIndexLink(transport)}</td>
                 <td>{this.wrapIndexLink(formatTime(pickupTime))}</td>
