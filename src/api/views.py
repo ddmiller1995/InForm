@@ -3,7 +3,7 @@ from datetime import datetime
 import csv
 
 from django.http import Http404, JsonResponse, HttpResponse
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core import serializers
@@ -315,6 +315,32 @@ class PlacementTypeList(APIView):
         serializer = PlacementTypeSerializer(placement_types, many=True)
         return Response(serializer.data)
 
+class ImportIndex(APIView):
+    '''Import index'''
+
+    def get(self, request):
+        return render(request, 'api/import.html')
+
+class ImportYouthVisits(APIView):
+    '''Handle CSV import feature'''
+
+    renderer_classes = (JSONRenderer, )
+
+    def get(self, request, format=None):
+        '''Download the import template'''
+         # Create the HttpResponse object with the appropriate CSV header.
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="inform-data-import-template.csv"'
+
+        writer = csv.writer(response)
+
+        column_names = youth_field_names + youth_visit_field_names
+        writer.writerow(column_names)
+        return response     
+
+    def post(self, request, format=None):
+        '''Receive a filled in import template and process it'''
+        return redirect('/admin')
 
 class ExportYouthVisits(APIView):
     '''Export youth visit data as CSV

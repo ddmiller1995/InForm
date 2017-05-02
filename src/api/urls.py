@@ -23,7 +23,8 @@ urlpatterns = [
     url(r'^youth/(?P<youth_id>[0-9]+)/$', views.YouthDetail.as_view(), name='youth-detail'),
     url(r'^placement-type/$', views.PlacementTypeList.as_view(), \
         name='youth-change-placement'),
-    url(r'^visit/(?P<youth_visit_id>[0-9]+)/change-placement/$', views.YouthChangePlacement.as_view(), \
+    url(r'^visit/(?P<youth_visit_id>[0-9]+)/change-placement/$',
+        views.YouthChangePlacement.as_view(),
         name='youth-change-placement'),
     url(r'^visit/(?P<youth_visit_id>[0-9]+)/mark-exited/$', views.YouthMarkExited.as_view(), \
         name='youth-mark-exited'),
@@ -32,8 +33,16 @@ urlpatterns = [
     url(r'^visit/(?P<youth_visit_id>[0-9]+)/edit-note/$', views.YouthEditNote.as_view(), \
         name='youth-edit-note'),
 
-    url(r'^export/youth-visits/', views.ExportYouthVisits.as_view(), \
+    url(r'^export/youth-visits/$', views.ExportYouthVisits.as_view(), \
         name='export-youth-vists'),
+
+    url(r'^import/youth-visits/$', views.ImportYouthVisits.as_view(), \
+        name='import-youth-vists'),
+
+
+    url(r'^import/$', views.ImportIndex.as_view(), \
+        name='import-index'),
+
 
     url(r'docs/$', views.api_docs, name='docs')
 ]
