@@ -1,10 +1,9 @@
 @import "variables";
 
-.kanban-board {
+.board {
     margin: 40px;
     border: 1px solid #ccc;
     min-height: 500px;
-    // height: 400px;
     overflow: visible;
     display: flex;
     flex: 1;
@@ -14,6 +13,7 @@
         // border-right: 1px solid black;
         width: calc(100% / 3);
         background-color: #E7E7E7;
+         
 
         .demo-card-wide.mdl-card {
             width: 90%;
@@ -21,12 +21,13 @@
         }
     }
 
-    .col:nth-of-type(3) {
-        border-right: none;
+    .col:nth-of-type(2) {
+        border-left: 1px solid #ccc;
+        border-right: 1px solid #ccc;
     }
 
     .mdl-layout__header {
-        box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12);
+        box-shadow: /*0 2px 2px 0 rgba(0,0,0,.14),*/ 0 3px 1px -2px rgba(0,0,0,.2)/*, 0 1px 5px 0 rgba(0,0,0,.12)*/;
 
         .mdl-layout-title {
             margin: 0px auto;
@@ -39,5 +40,23 @@
 
     .align-right {
         float: right;
+    }
+
+    .form-category {
+
+        // box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12);
+        
+        .form-category-title {
+            width: calc(100% - 10px);
+            background-color: white;
+            padding: 5px;
+            color: #CCC;
+            height: 30px;
+            line-height: 30px;
+            vertical-align: middle;
+            font-size: 16px;
+            border-top: 1px solid #ccc; 
+        }
+
     }
 }

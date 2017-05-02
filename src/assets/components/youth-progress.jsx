@@ -13,7 +13,6 @@ export default class extends React.Component {
     }
 
     componentDidMount() {
-        console.log(this.props.currentYouth);
         form_data.push({
             form_name: "form A",
             form_description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maxime, perspiciatis quasi tenetur, ea sed, molestiae illo labore voluptatem fugiat delectus illum culpa dolore architecto saepe doloribus aliquid reprehenderit autem at!",
@@ -25,7 +24,7 @@ export default class extends React.Component {
             },
             days_remaining: "3",
             status: "pending",
-            form_type: "intake"
+            form_type: "Intake"
         });
         form_data.push({
             form_name: "form B",
@@ -38,7 +37,7 @@ export default class extends React.Component {
             },
             days_remaining: "0",
             status: "pending",
-            form_type: "intake"
+            form_type: "Intake"
         });
         form_data.push({
             form_name: "form C",
@@ -51,7 +50,7 @@ export default class extends React.Component {
             },
             days_remaining: "3",
             status: "pending",
-            form_type: "intake"
+            form_type: "Psych"
         });
         form_data.push({
             form_name: "form D",
@@ -64,7 +63,7 @@ export default class extends React.Component {
             },
             days_remaining: "0",
             status: "in progress",
-            form_type: "intake"
+            form_type: "Intake"
         });
         form_data.push({
             form_name: "form E",
@@ -77,7 +76,7 @@ export default class extends React.Component {
             },
             days_remaining: "3",
             status: "done",
-            form_type: "intake"
+            form_type: "Outtake"
         });
     }
 
@@ -103,7 +102,7 @@ export default class extends React.Component {
 
         return (
             <div className="container">
-                <div className="kanban-board">
+                <div className="board">
                     {columns}
                 </div>
             </div>

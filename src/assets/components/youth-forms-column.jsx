@@ -1,6 +1,9 @@
 import React from "react";
 import {Link, IndexLink} from "react-router";
+import YouthFormsCategory from "./youth-forms-category.jsx";
 import "whatwg-fetch";
+
+let form_categories = ["Intake", "Psych", "Outtake"];
 
 export default class extends React.Component {
     constructor(props) {
@@ -11,42 +14,28 @@ export default class extends React.Component {
     componentDidMount() {
     }
 
-    getFormCards() {
-        let cards = [];
+    getFormCategories() {
+        let temp = {};
+        for(let i = 0; i < form_categories.length; i++) {
+            temp[form_categories[i]] = [];
+        }
         for(let i = 0; i < this.props.forms.length; i++) {
             let form = this.props.forms[i];
-            cards.push(
-                <div key={form.form_name} className="demo-card-wide mdl-card mdl-shadow--2dp">
-                    <div className="mdl-card__title">
-                        <h2 className="mdl-card__title-text">{form.form_name}</h2>
-                    </div>
-                    <div className="mdl-card__supporting-text">
-                        Due in <span className="days-remaining-count">{form.days_remaining}</span> days
-                    </div>
-                    <div className="mdl-card__actions mdl-card--border">
-                        <a className="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
-                            <i className="material-icons">navigate_before</i>
-                        </a>
-                        <a className="mdl-button mdl-js-button mdl-button--icon mdl-button--colored align-right">
-                            <i className="material-icons">navigate_next</i>
-                        </a>
-                    </div>
-                    
-                    {/*<div className="mdl-card__menu">
-                        <button className="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
-                        <i className="material-icons">share</i>
-                        </button>
-                    </div>*/}
-                </div>
-            );
-
+            temp[form.form_type].push(form);
         }
-        return cards;
+        let category_components = [];
+        for(let i = 0; i < form_categories.length; i++) {
+            let current = form_categories[i];
+            console.log(current);
+            category_components.push(<YouthFormsCategory key={current} category={current} forms={temp[current]} />)
+        }
 
+        return category_components;
     }
+
       
     render() {
-        let formCards = this.getFormCards();
+        let categories = this.getFormCategories();
 
         return (
             <div className="col">
@@ -55,7 +44,7 @@ export default class extends React.Component {
                         <span className="mdl-layout-title">{this.props.status}</span>
                     </div>
                 </header>
-                {formCards}
+                {categories}
             </div>
         );
     }
