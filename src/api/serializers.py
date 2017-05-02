@@ -7,7 +7,7 @@ def serialize_youth(youth):
     'Serialize the youth object'
     obj = {}
 
-    obj['id'] = youth.pk
+    obj['youth_id'] = youth.pk
     obj['name'] = youth.youth_name
     obj['dob'] = youth.date_of_birth
     if youth.ethnicity is not None:
@@ -31,13 +31,12 @@ def serialize_user(user):
         
     return obj
 
-
 def serialize_youth_visit(youth_visit):
     'Serialize the youth_visit object'
 
     obj = {}
 
-    obj['id'] = youth_visit.id
+    obj['youth_visit_id'] = youth_visit.id
     obj['visit_start_date'] = youth_visit.visit_start_date
     obj['city_of_origin'] = youth_visit.city_of_origin
     obj['guardian_name'] = youth_visit.guardian_name
@@ -53,7 +52,7 @@ def serialize_youth_visit(youth_visit):
         'default_stay_length': youth_visit.current_placement_type.default_stay_length,
         'current_placement_start_date': youth_visit.current_placement_start_date,
         'current_placement_extension_days': youth_visit.current_placement_extension_days
-    },
+    }
     obj['estimated_exit_date'] = youth_visit.estimated_exit_date()
     if youth_visit.school is not None:
         obj['school'] = {
@@ -81,6 +80,28 @@ def serialize_youth_visit(youth_visit):
 
     return obj
 
+youth_field_names = ['youth_id', 'youth_name', 'date_of_birth', 'ethnicity', 'youth_notes']
+
+youth_visit_field_names = ['youth_visit_id', 'visit_start_date',
+
+                            'current_placement_type_id', 'current_placement_type_name',
+                            'current_placement_type_default_stay_length', 'current_placement_type_supervision_ratio',
+
+                            'current_placement_start_date', 'current_placement_extension_days',
+                            'city_of_origin', 'state_of_origin', 'guardian_name', 'referred_by',
+                            'social_worker', 'visit_exit_date', 'permanent_housing', 'exited_to',
+
+                            'case_manager_id', 'case_manager_name', 'case_manager_username',
+                            'personal_counselor_id', 'personal_counselor_name', 'personal_counselor_username',
+
+                            'school_id', 'school_name', 'school_district', 'school_phone', 'school_notes',
+
+                            'school_am_transport', 'school_am_pickup_time', 'school_am_phone',
+                            'school_pm_transport', 'school_pm_dropoff_time', 'school_pm_phone',
+                            'school_date_requested', 'school_mkv_complete', 'youth_visit_notes'
+                            
+                            ]
+
 
 def serialize_form_youth_visit(form_youth_vist):
     'Serialize the form_youth_visit object'
@@ -103,3 +124,4 @@ class PlacementTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = PlacementType
         fields = '__all__'
+
