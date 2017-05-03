@@ -135,8 +135,13 @@ export default class extends React.Component {
     render() {
         let exitColumn = this.checkIfPresentationMode();
         let duration = this.checkExitDate();
-        let schoolTimes = formatTime(this.props.youth.school_am_pickup_time) + " AM / " +
-            formatTime(this.props.youth.school_pm_dropoff_time) + " PM";
+        let AM = "NA / ", PM = "NA";
+        if (this.props.youth.school_am_pickup_time) {
+            AM = formatTime(this.props.youth.school_am_pickup_time) + " AM / "
+        }
+        if (this.props.youth.school_pm_dropoff_time) {
+            PM = formatTime(this.props.youth.school_pm_dropoff_time) + " PM"
+        }
 
         return (
             <tr>
@@ -147,7 +152,7 @@ export default class extends React.Component {
                 <td>{this.wrapIndexLink(this.props.youth.school.school_name)}</td>
                 <td>{this.wrapIndexLink(this.props.youth.school_am_transport)}</td>
                 <td>{this.wrapIndexLink(this.props.youth.school_pm_transport)}</td>
-                <td>{this.wrapIndexLink(schoolTimes)}</td>
+                <td>{this.wrapIndexLink(AM + PM)}</td>
                 <td>{this.wrapIndexLink(this.props.youth.overall_form_progress)}</td>
                 <td className={duration}>{this.wrapIndexLink(formatDate(this.props.youth.estimated_exit_date))}</td>
                 {exitColumn}

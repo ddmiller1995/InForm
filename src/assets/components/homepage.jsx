@@ -21,7 +21,7 @@ export default class extends React.Component {
         let isChecked = this.state.checked ? "checked" : "";
         
         return (
-            <div className="container youth-detail-container">
+            <div className="youth-tracker-container">
                 <header className="mdl-layout__header">
                     <div className="mdl-layout__header-row header-fix">
                             <nav className="mdl-navigation homepage-bar">
