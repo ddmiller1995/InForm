@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from api.models import PlacementType
+from api.models import PlacementType, FormType
 import logging
 logger = logging.getLogger(__name__)
 
@@ -125,3 +125,7 @@ class PlacementTypeSerializer(serializers.ModelSerializer):
         model = PlacementType
         fields = '__all__'
 
+class FormTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FormType
+        fields = '__all__'

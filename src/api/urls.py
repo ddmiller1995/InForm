@@ -23,8 +23,11 @@ urlpatterns = [
     url(r'^youth/(?P<youth_id>[0-9]+)/$', views.YouthDetail.as_view(), name='youth-detail'),
     url(r'^youth/(?P<youth_id>[0-9]+)/forms/$', views.YouthForms.as_view(), name='youth-forms'),
     url(r'^placement-type/$', views.PlacementTypeList.as_view(), \
-        name='youth-change-placement'),
-    url(r'^visit/(?P<youth_visit_id>[0-9]+)/change-placement/$', views.YouthChangePlacement.as_view(), \
+        name='youth-list-placement-type'),
+    url(r'^form-type/$', views.FormTypeList.as_view(), \
+        name='youth-list-form-type'),
+    url(r'^visit/(?P<youth_visit_id>[0-9]+)/change-placement/$',
+        views.YouthChangePlacement.as_view(),
         name='youth-change-placement'),
     url(r'^visit/(?P<youth_visit_id>[0-9]+)/mark-exited/$', views.YouthMarkExited.as_view(), \
         name='youth-mark-exited'),

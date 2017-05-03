@@ -15,10 +15,11 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.renderers import JSONRenderer
 
-from api.models import PlacementType, Youth, YouthVisit, FormYouthVisit
+from api.models import PlacementType, Youth, YouthVisit, FormYouthVisit, FormType
 from api.serializers import (PlacementTypeSerializer, serialize_youth,
                              serialize_youth_visit, serialize_form_youth_visit,
-                             youth_field_names, youth_visit_field_names)
+                             youth_field_names, youth_visit_field_names,
+                             FormTypeSerializer)
 
 logger = logging.getLogger(__name__)
 
@@ -327,6 +328,23 @@ class PlacementTypeList(APIView):
         placement_types = PlacementType.objects.all()
         serializer = PlacementTypeSerializer(placement_types, many=True)
         return Response(serializer.data)
+
+class FormTypeList(APIView):
+    '''
+    List all FormTypes
+
+    Support HTTP methods: GET
+
+    GET /api/form-type returns JSON Response
+    '''
+
+    renderer_classes = (JSONRenderer, )
+
+    def get(self, request, format=None):
+        form_types = FormType.objects.all()
+        serializer = FormTypeSerializer(form_types, many=True)
+        return Response(serializer.data)
+
 
 
 class ExportYouthVisits(APIView):
