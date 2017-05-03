@@ -4,11 +4,8 @@ import csv
 
 from django.http import Http404, JsonResponse, HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
-from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core import serializers
+from django import forms
 
-from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -33,7 +30,6 @@ class YouthList(APIView):
     '''
 
     renderer_classes = (JSONRenderer, )
-    # permission_classes = (IsAuthenticated,)
 
     def get(self, request, format=None):
 
@@ -81,7 +77,6 @@ class YouthDetail(APIView):
     '''
 
     renderer_classes = (JSONRenderer, )
-    # permission_classes = (IsAuthenticated,)
 
     def get(self, request, youth_id, format=None):
         youth = get_object_or_404(Youth, pk=youth_id)
@@ -128,7 +123,7 @@ class YouthChangePlacement(APIView):
     '''
 
     renderer_classes = (JSONRenderer, )
-    # permission_classes = (IsAuthenticated,)
+    
 
     def post(self, request, youth_visit_id, format=None):
         # year/month/day YYYY-MM-DD
@@ -185,7 +180,6 @@ class YouthMarkExited(APIView):
         * permanent housing (bool)
     '''
     renderer_classes = (JSONRenderer, )
-    # permission_classes = (IsAuthenticated,)
 
     def post(self, request, youth_visit_id, format=None):
         try:
@@ -238,7 +232,6 @@ class YouthAddExtension(APIView):
     '''
 
     renderer_classes = (JSONRenderer, )
-    # permission_classes = (IsAuthenticated,)
 
     def post(self, request, youth_visit_id, format=None):
         try:
@@ -272,7 +265,6 @@ class YouthEditNote(APIView):
     '''Edit a Youth visit's note
     '''
     renderer_classes = (JSONRenderer, )
-    # permission_classes = (IsAuthenticated,)
 
     def post(self, request, youth_visit_id, format=None):
         try:
@@ -308,27 +300,17 @@ class PlacementTypeList(APIView):
     '''
 
     renderer_classes = (JSONRenderer, )
-    # permission_classes = (IsAuthenticated,)
 
     def get(self, request, format=None):
         placement_types = PlacementType.objects.all()
         serializer = PlacementTypeSerializer(placement_types, many=True)
         return Response(serializer.data)
 
-class ImportIndex(APIView):
-    '''Import index'''
+class DownloadImportTemplate(APIView):
+    '''Download the import csv template'''
 
     def get(self, request):
-        return render(request, 'api/import.html')
-
-class ImportYouthVisits(APIView):
-    '''Handle CSV import feature'''
-
-    renderer_classes = (JSONRenderer, )
-
-    def get(self, request, format=None):
-        '''Download the import template'''
-         # Create the HttpResponse object with the appropriate CSV header.
+        # Create the HttpResponse object with the appropriate CSV header.
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename="inform-data-import-template.csv"'
 
@@ -336,11 +318,28 @@ class ImportYouthVisits(APIView):
 
         column_names = youth_field_names + youth_visit_field_names
         writer.writerow(column_names)
-        return response     
+        return response
 
-    def post(self, request, format=None):
-        '''Receive a filled in import template and process it'''
-        return redirect('/admin')
+class UploadFileForm(forms.Form):
+    file = forms.FileField()
+
+@api_view(['GET', 'POST'])
+def ImportYouthVisits(request):
+    if request.method == 'POST':
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            f = request.FILES['file']
+            for chunk in f.chunks():
+                print(chunk)
+            
+            return redirect('import-youth-visits')
+
+    else:
+        form = UploadFileForm()
+
+    return render(request, 'api/import.html', {'form': form})
+
+
 
 class ExportYouthVisits(APIView):
     '''Export youth visit data as CSV

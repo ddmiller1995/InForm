@@ -1,3 +1,11 @@
 <h1>Import</h1>
 
-<a href="/api/import/youth-visits">Download import template</a>
+<a href="{% url 'download-import-template' %}">Download import template</a>
+
+<br /><br />
+
+<form action="{% url 'import-youth-visits' %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Submit" />
+</form>
