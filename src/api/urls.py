@@ -21,7 +21,6 @@ PUT /api/youth/PK/progress-chart (create or update operation for the progress ch
 urlpatterns = [
     url(r'^youth/$', views.YouthList.as_view(), name='youth-list'),
     url(r'^youth/(?P<youth_id>[0-9]+)/$', views.YouthDetail.as_view(), name='youth-detail'),
-    url(r'^youth/(?P<youth_id>[0-9]+)/forms/$', views.YouthForms.as_view(), name='youth-forms'),
     url(r'^placement-type/$', views.PlacementTypeList.as_view(), \
         name='youth-list-placement-type'),
     url(r'^form-type/$', views.FormTypeList.as_view(), \
@@ -35,6 +34,8 @@ urlpatterns = [
         name='youth-add-extension'),
     url(r'^visit/(?P<youth_visit_id>[0-9]+)/edit-note/$', views.YouthEditNote.as_view(), \
         name='youth-edit-note'),
+    url(r'^visit/(?P<youth_visit_id>[0-9]+)/change-form-status/$',
+        views.ChangeFormStatus.as_view(), name='change-form-status'),
 
     url(r'^export/youth-visits/', views.ExportYouthVisits.as_view(), \
         name='export-youth-vists'),
