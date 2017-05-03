@@ -1,6 +1,7 @@
 import React from "react";
 import {store} from "./shared-state.js";
 import {Link, IndexLink} from "react-router";
+import { getRequest } from '../util.js'
 import "whatwg-fetch";
 
 const GET_YOUTH_API = "/api/youth/"
@@ -12,13 +13,9 @@ export default class extends React.Component {
         this.state = {youth: {}};
     }
 
-     componentDidMount() {
+    componentDidMount() {
         this.unsub = store.subscribe(() => this.setState(store.getState()));
-
-        fetch(GET_YOUTH_API + YOUTH_ID.currentYouth.id)
-            .then(response => response.json())
-            .then(data => this.setState({ youth: data }))
-            .catch(err => alert(err.message));
+        let data = getRequest(GET_YOUTH_API + YOUTH_ID.currentYouth.id, this, "youth");
     }
 
     componentWillUnmount() {

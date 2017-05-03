@@ -1,7 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import {Link, IndexLink} from "react-router";
-import { formatDate, getDateDiff, formatTime, registerDialog } from '../util.js'
+import { formatDate, getDateDiff, formatTime, registerDialog, 
+    closeDialog, postRequest, getRequest } from '../util.js'
 import "whatwg-fetch";
 
 var moment = require("moment");
@@ -14,15 +15,12 @@ export default class extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            visitIndex: 0
+            visitIndex: 0,
         };
     }
 
     componentDidMount() {
-        fetch(PLACEMENT_API)
-            .then(response => response.json())
-            .then(data => this.setState({ placement_types: data }))
-            .catch(err => alert(err.message));
+        let data = getRequest(PLACEMENT_API, this, "placement_types");
     }
 
     // populate the visit date dropdown with all the visits of this particular youth
@@ -33,7 +31,6 @@ export default class extends React.Component {
         });
 
         selectedVisit = visitDates[this.state.visitIndex].key;
-
         return visitDates;
     }
 
@@ -67,7 +64,8 @@ export default class extends React.Component {
                     <i className="material-icons">hotel</i>Change Beds
                 </button>
                 <button className="mdl-button mdl-js-button edit-youth">
-                    <a className="mdl-navigation__link" href={"/admin/api/youthvisit/" + this.props.currentYouth.id + "/change/"}>
+                    <a className="mdl-navigation__link" href={"/admin/api/youthvisit/" + 
+                        this.props.currentYouth.youth_visits[this.state.visitIndex].youth_visit_id + "/change/"}>
                         <i className="material-icons">mode_edit</i>
                         Edit Visit Details
                     </a>
@@ -78,11 +76,14 @@ export default class extends React.Component {
 
     toggleModal(action) {
         let that = this;
+        let postFunction;
         let div;
         if (action === "extend") {
             div = this.buildExtendModal();
+            postFunction = this.postExtend;
         } else {
             div = this.buildSwitchModal();
+            postFunction = this.postSwitch;
         }
         // if dialog doesn't exist, append it
         if (document.getElementById("mdl-dialog") == null) {
@@ -94,6 +95,12 @@ export default class extends React.Component {
         // @param1: parent container that dialog child will be added and removed from
         // @param2: index of dialog in childNodes array
         registerDialog(".youth-info-container", 5);
+        // create post request on "save", then close modal
+        document.getElementById("dialog-submit").addEventListener("click", function () {
+            postFunction(that);
+            let dialog = document.querySelector("dialog");
+            closeDialog(dialog, ".youth-info-container", 5);
+        });
     }
 
     buildExtendModal() {
@@ -104,7 +111,7 @@ export default class extends React.Component {
                 <div id="dialog-descr">
                     <p>Extend stay for ${this.props.currentYouth.name}</p>
                     <p>Current extension days: 
-                        ${this.props.currentYouth.youth_visits[this.state.visitIndex].current_placement_type[this.props.currentYouth.youth_visits[this.state.visitIndex].current_placement_type.length -1].current_placement_extension_days}
+                        ${this.props.currentYouth.youth_visits[this.state.visitIndex].current_placement_type.current_placement_extension_days}
                     </p>
                     <p>Extend by 
                         <span>
@@ -115,7 +122,7 @@ export default class extends React.Component {
                 </div>
                 <div id="dialog-actions">
                     <button type="button" id="dialog-submit">Save</button>
-                    <button type="button" id="dialog-close">Close</button>
+                    <button type="button" id="dialog-close">Cancel</button>
                 </div>
             </dialog>
         `);
@@ -133,7 +140,7 @@ export default class extends React.Component {
                 <div id="dialog-descr">
                     <p>Switch beds for ${this.props.currentYouth.name}</p>
                     <p>Current placement: 
-                        ${this.props.currentYouth.youth_visits[this.state.visitIndex].current_placement_type[this.props.currentYouth.youth_visits[this.state.visitIndex].current_placement_type.length -1].name}
+                        ${this.props.currentYouth.youth_visits[this.state.visitIndex].current_placement_type.name}
                     </p>
                     <p>New placement: 
                         <span><select className="mdl-select__input" id="placement-dropdown" name="placement"></select></span>
@@ -142,7 +149,7 @@ export default class extends React.Component {
                 </div>
                 <div id="dialog-actions">
                     <button type="button" id="dialog-submit">Save</button>
-                    <button type="button" id="dialog-close">Close</button>
+                    <button type="button" id="dialog-close">Cancel</button>
                 </div>
             </dialog>
         `);
@@ -179,13 +186,42 @@ export default class extends React.Component {
             this.state.placement_types.forEach(function(type) {
                 let option = document.createElement("option");
                 option.textContent = type.placement_type_name;
+                option.value = type.id;
                 change.appendChild(option);
             });
         }
     }
 
-    saveNotes() {
-        console.log("here");
+    postExtend(that) {
+        let visitID = that.props.currentYouth.youth_visits[that.state.visitIndex].youth_visit_id;
+        let url = "/api/visit/" + visitID + "/add-extension/";
+        let extension = document.getElementById("extend-input").value;
+        let data = new FormData();
+        data.append("extension", extension);
+
+        postRequest(url, data);
+    }
+
+    postSwitch(that) {
+        let visitID = that.props.currentYouth.youth_visits[that.state.visitIndex].youth_visit_id;
+        let url = "/api/visit/" + visitID + "/change-placement/";
+        let placementID = document.getElementById("placement-dropdown").value;
+        let placementStartDate = document.getElementById("date-input").value;
+        let data = new FormData();
+        data.append("new_placement_type_id", placementID);
+        data.append("new_placement_start_date", placementStartDate);
+
+        postRequest(url, data);
+    }
+
+    postNotes() {
+        let visitID = this.props.currentYouth.youth_visits[this.state.visitIndex].youth_visit_id;
+        let url = "/api/visit/" + visitID + "/edit-note/";
+        let notes = document.getElementById("notes-input").value;
+        let data = new FormData();
+        data.append("note", notes);
+
+        postRequest(url, data);
     }
 
     render() {
@@ -197,7 +233,6 @@ export default class extends React.Component {
             visitDates = this.getVisits(visits, visitDates);
 
             currentVisit = visits[this.state.visitIndex];
-            currentPlacement = currentVisit.current_placement_type[currentVisit.current_placement_type.length -1];
         }
 
         if (currentVisit == null) {
@@ -223,7 +258,8 @@ export default class extends React.Component {
                             <p>Name: <span className="value">{this.props.currentYouth.name}</span></p>
                             <p>Birthdate: <span className="value">{formatDate(this.props.currentYouth.dob)}</span></p>
                             <p>Age: <span className="value">{getDateDiff(this.props.currentYouth.dob, "years")}</span></p>
-                            <p>Ethnicity: <span className="value">{this.props.currentYouth.ethnicity}</span></p>
+                            <p>Guardian: <span className="value">{currentVisit.guardian_name + " (relationship)" 
+                                || DEFAULT_VALUE}</span></p>
                             <p>City: <span className="value">{currentVisit.city_of_origin || DEFAULT_VALUE}</span></p>
                         </div>
                     </div>
@@ -239,15 +275,15 @@ export default class extends React.Component {
                             </p>
                             <p>Current Placement Date:  
                                 <span className="value"> 
-                                    {formatDate(currentPlacement.current_placement_start_date)}
+                                    {formatDate(currentVisit.current_placement_type.current_placement_start_date)}
                                 </span>
                             </p>
                             <p>Placement Type:  
-                                <span className="value"> {currentPlacement.name}</span>
+                                <span className="value"> {currentVisit.current_placement_type.name}</span>
                             </p>
                             <p>Estimated Stay:  
-                                <span className="value"> { currentPlacement.default_stay_length} days (+ 
-                                    { currentPlacement.current_placement_extension_days} day extension)
+                                <span className="value"> { currentVisit.current_placement_type.default_stay_length} days (+ 
+                                    { currentVisit.current_placement_type.current_placement_extension_days} day extension)
                                 </span>
                             </p>
                         </div>
@@ -277,26 +313,31 @@ export default class extends React.Component {
                     </div>
                     <div className="inner-col">
                         <p>AM Transport: <span className="value">{currentVisit.school_am_transport || DEFAULT_VALUE}</span></p>
-                        <p>AM Pickup Time: <span className="value">{formatTime(currentVisit.school_am_pickup_time) || DEFAULT_VALUE}</span></p>
+                        <p>AM Pickup Time: <span className="value">{formatTime(currentVisit.school_am_pickup_time) + " AM" 
+                            || DEFAULT_VALUE}</span></p>
                         <p>AM Phone: <span className="value">{currentVisit.school_am_phone || DEFAULT_VALUE}</span></p>
                     </div>
                     <div className="inner-col">
                         <p>PM Transport: <span className="value">{currentVisit.school_pm_transport || DEFAULT_VALUE}</span></p>
-                        <p>PM Dropoff Time: <span className="value">{formatTime(currentVisit.school_pm_dropoff_time) || DEFAULT_VALUE}</span></p>
+                        <p>PM Dropoff Time: <span className="value">{formatTime(currentVisit.school_pm_dropoff_time) + " PM" 
+                            || DEFAULT_VALUE}</span></p>
                         <p>PM Phone: <span className="value">{currentVisit.school_pm_phone || DEFAULT_VALUE}</span></p>
                     </div>
                     <div className="inner-col">
                         <p>Date Requested: 
                                 <span className="value">{formatDate(currentVisit.school_date_requested) || DEFAULT_VALUE}</span></p>
-                        <p>MKV Complete: <span className="value">{currentVisit.school_mkv_complete || DEFAULT_VALUE}</span></p>
+                        <p>MKV/Enroll Complete: <span className="value">{currentVisit.school_mkv_complete || DEFAULT_VALUE}</span></p>
                     </div>
                 </div>
                 <div className="youth-row">
                     <div className="col-text">
                         <h4>Visit Notes</h4>
                         <hr className="youth-info-divider"/>
-                        <textarea name="notes" id="notes-input" cols="30" rows="10" value={currentVisit.visit_notes}></textarea>
-                        <button className="mdl-button mdl-js-button save-notes" onClick={() => this.saveNotes()}>Save</button>
+                        <textarea name="notes" id="notes-input" cols="30" rows="10" defaultValue={currentVisit.visit_notes}></textarea>
+                        <button 
+                            className="mdl-button mdl-js-button save-notes" 
+                            onClick={() => this.postNotes()}>Save
+                        </button>
                     </div>
                 </div>
             </div>
