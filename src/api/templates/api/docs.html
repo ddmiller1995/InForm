@@ -147,8 +147,8 @@
             was exited to
         - permanent_housing is a POST param that is required. It
             is a string which represents whether or not a youth
-            received permanent_housing. It must be in the format of
-            "true" or "false" or the request will throw an error
+            received permanent_housing. It must be one of the EXACT
+            string values: ("true", "false", "unknown")
 
     Success:
         - If the request was succesfull, you will receive a
