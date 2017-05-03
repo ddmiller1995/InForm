@@ -90,15 +90,25 @@ class YouthDetail(APIView):
         json = serialize_youth(youth)
 
         youth_visits = []
-        for youth_visit in YouthVisit.objects.filter(youth_id=youth).order_by('-current_placement_start_date'):
+        for youth_visit in YouthVisit.objects.filter(youth_id=youth).order_by('-visit_start_date'):
             serialized_youth_visit = serialize_youth_visit(youth_visit)
-            youth_visits.append(serialized_youth_visit)
 
+            forms = []
+            for form_youth_visit in FormYouthVisit.objects.filter(youth_visit_id=youth_visit.id):
+                serialized_form_youth_visit = serialize_form_youth_visit(form_youth_visit)
+                forms.append(serialized_form_youth_visit)
+
+            serialized_youth_visit['forms'] = forms
+
+            youth_visits.append(serialized_youth_visit)
         json['youth_visits'] = youth_visits 
+
 
         return Response(json, status=status.HTTP_200_OK)
 
 class YouthForms(APIView):
+
+    renderer_classes = (JSONRenderer, )
 
     def get(self, request, youth_id, format=None):
         youth = get_object_or_404(Youth, pk=youth_id)
