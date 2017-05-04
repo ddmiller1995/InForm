@@ -259,7 +259,18 @@ h4 {
     background-color: #E7E7E7; }
     .board .col .demo-card-wide.mdl-card {
       width: 90%;
-      margin: 20px auto; }
+      margin: 15px auto;
+      min-height: 125px; }
+      .board .col .demo-card-wide.mdl-card .mdl-card__title-text {
+        font-size: 20px; }
+      .board .col .demo-card-wide.mdl-card .mdl-card__title, .board .col .demo-card-wide.mdl-card .mdl-card__supporting-text {
+        padding: 10px 16px; }
+      .board .col .demo-card-wide.mdl-card .mdl-button--colored {
+        color: #8fbc49; }
+      .board .col .demo-card-wide.mdl-card .overdue {
+        color: red; }
+      .board .col .demo-card-wide.mdl-card .due-soon {
+        color: #3f51b5; }
   .board .col:nth-of-type(2) {
     border-left: 1px solid #ccc;
     border-right: 1px solid #ccc; }
@@ -272,9 +283,9 @@ h4 {
   .board .align-right {
     float: right; }
   .board .form-type .form-type-title {
-    width: calc(100% - 10px);
+    width: calc(100% - 20px);
     background-color: white;
-    padding: 5px;
+    padding: 5px 10px;
     color: #CCC;
     height: 30px;
     line-height: 30px;

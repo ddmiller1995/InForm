@@ -41,9 +41,7 @@ export default class extends React.Component {
       
     render() {
         if(this.props.currentYouth.youth_visits) {
-            console.log("yes");
             form_data = this.props.currentYouth.youth_visits[0].forms;
-            console.log(this.props.currentYouth.youth_visits);
         }
         let columns = this.getColumns();
 

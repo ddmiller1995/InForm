@@ -21,6 +21,16 @@ export default class extends React.Component {
         });
     }
 
+    formatDaysRemaining(days) {
+        if(days < 0) {
+            return <span className="overdue">{"Due " + Math.abs(days) + " days ago"}</span>
+        } else if(days < 3) {
+            return <span className="due-soon">{"Due in " + days + (days == 1 ? " day" : " days")}</span>
+        } else {
+            return <span className="due-later">{"Due in " + days + "days"}</span>
+        }
+    }
+
     getFormCards() {
         let cards = [];
         for(let i = 0; i < this.props.forms.length; i++) {
@@ -31,7 +41,7 @@ export default class extends React.Component {
                         <h2 className="mdl-card__title-text">{form.form_name}</h2>
                     </div>
                     <div className="mdl-card__supporting-text">
-                        Due in <span className="days-remaining-count">{form.days_remaining}</span> days
+                        Due in <span className="days-remaining-count">{this.formatDaysRemaining(form.days_remaining)}</span> days
                     </div>
                     <div className="mdl-card__actions mdl-card--border">
                         <a className="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
