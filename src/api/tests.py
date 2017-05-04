@@ -468,3 +468,27 @@ class YouthModelTests(TestCase):
             status='done'
         )
         self.assertEqual(form_youth_visit.days_remaining(), 0)
+
+    def test_change_form_status(self):
+        client = APIClient()
+        client.force_authenticate(self.user)
+
+        youth_visit_id = 2
+        form_id = 1
+
+        url = reverse('change-form-status', args=[youth_visit_id])
+
+        form_youth_visit = FormYouthVisit.objects.get(youth_visit_id=youth_visit_id, form_id=form_id)
+        self.assertEqual(form_youth_visit.status, "done")
+
+        response = client.post(url, {
+            'form_id': form_id,
+            'status': 'in_progress'
+        })
+
+        form_youth_visit = FormYouthVisit.objects.get(youth_visit_id=youth_visit_id, form_id=form_id)
+        
+
+        self.assertEqual(response.status_code, 202)
+        self.assertEqual(form_youth_visit.status, "in progress")
+
