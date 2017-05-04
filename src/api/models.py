@@ -282,6 +282,8 @@ class FormYouthVisit(models.Model):
         return 'Youth Visit ID: ' + str(self.youth_visit_id.id) + ' - Form Name: ' + self.form_id.form_name
 
     def days_remaining(self):
+        if self.form_id.default_due_date is None:
+            return 0
         result = self.form_id.default_due_date - (timezone.now().date() - self.youth_visit_id.visit_start_date).days
         if result < 0:
             return 0
