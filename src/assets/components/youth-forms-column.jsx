@@ -1,9 +1,8 @@
 import React from "react";
 import {Link, IndexLink} from "react-router";
-import YouthFormsCategory from "./youth-forms-category.jsx";
+import YouthFormsType from "./youth-forms-type.jsx";
 import "whatwg-fetch";
 
-let form_categories = ["Intake", "Psych", "Outtake"];
 
 export default class extends React.Component {
     constructor(props) {
@@ -14,28 +13,31 @@ export default class extends React.Component {
     componentDidMount() {
     }
 
-    getFormCategories() {
-        let temp = {};
-        for(let i = 0; i < form_categories.length; i++) {
-            temp[form_categories[i]] = [];
-        }
-        for(let i = 0; i < this.props.forms.length; i++) {
-            let form = this.props.forms[i];
-            temp[form.form_type].push(form);
-        }
-        let category_components = [];
-        for(let i = 0; i < form_categories.length; i++) {
-            let current = form_categories[i];
-            console.log(current);
-            category_components.push(<YouthFormsCategory key={current} category={current} forms={temp[current]} />)
+    getFormTypes() {
+        let forms_by_type = {}
+        this.props.formTypes.forEach(function(type) {
+            forms_by_type[type.form_type_name] = [];
+        });
+        if(this.props.forms) {
+            for(let i = 0; i < this.props.forms.length; i++) {
+                let form = this.props.forms[i];
+                forms_by_type[form.form_type].push(form);
+            }
         }
 
-        return category_components;
+        let type_components = [];
+        for(let i = 0; i < this.props.formTypes.length; i++) {
+            let type_id = this.props.formTypes[i].id;
+            let type = this.props.formTypes[i].form_type_name;
+            type_components[type_id] = <YouthFormsType key={type} type={type} forms={forms_by_type[type]} />
+        }
+
+        return type_components;
     }
 
       
     render() {
-        let categories = this.getFormCategories();
+        let types = this.getFormTypes();
 
         return (
             <div className="col">
@@ -44,7 +46,7 @@ export default class extends React.Component {
                         <span className="mdl-layout-title">{this.props.status}</span>
                     </div>
                 </header>
-                {categories}
+                {types}
             </div>
         );
     }

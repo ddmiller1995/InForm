@@ -269,19 +269,21 @@ class FormYouthVisit(models.Model):
     youth_visit_id = models.ForeignKey(YouthVisit, on_delete=models.CASCADE)
     user_id = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     # expected values: pending, in progess, done
-    status = models.CharField(max_length=32, default=PENDING, 
-        choices=(
-            (PENDING, PENDING),
-            (IN_PROGRESS, IN_PROGRESS),
-            (DONE, DONE)
-        )
-    )
+    status = models.CharField(max_length=32, default=PENDING,
+                              choices=(
+                                  (PENDING, PENDING),
+                                  (IN_PROGRESS, IN_PROGRESS),
+                                  (DONE, DONE)
+                              )
+                             )
     notes = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return 'Youth Visit ID: ' + str(self.youth_visit_id.id) + ' - Form Name: ' + self.form_id.form_name
 
     def days_remaining(self):
+        if self.form_id.default_due_date is None:
+            return 0
         result = self.form_id.default_due_date - (timezone.now().date() - self.youth_visit_id.visit_start_date).days
         if result < 0:
             return 0
