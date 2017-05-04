@@ -16,7 +16,6 @@ function reducer(state, action) {
 }
 
 export function setCurrentYouth(youth) {
-    console.log(youth);
     return {
         type: SET_CURRENT_YOUTH,
         currentYouth: {id:youth.youth_id}
