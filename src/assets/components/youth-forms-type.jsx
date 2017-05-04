@@ -10,6 +10,8 @@ export default class extends React.Component {
         };
 
         this.toggleExpand = this.toggleExpand.bind(this);
+        this.moveLeft = this.moveLeft.bind(this);
+        this.moveRight = this.moveRight.bind(this);
     }
 
     componentDidMount() {
@@ -19,6 +21,14 @@ export default class extends React.Component {
         this.setState({
             open: !this.state.open
         });
+    }
+
+    moveLeft() {
+
+    }
+
+    moveRight() {
+        
     }
 
     formatDaysRemaining(days) {
@@ -44,10 +54,10 @@ export default class extends React.Component {
                         Due in <span className="days-remaining-count">{this.formatDaysRemaining(form.days_remaining)}</span> days
                     </div>
                     <div className="mdl-card__actions mdl-card--border">
-                        <a className="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
+                        <a className="mdl-button mdl-js-button mdl-button--icon mdl-button--colored" onClick={this.moveLeft}>
                             <i className="material-icons">navigate_before</i>
                         </a>
-                        <a className="mdl-button mdl-js-button mdl-button--icon mdl-button--colored align-right">
+                        <a className="mdl-button mdl-js-button mdl-button--icon mdl-button--colored align-right" onClick={this.moveRight}>
                             <i className="material-icons">navigate_next</i>
                         </a>
                     </div>
