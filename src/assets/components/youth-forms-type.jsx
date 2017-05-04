@@ -59,9 +59,9 @@ export default class extends React.Component {
         let formCards = this.getFormCards();
 
         return(
-            <div className="form-category">
-                <div className="form-category-title">
-                    {this.props.category}
+            <div className="form-type">
+                <div className="form-type-title">
+                    {this.props.type}
                         <a className="mdl-button mdl-js-button mdl-button--icon align-right" onClick={this.toggleExpand}>
                             <i className="material-icons">{this.state.open ? "expand_more" : "expand_less"}</i>
                         </a>

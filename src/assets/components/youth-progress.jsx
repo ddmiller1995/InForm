@@ -2,6 +2,7 @@ import React from "react";
 import {Link, IndexLink} from "react-router";
 import YouthFormsColumn from "./youth-forms-column.jsx";
 import "whatwg-fetch";
+import {postRequest, getRequest} from '../util.js';
 
 let form_data = [];
 //statuses = ["pending", "in progress", "done"]
@@ -9,10 +10,14 @@ let form_data = [];
 export default class extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            form_types: []
+        };
     }
 
     componentDidMount() {
+        let response = getRequest("/api/form-type", this, "form_types");
+
         form_data.push({
             form_name: "form A",
             form_description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maxime, perspiciatis quasi tenetur, ea sed, molestiae illo labore voluptatem fugiat delectus illum culpa dolore architecto saepe doloribus aliquid reprehenderit autem at!",
@@ -80,6 +85,7 @@ export default class extends React.Component {
         });
     }
 
+
     getColumns() {
         let columns = [];
         let statuses = {};
@@ -91,7 +97,7 @@ export default class extends React.Component {
             statuses[form.status].push(form);
         }
         for(status in statuses) {
-            columns.push(<YouthFormsColumn key={status} status={status} forms={statuses[status]} />);
+            columns.push(<YouthFormsColumn key={status} status={status} formTypes={this.state.form_types} forms={statuses[status]} />);
         }
         return columns;
     }

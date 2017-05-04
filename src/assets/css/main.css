@@ -271,7 +271,7 @@ h4 {
     min-height: 165px; }
   .board .align-right {
     float: right; }
-  .board .form-category .form-category-title {
+  .board .form-type .form-type-title {
     width: calc(100% - 10px);
     background-color: white;
     padding: 5px;
