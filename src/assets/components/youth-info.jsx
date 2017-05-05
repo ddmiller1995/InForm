@@ -166,15 +166,17 @@ export default class extends React.Component {
         if (extend != null) {
             let update = function updateEstimate() {
                 let date = new Date(exit);
-                let day = date.getDate() + parseInt(extend.value);
+                date.setDate(date.getDate() + parseInt(extend.value));
+
+                let day = date.getDate();
                 let month = date.getMonth() + 1;
                 let year = date.getFullYear();
 
                 let newExit = document.getElementById("new-estimate");
                 newExit.textContent = month + "/" + day + "/" + year;
+
             };
             update();
-
             extend.addEventListener("input", update);
         }
     }
@@ -226,18 +228,33 @@ export default class extends React.Component {
 
     render() {
         let visitDates = [];
-        let currentVisit;
-        let currentPlacement;
+        let currentVisit, currentPlacement;
+        let AM, PM, permHousing;
         if (this.props.currentYouth.youth_visits) {
             let visits = this.props.currentYouth.youth_visits;
             visitDates = this.getVisits(visits, visitDates);
 
             currentVisit = visits[this.state.visitIndex];
+
+            if (currentVisit.school_am_pickup_time) {
+                AM = formatTime(currentVisit.school_am_pickup_time) + " AM"
+            }
+            if (currentVisit.school_pm_dropoff_time) {
+                PM = formatTime(currentVisit.school_pm_dropoff_time) + " PM"
+            }
+
+            if (currentVisit.permanent_housing) {
+                permHousing = "Yes";
+            } else if (currentVisit.permanent_housing === false) {
+                permHousing = "No"; 
+            }
         }
 
         if (currentVisit == null) {
             return null;
         }
+
+        console.log(currentVisit);
 
         return (
             <div className="container youth-info-container">
@@ -297,7 +314,7 @@ export default class extends React.Component {
                             <p>Estimated Exit: <span className="value">{formatDate(currentVisit.estimated_exit_date)}</span></p>
                             <p>Actual Exit: <span className="value">{formatDate(currentVisit.visit_exit_date) || "N/A"}</span></p>
                             <p>Where Exited: <span className="value">{currentVisit.exited_to || DEFAULT_VALUE}</span></p>
-                            <p>Permanent Housing: <span className="value">{currentVisit.permanent_housing || DEFAULT_VALUE}</span></p>
+                            <p>Permanent Housing: <span className="value">{permHousing || DEFAULT_VALUE}</span></p>
                         </div>
                     </div>
                 </div>
@@ -313,14 +330,12 @@ export default class extends React.Component {
                     </div>
                     <div className="inner-col">
                         <p>AM Transport: <span className="value">{currentVisit.school_am_transport || DEFAULT_VALUE}</span></p>
-                        <p>AM Pickup Time: <span className="value">{formatTime(currentVisit.school_am_pickup_time) + " AM" 
-                            || DEFAULT_VALUE}</span></p>
+                        <p>AM Pickup Time: <span className="value">{AM || DEFAULT_VALUE}</span></p>
                         <p>AM Phone: <span className="value">{currentVisit.school_am_phone || DEFAULT_VALUE}</span></p>
                     </div>
                     <div className="inner-col">
                         <p>PM Transport: <span className="value">{currentVisit.school_pm_transport || DEFAULT_VALUE}</span></p>
-                        <p>PM Dropoff Time: <span className="value">{formatTime(currentVisit.school_pm_dropoff_time) + " PM" 
-                            || DEFAULT_VALUE}</span></p>
+                        <p>PM Dropoff Time: <span className="value">{PM || DEFAULT_VALUE}</span></p>
                         <p>PM Phone: <span className="value">{currentVisit.school_pm_phone || DEFAULT_VALUE}</span></p>
                     </div>
                     <div className="inner-col">

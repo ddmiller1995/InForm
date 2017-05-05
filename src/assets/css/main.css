@@ -31,8 +31,8 @@
 .mdl-data-table.mdl-js-data-tabled.youth-tracker-container {
   display: table;
   position: relative;
-  width: 100%;
-  margin: auto; }
+  margin: auto;
+  width: 100%; }
 
 .add-youth {
   position: absolute;
@@ -74,9 +74,11 @@
     padding-bottom: 3px; }
 
 .youth-tracker-container {
-  width: 100%; }
+  border: 1px solid gainsboro;
+  margin: 15px;
+  box-shadow: 0 11px 15px -7px rgba(0, 0, 0, 0.1), 0 24px 38px 3px transparent; }
   .youth-tracker-container tbody tr:focus, .youth-tracker-container tbody tr:hover {
-    background-color: lightgray; }
+    background-color: rgba(156, 177, 208, 0.67); }
   .youth-tracker-container #mdl-dialog {
     width: 375px; }
     .youth-tracker-container #mdl-dialog #exit-warning {
