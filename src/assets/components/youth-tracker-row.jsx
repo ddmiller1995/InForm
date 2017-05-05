@@ -5,6 +5,7 @@ import { formatDate, formatTime, registerDialog, closeDialog, postRequest } from
 import "whatwg-fetch";
 
 var moment = require("moment");
+const DEFAULT_VALUE = "Not Provided"
 
 export default class extends React.Component {
     constructor(props) {
@@ -135,8 +136,13 @@ export default class extends React.Component {
     render() {
         let exitColumn = this.checkIfPresentationMode();
         let duration = this.checkExitDate();
-        let schoolTimes = formatTime(this.props.youth.school_am_pickup_time) + " AM / " +
-            formatTime(this.props.youth.school_pm_dropoff_time) + " PM";
+        let AM = "NA / ", PM = "NA";
+        if (this.props.youth.school_am_pickup_time) {
+            AM = formatTime(this.props.youth.school_am_pickup_time) + " AM / "
+        }
+        if (this.props.youth.school_pm_dropoff_time) {
+            PM = formatTime(this.props.youth.school_pm_dropoff_time) + " PM"
+        }
 
         return (
             <tr>
@@ -144,10 +150,10 @@ export default class extends React.Component {
                 <td>{this.wrapIndexLink(formatDate(this.props.youth.dob))}</td>
                 <td>{this.wrapIndexLink(formatDate(this.props.youth.visit_start_date))}</td>
                 <td>{this.wrapIndexLink(this.props.youth.current_placement_type.name)}</td>
-                <td>{this.wrapIndexLink(this.props.youth.school.school_name)}</td>
-                <td>{this.wrapIndexLink(this.props.youth.school_am_transport)}</td>
-                <td>{this.wrapIndexLink(this.props.youth.school_pm_transport)}</td>
-                <td>{this.wrapIndexLink(schoolTimes)}</td>
+                <td>{this.wrapIndexLink(this.props.youth.school.school_name || DEFAULT_VALUE)}</td>
+                <td>{this.wrapIndexLink(this.props.youth.school_am_transport || DEFAULT_VALUE)}</td>
+                <td>{this.wrapIndexLink(this.props.youth.school_pm_transport || DEFAULT_VALUE)}</td>
+                <td>{this.wrapIndexLink(AM + PM)}</td>
                 <td>{this.wrapIndexLink(this.props.youth.overall_form_progress)}</td>
                 <td className={duration}>{this.wrapIndexLink(formatDate(this.props.youth.estimated_exit_date))}</td>
                 {exitColumn}
