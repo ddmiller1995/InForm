@@ -166,15 +166,17 @@ export default class extends React.Component {
         if (extend != null) {
             let update = function updateEstimate() {
                 let date = new Date(exit);
-                let day = date.getDate() + parseInt(extend.value);
+                date.setDate(date.getDate() + parseInt(extend.value));
+
+                let day = date.getDate();
                 let month = date.getMonth() + 1;
                 let year = date.getFullYear();
 
                 let newExit = document.getElementById("new-estimate");
                 newExit.textContent = month + "/" + day + "/" + year;
+
             };
             update();
-
             extend.addEventListener("input", update);
         }
     }
