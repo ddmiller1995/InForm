@@ -24,7 +24,7 @@ export default class extends React.Component {
         this.props.formTypes.forEach(function(type) {
             forms_by_type[type.form_type_name] = [];
         });
-        if(this.props.forms) {
+        if(this.props.formTypes.length > 0 && this.props.forms.length > 0) {
             for(let i = 0; i < this.props.forms.length; i++) {
                 let form = this.props.forms[i];
                 forms_by_type[form.form_type].push(form);

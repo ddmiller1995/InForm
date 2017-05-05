@@ -64,7 +64,6 @@ export function getRequest(url, that, prop) {
 
 export function postRequest(url, data) {
     let csrf_token = Cookies.get('csrftoken');
-    console.log(data.get("form_id"))
     fetch(url, {
         method: "POST",
         credentials: "same-origin",
