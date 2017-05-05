@@ -64,6 +64,7 @@
 
 .youth-tracker-container {
   border: 1px solid gainsboro;
+  margin: 15px;
   box-shadow: 0 11px 15px -7px rgba(0, 0, 0, 0.1), 0 24px 38px 3px transparent; }
   .youth-tracker-container .mdl-layout__header {
     background-color: white; }
@@ -90,9 +91,10 @@
   border: 1px solid gainsboro;
   box-shadow: 0 9px 46px 8px rgba(0, 0, 0, 0.14), 0 11px 15px -7px rgba(0, 0, 0, 0.12), 0 24px 38px 3px rgba(0, 0, 0, 0.2);
   background-color: white; }
+  .youth-detail-container .mdl-layout__header {
+    box-shadow: none; }
   .youth-detail-container .mdl-layout__header-row {
     background-color: white;
-    box-shadow: none;
     padding: 0; }
   .youth-detail-container .mdl-navigation__link {
     color: #8fbc49; }
