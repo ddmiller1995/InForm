@@ -10,10 +10,7 @@ def serialize_youth(youth):
     obj['youth_id'] = youth.pk
     obj['name'] = youth.youth_name
     obj['dob'] = youth.date_of_birth
-    if youth.ethnicity is not None:
-        obj['ethnicity'] = youth.ethnicity.ethnicity_name
-    else:
-        obj['ethnicity'] = None         
+    obj['ethnicity'] = youth.ethnicity
     obj['notes'] = youth.notes
 
     return obj
@@ -116,7 +113,7 @@ def serialize_form_youth_visit(form_youth_visit):
     obj['form_type'] = form_youth_visit.form_id.form_type_id.form_type_name
     obj['form_description'] = form_youth_visit.form_id.form_description
     obj['default_due_date'] = form_youth_visit.form_id.default_due_date
-    obj['required'] = form_youth_visit.form_id.required
+    obj['assign_by_default'] = form_youth_visit.form_id.assign_by_default
     obj['status'] = form_youth_visit.status
     obj['completed_by'] = serialize_user(form_youth_visit.user_id)
     obj['days_remaining'] = form_youth_visit.days_remaining()

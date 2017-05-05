@@ -264,10 +264,12 @@ h4 {
         padding: 10px 16px; }
       .board .col .demo-card-wide.mdl-card .mdl-button--colored {
         color: #8fbc49; }
-      .board .col .demo-card-wide.mdl-card .overdue {
+      .board .col .demo-card-wide.mdl-card .due-done {
+        color: #8fbc49; }
+      .board .col .demo-card-wide.mdl-card .due-now {
         color: red; }
       .board .col .demo-card-wide.mdl-card .due-soon {
-        color: orange; }
+        color: #E17000; }
   .board .col:nth-of-type(2) {
     border-left: 1px solid #ccc;
     border-right: 1px solid #ccc; }
@@ -289,6 +291,8 @@ h4 {
     vertical-align: middle;
     font-size: 16px;
     border-top: 1px solid #ccc; }
+  .board .form-type .filled-form-type-title {
+    color: black; }
 
 .presentation-container {
   position: relative;
