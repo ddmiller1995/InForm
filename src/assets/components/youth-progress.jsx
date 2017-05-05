@@ -24,8 +24,7 @@ export default class extends React.Component {
         this.setState({
             currentYouth: this.props.currentYouth
         })
-        console.log(this.state.currentYouth);
-        console.log(this.props.currentYouth);
+        // window.location.reload();
 
     }
 
@@ -68,7 +67,7 @@ export default class extends React.Component {
       
     render() {
         let columns = this.getColumns();
-        // console.log(this.state.currentYouth);
+        console.log(this.state.currentYouth);
 
         return (
             <div className="container">
