@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Youth, YouthVisit, PlacementType, School, Ethnicity, FormType, Form, FormYouthVisit
+from .models import Youth, YouthVisit, PlacementType, School, FormType, Form, FormYouthVisit
 
 # class QuestionInline(admin.TabularInline):
 #     model = Question
@@ -65,7 +65,10 @@ class YouthVisitAdmin(admin.ModelAdmin):
                 'referred_by',
                 'visit_exit_date',
                 'exited_to',
-                'permanent_housing'
+                'permanent_housing',
+                'csec_referral',
+                'family_engagement_referral',
+                'met_greater_than_50_percent_goals'
             ]
         })
     ]
@@ -91,9 +94,6 @@ class SchoolAdmin(admin.ModelAdmin):
         'school_district',
         'notes'
     ]
-
-class EthnicityAdmin(admin.ModelAdmin):
-    pass
 
 class FormTypeAdmin(admin.ModelAdmin):
     pass
@@ -122,7 +122,6 @@ admin.site.register(Youth, YouthAdmin)
 admin.site.register(YouthVisit, YouthVisitAdmin)
 admin.site.register(PlacementType, PlacementTypeAdmin)
 admin.site.register(School, SchoolAdmin)
-admin.site.register(Ethnicity, EthnicityAdmin)
 admin.site.register(FormType, FormTypeAdmin)
 admin.site.register(Form, FormAdmin)
 admin.site.register(FormYouthVisit, FormYouthVisitAdmin)

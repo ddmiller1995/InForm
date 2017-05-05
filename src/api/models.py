@@ -103,6 +103,11 @@ USER_WARNING_DONT_EDIT_FIELD = "Don't edit this field directly in this admin pag
 
 class YouthVisit(models.Model):
     '''YouthVisit model'''
+
+    MET_GOALS_YES = 'Yes'
+    MET_GOALS_NO = 'No'
+    MET_GOALS_NA = 'N/A'
+
     youth_id = models.ForeignKey(Youth, on_delete=models.CASCADE,
         verbose_name='Youth',
         help_text="If the Youth isn't in this dropdown already, you can add them with the green plus icon")
@@ -125,6 +130,18 @@ class YouthVisit(models.Model):
     visit_exit_date = models.DateField('date youth actually exited', null=True, blank=True)
     permanent_housing = models.NullBooleanField(null=True, blank=True)
     exited_to = models.CharField(max_length=256, null=True, blank=True)
+
+    csec_referral = models.BooleanField(default=False)
+    family_engagement_referral = models.BooleanField(default=False)
+    met_greater_than_50_percent_goals = models.CharField(max_length=32, default=MET_GOALS_NA,
+                              choices=(
+                                  (MET_GOALS_YES, MET_GOALS_YES),
+                                  (MET_GOALS_NO, MET_GOALS_NO),
+                                  (MET_GOALS_NA, MET_GOALS_NA)
+                              ),
+                              blank=True
+                             )
+
     case_manager = models.ForeignKey(
         User,
         on_delete=models.SET_NULL,
