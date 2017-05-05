@@ -31,11 +31,13 @@ class YouthVisitAdmin(admin.ModelAdmin):
 
          ]}
         ),
-        ('Staff', {
+        ('People', {
             'fields': [
                 'social_worker',
                 'case_manager',
-                'personal_counselor'
+                'personal_counselor',
+                'guardian_name',
+                'guardian_relationship',
             ]
         }),
         ('Placement', {
@@ -60,7 +62,6 @@ class YouthVisitAdmin(admin.ModelAdmin):
         ('Misc', {
             # 'classes': ('collapse',),
             'fields': [
-                'guardian_name',
                 'referred_by',
                 'visit_exit_date',
                 'exited_to',
@@ -102,7 +103,7 @@ class FormAdmin(admin.ModelAdmin):
         'form_name',
         'form_type_id',
         'default_due_date',
-        'required'
+        'assign_by_default'
     )
     
     list_filter = (

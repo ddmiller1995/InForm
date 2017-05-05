@@ -1,12 +1,15 @@
-from django.db import models
-from django.contrib.auth.models import User
-from django.db.models import Count
-from datetime import timedelta, date
-from django.http import Http404
-from django.utils import timezone
-from django.urls import reverse
-
 import logging
+from datetime import date, timedelta
+
+from django.contrib.auth.models import User
+from django.db import models
+from django.db.models import Count
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.http import Http404
+from django.urls import reverse
+from django.utils import timezone
+
 logger = logging.getLogger(__name__)
 
 
@@ -132,6 +135,7 @@ class YouthVisit(models.Model):
     city_of_origin = models.CharField(max_length=256, null=True, blank=True)
     state_of_origin = models.CharField(max_length=64, default='Washington', null=True, blank=True)
     guardian_name = models.CharField(max_length=256, null=True, blank=True)
+    guardian_relationship = models.CharField(max_length=256, null=True, blank=True)
     referred_by = models.CharField(max_length=256, null=True, blank=True)
     social_worker = models.CharField(max_length=256, null=True, blank=True)
     visit_exit_date = models.DateField('date youth actually exited', null=True, blank=True)
@@ -251,8 +255,10 @@ class Form(models.Model):
     # forms without due dates are allowed
     default_due_date = models.IntegerField(null=True, blank=True)
     # Form location - file location in static files?
-    required = models.BooleanField(default=False)
-    notes = models.TextField(null=True, blank=True)    
+    assign_by_default = models.BooleanField(default=False,
+                                            help_text='Check this box if you want this form to be assigned\
+                                            to new youth visits by default')
+    notes = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return self.form_name
@@ -269,14 +275,31 @@ class FormYouthVisit(models.Model):
     youth_visit_id = models.ForeignKey(YouthVisit, on_delete=models.CASCADE)
     user_id = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     # expected values: pending, in progess, done
-    status = models.CharField(max_length=32, default=PENDING, 
-        choices=(
-            (PENDING, PENDING),
-            (IN_PROGRESS, IN_PROGRESS),
-            (DONE, DONE)
-        )
-    )
-    notes = models.TextField(null=True, blank=True)    
+    status = models.CharField(max_length=32, default=PENDING,
+                              choices=(
+                                  (PENDING, PENDING),
+                                  (IN_PROGRESS, IN_PROGRESS),
+                                  (DONE, DONE)
+                              )
+                             )
+    notes = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return 'Youth Visit ID: ' + str(self.youth_visit_id.id) + ' - Form Name: ' + self.form_id.form_name
+
+    def days_remaining(self):
+        if self.form_id.default_due_date is None:
+            return 0
+        result = self.form_id.default_due_date - (timezone.now().date() - self.youth_visit_id.visit_start_date).days
+        return result
+
+@receiver(post_save, sender=YouthVisit)
+def AddDefaultForms(sender, **kwargs):
+    if kwargs['created']:
+        for form in Form.objects.filter(required=True):
+            form_youth_visit = FormYouthVisit.objects.create(
+                form_id=form,
+                youth_visit_id=kwargs['instance'],
+                status=FormYouthVisit.PENDING
+            )
+
