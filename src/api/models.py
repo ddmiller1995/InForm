@@ -1,12 +1,15 @@
-from django.db import models
-from django.contrib.auth.models import User
-from django.db.models import Count
-from datetime import timedelta, date
-from django.http import Http404
-from django.utils import timezone
-from django.urls import reverse
-
 import logging
+from datetime import date, timedelta
+
+from django.contrib.auth.models import User
+from django.db import models
+from django.db.models import Count
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.http import Http404
+from django.urls import reverse
+from django.utils import timezone
+
 logger = logging.getLogger(__name__)
 
 
@@ -252,7 +255,7 @@ class Form(models.Model):
     default_due_date = models.IntegerField(null=True, blank=True)
     # Form location - file location in static files?
     required = models.BooleanField(default=False)
-    notes = models.TextField(null=True, blank=True)    
+    notes = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return self.form_name
@@ -286,3 +289,14 @@ class FormYouthVisit(models.Model):
             return 0
         result = self.form_id.default_due_date - (timezone.now().date() - self.youth_visit_id.visit_start_date).days
         return result
+
+@receiver(post_save, sender=YouthVisit)
+def AddDefaultForms(sender, **kwargs):
+    if kwargs['created']:
+        for form in Form.objects.filter(required=True):
+            form_youth_visit = FormYouthVisit.objects.create(
+                form_id=form,
+                youth_visit_id=kwargs['instance'],
+                status=FormYouthVisit.PENDING
+            )
+
