@@ -40,6 +40,7 @@ def serialize_youth_visit(youth_visit):
     obj['visit_start_date'] = youth_visit.visit_start_date
     obj['city_of_origin'] = youth_visit.city_of_origin
     obj['guardian_name'] = youth_visit.guardian_name
+    obj['guardian_relationship'] = youth_visit.guardian_relationship
     obj['referred_by'] = youth_visit.referred_by
     obj['social_worker'] = youth_visit.social_worker
     obj['permanent_housing'] = youth_visit.permanent_housing
@@ -89,7 +90,7 @@ youth_visit_field_names = ['youth_visit_id', 'visit_start_date',
                            'current_placement_type_supervision_ratio',
 
                            'current_placement_start_date', 'current_placement_extension_days',
-                           'city_of_origin', 'state_of_origin', 'guardian_name', 'referred_by',
+                           'city_of_origin', 'state_of_origin', 'guardian_name', 'guardian_relationship', 'referred_by',
                            'social_worker', 'visit_exit_date', 'permanent_housing', 'exited_to',
 
                            'case_manager_id', 'case_manager_name', 'case_manager_username',

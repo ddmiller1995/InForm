@@ -229,7 +229,7 @@ export default class extends React.Component {
     render() {
         let visitDates = [];
         let currentVisit, currentPlacement;
-        let AM, PM, permHousing;
+        let AM, PM, permHousing, guardian, relationship;
         if (this.props.currentYouth.youth_visits) {
             let visits = this.props.currentYouth.youth_visits;
             visitDates = this.getVisits(visits, visitDates);
@@ -248,13 +248,20 @@ export default class extends React.Component {
             } else if (currentVisit.permanent_housing === false) {
                 permHousing = "No"; 
             }
+
+            if (currentVisit.guardian_name) {
+                guardian = currentVisit.guardian_name;
+                if (currentVisit.guardian_relationship) {
+                    relationship = " (" + currentVisit.guardian_relationship + ")";
+                } else {
+                    relationship = "";
+                }
+            }
         }
 
         if (currentVisit == null) {
             return null;
         }
-
-        console.log(currentVisit);
 
         return (
             <div className="container youth-info-container">
@@ -275,8 +282,7 @@ export default class extends React.Component {
                             <p>Name: <span className="value">{this.props.currentYouth.name}</span></p>
                             <p>Birthdate: <span className="value">{formatDate(this.props.currentYouth.dob)}</span></p>
                             <p>Age: <span className="value">{getDateDiff(this.props.currentYouth.dob, "years")}</span></p>
-                            <p>Guardian: <span className="value">{currentVisit.guardian_name + " (relationship)" 
-                                || DEFAULT_VALUE}</span></p>
+                            <p>Guardian: <span className="value">{guardian + relationship || DEFAULT_VALUE}</span></p>
                             <p>City: <span className="value">{currentVisit.city_of_origin || DEFAULT_VALUE}</span></p>
                         </div>
                     </div>
