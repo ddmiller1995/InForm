@@ -46,27 +46,11 @@ class School(models.Model):
     def __str__(self):
         return self.school_name
 
-class Ethnicity(models.Model):
-    '''Ethnicity model
-    Should be prepopulated with the values from the YF Enrollment Form:
-    - American Indian/Alaskan Native
-    - Asian
-    - Black/African American
-    - Hispanic/Latino
-    - Native Hawaiian/Pacific Islander
-    - White/Caucasian
-    '''
-    ethnicity_name = models.CharField(max_length=256)
-
-    def __str__(self):
-        return self.ethnicity_name
-
-
 class Youth(models.Model):
     '''Youth model'''
     youth_name = models.CharField(max_length=256, help_text="Full name")
     date_of_birth = models.DateField('date born')
-    ethnicity = models.ForeignKey(Ethnicity, on_delete=models.SET_NULL, null=True, blank=True)
+    ethnicity = models.CharField(max_length=256, null=True, blank=True)
     notes = models.TextField(null=True, blank=True)
 
     def __str__(self):
