@@ -10,10 +10,7 @@ def serialize_youth(youth):
     obj['youth_id'] = youth.pk
     obj['name'] = youth.youth_name
     obj['dob'] = youth.date_of_birth
-    if youth.ethnicity is not None:
-        obj['ethnicity'] = youth.ethnicity.ethnicity_name
-    else:
-        obj['ethnicity'] = None         
+    obj['ethnicity'] = youth.ethnicity
     obj['notes'] = youth.notes
 
     return obj

@@ -294,6 +294,8 @@ h4 {
     vertical-align: middle;
     font-size: 16px;
     border-top: 1px solid #ccc; }
+  .board .form-type .filled-form-type-title {
+    color: black; }
 
 .presentation-container {
   position: relative;
