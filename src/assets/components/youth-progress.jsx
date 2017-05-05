@@ -5,7 +5,7 @@ import "whatwg-fetch";
 import {postRequest, getRequest} from '../util.js';
 
 let form_data = [];
-const statuses = ["Pending", "In Progress", "Done"]
+const statuses = ["pending", "in progress", "done"]
 
 export default class extends React.Component {
     constructor(props) {
@@ -14,6 +14,7 @@ export default class extends React.Component {
             form_types: []
         };
 
+        this.changeFormStatusHandler = this.changeFormStatusHandler.bind(this);
         this.getColumns = this.getColumns.bind(this);
     }
 
@@ -22,11 +23,26 @@ export default class extends React.Component {
 
     }
 
+    changeFormStatusHandler(form, direction) {
+        let visitID = this.props.currentYouth.youth_visits[0].youth_visit_id;
+        let data = new FormData();
+        console.log(form);
+        data.append("form_id", form.id);
+        
+        let index = statuses.indexOf(form.status) + direction;
+        if(index > -1 && index < statuses.length) {
+            data.append("status", statuses[index]);
+            postRequest('/api/visit/' + visitID + '/change-form-status', data);
+        } else {
+            throw 'Error: Unexcepted status type - ' + form.status;
+        }
+    }
+
     getColumns() {
         let columns = [];
         let forms_by_status = {};
         for(let i = 0; i < statuses.length; i++) {
-            forms_by_status[statuses[i].toLowerCase()] = [];
+            forms_by_status[statuses[i]] = [];
         }
         for(let i = 0; i < form_data.length; i++) {
             let form = form_data[i];
@@ -34,7 +50,8 @@ export default class extends React.Component {
         }
         for(let i = 0; i < statuses.length; i++) {
             let status = statuses[i];
-            columns.push(<YouthFormsColumn key={status} status={status} formTypes={this.state.form_types} forms={forms_by_status[status.toLowerCase()]} />);
+            columns.push(<YouthFormsColumn key={status} status={status} handler={this.changeFormStatusHandler} 
+                                           formTypes={this.state.form_types} forms={forms_by_status[status]} />);
         }
         return columns;
     }

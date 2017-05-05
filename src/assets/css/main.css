@@ -270,7 +270,7 @@ h4 {
       .board .col .demo-card-wide.mdl-card .overdue {
         color: red; }
       .board .col .demo-card-wide.mdl-card .due-soon {
-        color: #3f51b5; }
+        color: orange; }
   .board .col:nth-of-type(2) {
     border-left: 1px solid #ccc;
     border-right: 1px solid #ccc; }

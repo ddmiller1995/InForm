@@ -1,6 +1,7 @@
 import React from "react";
 import {Link, IndexLink} from "react-router";
 import "whatwg-fetch";
+import {postRequest, getRequest} from '../util.js';
 
 export default class extends React.Component {
     constructor(props) {
@@ -10,8 +11,8 @@ export default class extends React.Component {
         };
 
         this.toggleExpand = this.toggleExpand.bind(this);
-        this.moveLeft = this.moveLeft.bind(this);
-        this.moveRight = this.moveRight.bind(this);
+        // this.moveLeft = this.moveLeft.bind(this);
+        // this.moveRight = this.moveRight.bind(this);
     }
 
     componentDidMount() {
@@ -23,13 +24,37 @@ export default class extends React.Component {
         });
     }
 
-    moveLeft() {
-
-    }
-
-    moveRight() {
+    // moveLeft(form) {
+    //     this.props.handler(form, -1);
         
-    }
+    //     console.log("left " + form.status)
+    //     let visitID = this.props.currentYouth.youth_visits[0].youth_visit_id;
+    //     let data = new FormData();
+    //     data.append("form_id", form.id);
+    //     if(form.status == "done") {
+    //         data.append("status", "in progress");
+    //     } else if(form.status == "in progress") {
+    //         data.append("status", "pending");
+    //     } else {
+    //         throw 'Error: Unexcepted status type - ' + form.status;
+    //     }
+    //     postRequest('/api/visit/' + visitID + 'change-form-status', data);
+    // }
+
+    // moveRight(form) {
+    //     this.props.handler(form, 1);
+    //     let visitID = this.props.currentYouth.youth_visits[0].youth_visit_id;
+    //     let data = new FormData();
+    //     data.append("form_id", form.id);
+    //     if(form.status == "pending") {
+    //         data.append("status", "in progress");
+    //     } else if(form.status == "in progress") {
+    //         data.append("status", "done");
+    //     } else {
+    //         throw 'Error: Unexcepted status type - ' + form.status;
+    //     }
+    //     postRequest('/api/visit/' + visitID + 'change-form-status', data);
+    // }
 
     formatDaysRemaining(days) {
         if(days < 0) {
@@ -51,15 +76,21 @@ export default class extends React.Component {
                         <h2 className="mdl-card__title-text">{form.form_name}</h2>
                     </div>
                     <div className="mdl-card__supporting-text">
-                        Due in <span className="days-remaining-count">{this.formatDaysRemaining(form.days_remaining)}</span> days
+                        {this.formatDaysRemaining(form.days_remaining)}
                     </div>
                     <div className="mdl-card__actions mdl-card--border">
-                        <a className="mdl-button mdl-js-button mdl-button--icon mdl-button--colored" onClick={this.moveLeft}>
-                            <i className="material-icons">navigate_before</i>
-                        </a>
-                        <a className="mdl-button mdl-js-button mdl-button--icon mdl-button--colored align-right" onClick={this.moveRight}>
-                            <i className="material-icons">navigate_next</i>
-                        </a>
+                        { (form.status == "done" || form.status == "in progress") ?
+                            <a className="mdl-button mdl-js-button mdl-button--icon mdl-button--colored" onClick={() => this.props.handler(form, -1)}>
+                                <i className="material-icons">navigate_before</i>
+                            </a>
+                            : ""
+                        }
+                        { (form.status == "pending" || form.status == "in progress") ?
+                            <a className="mdl-button mdl-js-button mdl-button--icon mdl-button--colored align-right" onClick={() => this.props.handler(form, 1)}>
+                                <i className="material-icons">navigate_next</i>
+                            </a>
+                            : ""
+                        }
                     </div>
                     
                     {/*<div className="mdl-card__menu">

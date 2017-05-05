@@ -64,7 +64,7 @@ export function getRequest(url, that, prop) {
 
 export function postRequest(url, data) {
     let csrf_token = Cookies.get('csrftoken');
-
+    console.log(data.get("form_id"))
     fetch(url, {
         method: "POST",
         credentials: "same-origin",
@@ -73,7 +73,7 @@ export function postRequest(url, data) {
         },
         body: data
     }).then(function(response) {
-        window.location.reload();
+        //window.location.reload();
         return response.json();
     }).then(function(data) {
         console.log(data); // log the response json

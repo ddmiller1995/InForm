@@ -467,7 +467,7 @@ class YouthModelTests(TestCase):
             youth_visit_id=visit, 
             status='done'
         )
-        self.assertEqual(form_youth_visit.days_remaining(), 0)
+        self.assertEqual(form_youth_visit.days_remaining(), -3)
 
     def test_change_form_status(self):
         client = APIClient()
@@ -483,7 +483,7 @@ class YouthModelTests(TestCase):
 
         response = client.post(url, {
             'form_id': form_id,
-            'status': 'in_progress'
+            'status': 'in progress'
         })
 
         form_youth_visit = FormYouthVisit.objects.get(youth_visit_id=youth_visit_id, form_id=form_id)

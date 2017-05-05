@@ -139,9 +139,9 @@ class ChangeFormStatus(APIView):
             response = Response(status=status.HTTP_400_BAD_REQUEST)
             response['error'] = 'Missing POST param "status"'
             return response
-        if new_status not in ['pending', 'in_progress', 'done']:
+        if new_status not in ['pending', 'in progress', 'done']:
             response = Response(status=status.HTTP_406_NOT_ACCEPTABLE)
-            response['error'] = 'POST param "status" should be a "pending", "in_progress", or "done"'
+            response['error'] = 'POST param "status" should be a "pending", "in progress", or "done"'
             return response
 
         try:
@@ -155,7 +155,7 @@ class ChangeFormStatus(APIView):
 
         if new_status == 'pending':
             form_youth_visit.status = FormYouthVisit.PENDING
-        elif new_status == 'in_progress':
+        elif new_status == 'in progress':
             form_youth_visit.status = FormYouthVisit.IN_PROGRESS
         elif new_status == 'done':
             form_youth_visit.status = FormYouthVisit.DONE
