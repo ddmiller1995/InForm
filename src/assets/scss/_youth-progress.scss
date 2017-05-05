@@ -32,12 +32,16 @@
                 color: $light-green;
             }
 
-            .overdue {
+            .due-done {
+                color: $light-green;
+            }
+
+            .due-now {
                 color: red;
             }
 
             .due-soon {
-                color: orange;
+                color: $orange-accent;
             }
         }
     }

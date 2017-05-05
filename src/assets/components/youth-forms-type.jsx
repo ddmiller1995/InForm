@@ -11,11 +11,6 @@ export default class extends React.Component {
         };
 
         this.toggleExpand = this.toggleExpand.bind(this);
-        // this.moveLeft = this.moveLeft.bind(this);
-        // this.moveRight = this.moveRight.bind(this);
-    }
-
-    componentDidMount() {
     }
 
     componentWillReceiveProps(nextProps) {
@@ -32,45 +27,17 @@ export default class extends React.Component {
         });
     }
 
-    // moveLeft(form) {
-    //     this.props.handler(form, -1);
-        
-    //     console.log("left " + form.status)
-    //     let visitID = this.props.currentYouth.youth_visits[0].youth_visit_id;
-    //     let data = new FormData();
-    //     data.append("form_id", form.id);
-    //     if(form.status == "done") {
-    //         data.append("status", "in progress");
-    //     } else if(form.status == "in progress") {
-    //         data.append("status", "pending");
-    //     } else {
-    //         throw 'Error: Unexcepted status type - ' + form.status;
-    //     }
-    //     postRequest('/api/visit/' + visitID + 'change-form-status', data);
-    // }
-
-    // moveRight(form) {
-    //     this.props.handler(form, 1);
-    //     let visitID = this.props.currentYouth.youth_visits[0].youth_visit_id;
-    //     let data = new FormData();
-    //     data.append("form_id", form.id);
-    //     if(form.status == "pending") {
-    //         data.append("status", "in progress");
-    //     } else if(form.status == "in progress") {
-    //         data.append("status", "done");
-    //     } else {
-    //         throw 'Error: Unexcepted status type - ' + form.status;
-    //     }
-    //     postRequest('/api/visit/' + visitID + 'change-form-status', data);
-    // }
-
-    formatDaysRemaining(days) {
-        if(days < 0) {
-            return <span className="overdue">{"Due " + Math.abs(days) + " days ago"}</span>
+    formatDaysRemaining(days, status) {
+        if(status == "done") {
+            return <span className="due-done">Done</span>;
+        } else if(days < 0) {
+            return <span className="due-now">{"Due " + Math.abs(days) + " days ago"}</span>;
         } else if(days < 3) {
-            return <span className="due-soon">{"Due in " + days + (days == 1 ? " day" : " days")}</span>
+            return <span className="due-now">{"Due in " + days + (days == 1 ? " day" : " days")}</span>;
+        } else if(days < 7) {
+            return <span className="due-soon">{"Due in " + days + " days"}</span>;
         } else {
-            return <span className="due-later">{"Due in " + days + " days"}</span>
+            return <span className="due-later">{"Due in " + days + " days"}</span>;
         }
     }
 
@@ -84,7 +51,7 @@ export default class extends React.Component {
                         <h2 className="mdl-card__title-text">{form.form_name}</h2>
                     </div>
                     <div className="mdl-card__supporting-text">
-                        {this.formatDaysRemaining(form.days_remaining)}
+                        {this.formatDaysRemaining(form.days_remaining, form.status)}
                     </div>
                     <div className="mdl-card__actions mdl-card--border">
                         { (form.status == "done" || form.status == "in progress") ?
