@@ -12,9 +12,11 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.renderers import JSONRenderer
 
-from api.models import PlacementType, Youth, YouthVisit
+from api.models import PlacementType, Youth, YouthVisit, FormYouthVisit, FormType, Form
 from api.serializers import (PlacementTypeSerializer, serialize_youth,
-                             serialize_youth_visit, youth_field_names, youth_visit_field_names)
+                             serialize_youth_visit, serialize_form_youth_visit,
+                             youth_field_names, youth_visit_field_names,
+                             FormTypeSerializer)
 
 logger = logging.getLogger(__name__)
 
@@ -83,14 +85,87 @@ class YouthDetail(APIView):
         json = serialize_youth(youth)
 
         youth_visits = []
-        for youth_visit in YouthVisit.objects.filter(youth_id=youth).order_by('-current_placement_start_date'):
+        for youth_visit in YouthVisit.objects.filter(youth_id=youth).order_by('-visit_start_date'):
             serialized_youth_visit = serialize_youth_visit(youth_visit)
-            youth_visits.append(serialized_youth_visit)
 
+            forms = []
+            for form_youth_visit in FormYouthVisit.objects.filter(youth_visit_id=youth_visit.id):
+                serialized_form_youth_visit = serialize_form_youth_visit(form_youth_visit)
+                forms.append(serialized_form_youth_visit)
+
+            serialized_youth_visit['forms'] = forms
+
+            youth_visits.append(serialized_youth_visit)
         json['youth_visits'] = youth_visits 
+
 
         return Response(json, status=status.HTTP_200_OK)
 
+
+class ChangeFormStatus(APIView):
+    '''Change the status of a form'''
+
+    renderer_classes = (JSONRenderer, )
+
+    def post(self, request, youth_visit_id):
+        try:
+            youth_visit = YouthVisit.objects.get(pk=youth_visit_id)
+        except YouthVisit.DoesNotExist:
+            response = Response(status=status.HTTP_404_NOT_FOUND)
+            response['error'] = 'Youth visit pk=%s does not exist' % youth_visit_id
+            return response
+
+        form_id = request.POST.get('form_id', None)
+
+        if not form_id:
+            response = Response(status=status.HTTP_400_BAD_REQUEST)
+            response['error'] = 'Missing POST param "form_id"'
+            return response
+            
+        try:
+            form = Form.objects.get(pk=form_id)
+        except Form.DoesNotExist:
+            response = Response(status=status.HTTP_404_NOT_FOUND)
+            response['error'] = 'Form pk=%s does not exist' % form_id
+            return response
+
+        new_status = request.POST.get('status', None)
+        if not new_status:
+            response = Response(status=status.HTTP_400_BAD_REQUEST)
+            response['error'] = 'Missing POST param "status"'
+            return response
+        if new_status not in ['pending', 'in progress', 'done']:
+            response = Response(status=status.HTTP_406_NOT_ACCEPTABLE)
+            response['error'] = 'POST param "status" should be a "pending", "in progress", or "done"'
+            return response
+
+        try:
+            form_youth_visit = FormYouthVisit.objects.get(
+                youth_visit_id=youth_visit.id,
+                form_id=form.id)
+        except FormYouthVisit.DoesNotExist:
+            response = Response(status=status.HTTP_404_NOT_FOUND)
+            response['error'] = 'FormYouthVisit with YouthVisit pk=%d and Form pk=%d does not exist' % (youth_visit.id, form.id)
+            return response
+
+        if new_status == 'pending':
+            form_youth_visit.status = FormYouthVisit.PENDING
+        elif new_status == 'in progress':
+            form_youth_visit.status = FormYouthVisit.IN_PROGRESS
+        elif new_status == 'done':
+            form_youth_visit.status = FormYouthVisit.DONE
+        else:
+            raise Http404
+        form_youth_visit.save()
+
+
+        obj = {
+            'youth_visit_id': youth_visit.id,
+            'form_id': form.id,
+            'new_status': form_youth_visit.status
+        }
+
+        return Response(obj, status=status.HTTP_202_ACCEPTED)
 
 class YouthChangePlacement(APIView):
     '''Change youth placement type
@@ -338,6 +413,22 @@ def ImportYouthVisits(request):
         form = UploadFileForm()
 
     return render(request, 'api/import.html', {'form': form})
+
+class FormTypeList(APIView):
+    '''
+    List all FormTypes
+
+    Support HTTP methods: GET
+
+    GET /api/form-type returns JSON Response
+    '''
+
+    renderer_classes = (JSONRenderer, )
+
+    def get(self, request, format=None):
+        form_types = FormType.objects.all()
+        serializer = FormTypeSerializer(form_types, many=True)
+        return Response(serializer.data)
 
 
 
