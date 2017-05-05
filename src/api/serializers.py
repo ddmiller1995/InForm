@@ -90,8 +90,11 @@ youth_visit_field_names = ['youth_visit_id', 'visit_start_date',
                            'current_placement_type_supervision_ratio',
 
                            'current_placement_start_date', 'current_placement_extension_days',
-                           'city_of_origin', 'state_of_origin', 'guardian_name', 'guardian_relationship', 'referred_by',
+                           'city_of_origin', 'state_of_origin',
+                           'guardian_name', 'guardian_relationship', 'referred_by',
                            'social_worker', 'visit_exit_date', 'permanent_housing', 'exited_to',
+                           'csec_referral', 'family_engagement_referral',
+                           'met_greater_than_50_percent_goals',
 
                            'case_manager_id', 'case_manager_name', 'case_manager_username',
                            'personal_counselor_id', 'personal_counselor_name',
