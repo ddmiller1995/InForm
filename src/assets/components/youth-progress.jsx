@@ -4,7 +4,6 @@ import YouthFormsColumn from "./youth-forms-column.jsx";
 import "whatwg-fetch";
 import {postRequest, getRequest} from '../util.js';
 
-// let form_data = [];
 const statuses = ["pending", "in progress", "done"]
 
 export default class extends React.Component {
@@ -20,13 +19,17 @@ export default class extends React.Component {
     }
 
     componentDidMount() {
-        let response = getRequest("/api/form-type", this, "form_types");
-        this.setState({
-            currentYouth: this.props.currentYouth
-        })
-        console.log(this.state.currentYouth);
-        console.log(this.props.currentYouth);
+        getRequest("/api/form-type", this, "form_types");
+        if(this.props.currentYouth.youth_id) {
+            getRequest("/api/youth/" + this.props.currentYouth.youth_id, this, "currentYouth");
+        }
+        
+    }
 
+    componentWillReceiveProps(nextProps) {
+        if(nextProps.currentYouth.youth_id) {
+            getRequest("/api/youth/" + nextProps.currentYouth.youth_id, this, "currentYouth");
+        }
     }
 
     changeFormStatusHandler(form, direction) {
@@ -37,7 +40,7 @@ export default class extends React.Component {
         let index = statuses.indexOf(form.status) + direction;
         if(index > -1 && index < statuses.length) {
             data.append("status", statuses[index]);
-            postRequest('/api/visit/' + visitID + '/change-form-status/', data);
+            postRequest('/api/visit/' + visitID + '/change-form-status/', data, false);
         } else {
             throw 'Error: Unexcepted status type - ' + form.status;
         }
@@ -68,7 +71,6 @@ export default class extends React.Component {
       
     render() {
         let columns = this.getColumns();
-        // console.log(this.state.currentYouth);
 
         return (
             <div className="container">
