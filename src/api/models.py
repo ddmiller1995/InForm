@@ -135,6 +135,7 @@ class YouthVisit(models.Model):
     city_of_origin = models.CharField(max_length=256, null=True, blank=True)
     state_of_origin = models.CharField(max_length=64, default='Washington', null=True, blank=True)
     guardian_name = models.CharField(max_length=256, null=True, blank=True)
+    guardian_relationship = models.CharField(max_length=256, null=True, blank=True)
     referred_by = models.CharField(max_length=256, null=True, blank=True)
     social_worker = models.CharField(max_length=256, null=True, blank=True)
     visit_exit_date = models.DateField('date youth actually exited', null=True, blank=True)
@@ -254,7 +255,9 @@ class Form(models.Model):
     # forms without due dates are allowed
     default_due_date = models.IntegerField(null=True, blank=True)
     # Form location - file location in static files?
-    required = models.BooleanField(default=False)
+    assign_by_default = models.BooleanField(default=False,
+                                            help_text='Check this box if you want this form to be assigned\
+                                            to new youth visits by default')
     notes = models.TextField(null=True, blank=True)
 
     def __str__(self):
