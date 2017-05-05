@@ -18,6 +18,14 @@ export default class extends React.Component {
     componentDidMount() {
     }
 
+    componentWillReceiveProps(nextProps) {
+        if(this.props.forms.length < nextProps.forms.length) {
+            this.setState({
+                open: true
+            })
+        }
+    }
+
     toggleExpand() {
         this.setState({
             open: !this.state.open
@@ -62,7 +70,7 @@ export default class extends React.Component {
         } else if(days < 3) {
             return <span className="due-soon">{"Due in " + days + (days == 1 ? " day" : " days")}</span>
         } else {
-            return <span className="due-later">{"Due in " + days + "days"}</span>
+            return <span className="due-later">{"Due in " + days + " days"}</span>
         }
     }
 
@@ -80,13 +88,13 @@ export default class extends React.Component {
                     </div>
                     <div className="mdl-card__actions mdl-card--border">
                         { (form.status == "done" || form.status == "in progress") ?
-                            <a className="mdl-button mdl-js-button mdl-button--icon mdl-button--colored" onClick={() => this.props.handler(form, -1)}>
+                            <a className="mdl-button mdl-js-button mdl-button--icon" onClick={() => this.props.handler(form, -1)}>
                                 <i className="material-icons">navigate_before</i>
                             </a>
                             : ""
                         }
                         { (form.status == "pending" || form.status == "in progress") ?
-                            <a className="mdl-button mdl-js-button mdl-button--icon mdl-button--colored align-right" onClick={() => this.props.handler(form, 1)}>
+                            <a className="mdl-button mdl-js-button mdl-button--icon align-right" onClick={() => this.props.handler(form, 1)}>
                                 <i className="material-icons">navigate_next</i>
                             </a>
                             : ""
@@ -94,7 +102,7 @@ export default class extends React.Component {
                     </div>
                     
                     {/*<div className="mdl-card__menu">
-                        <button className="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+                        <button className="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect mdl-button--colored">
                         <i className="material-icons">share</i>
                         </button>
                     </div>*/}
@@ -111,11 +119,13 @@ export default class extends React.Component {
 
         return(
             <div className="form-type">
-                <div className="form-type-title">
+                <div className={ "form-type-title" +
+                    (this.props.forms.length > 0 ? " filled-form-type-title" : "" )
+                }>
                     {this.props.type}
-                        <a className="mdl-button mdl-js-button mdl-button--icon align-right" onClick={this.toggleExpand}>
-                            <i className="material-icons">{this.state.open ? "expand_more" : "expand_less"}</i>
-                        </a>
+                    <a className="mdl-button mdl-js-button mdl-button--icon align-right" onClick={this.toggleExpand}>
+                        <i className="material-icons">{this.state.open ? "expand_more" : "expand_less"}</i>
+                    </a>
                 </div>
                 {this.state.open ? formCards : ""}
             </div>
