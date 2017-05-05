@@ -72,7 +72,7 @@ export function postRequest(url, data) {
         },
         body: data
     }).then(function(response) {
-        //window.location.reload();
+        window.location.reload();
         return response.json();
     }).then(function(data) {
         console.log(data); // log the response json
