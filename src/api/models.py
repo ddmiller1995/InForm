@@ -297,7 +297,7 @@ class FormYouthVisit(models.Model):
 @receiver(post_save, sender=YouthVisit)
 def AddDefaultForms(sender, **kwargs):
     if kwargs['created']:
-        for form in Form.objects.filter(required=True):
+        for form in Form.objects.filter(assign_by_default=True):
             form_youth_visit = FormYouthVisit.objects.create(
                 form_id=form,
                 youth_visit_id=kwargs['instance'],
