@@ -483,6 +483,21 @@ class ImportYouthVisits(APIView):
                 del youth_map[key]
             pprint(youth_map)
 
+            Youth.objects.all().delete()
+            YouthVisit.objects.all().delete()
+
+            for key, value in youth_map.items():
+                for line in value:
+                    try:
+                        Youth.objects.get(youth_name=line[1])
+                    except Youth.DoesNotExist:
+                        Youth.objects.create(
+                            youth_name=line[1],
+                            date_of_birth=datetime.strptime(line[2].decode('ascii'), '%Y-%m-%d'),
+                            ethnicity=line[3],
+                            notes=line[4]
+                        )
+
  
             
             return redirect('/admin/')
