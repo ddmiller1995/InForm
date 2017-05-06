@@ -431,6 +431,56 @@ class ImportYouthVisits(APIView):
             for key, group in groupby(lines, keyfunc):
                 youth_map[key] = list(group)
 
+            MATCH_THRESHOLD_RATIO = 90
+
+            # loop over grouped data to find and merge duplicated groups of data
+            # using levenshtein distance (using fuzzywuzzy library)
+            for key_a, value_a in youth_map.items():
+                for key_b, value_b in youth_map.items():
+                    if key_a == key_b: # skips case where keys are the same (no action needed)
+                        continue
+                    match_ratio = fuzz.token_set_ratio(str(key_a), str(key_b)) # compute similarity ratio
+                    if match_ratio >= MATCH_THRESHOLD_RATIO: # if similarility ratio passes threshold, merge the two groupings
+                        # determine which key is longer and which is shorter
+                        # so we can always merge the shorter key's group
+                        # into the larger key's group
+                        if len(key_a) > len(key_b):
+                            longest_key = key_a
+                            shortest_key = key_b
+                        else:
+                            longest_key = key_b
+                            shortest_key = key_a
+
+                        # if the shortest key's group is empty, that means that it has already been merged.
+                        # this scenario will happen once for each pair that passes the similarity threshold,
+                        # because a gets compared to b, and then b gets compared to a
+                        # on the first comparison, this operation goes down and the shorter key gets marked as
+                        # deleted by emptying it's group
+                        # on the second comparison, we should skip because the work has already been done
+                        if not youth_map[shortest_key]:
+                            continue
+
+                        print('Merging %s with %s: %d' % (shortest_key, longest_key, match_ratio))
+                        # add shortest key's group to the longest key's group
+                        youth_map[longest_key] += youth_map[shortest_key]
+                        # mark the shortest key as deleted without changing dict size during loop
+                        youth_map[shortest_key] = []
+                        print('Done!')
+
+            keys_marked_for_deletion = []
+            for key, youth_visits in youth_map.items():
+                # record each key that was marked for deletion
+                if len(youth_visits) == 0:
+                    keys_marked_for_deletion.append(key)
+                # correct youth name anomalies that happened
+                # because of the previous fuzzy merge operation
+                for youth_visit in youth_visits:
+                    if youth_visit[1] != key:
+                        youth_visit[1] = key
+
+            # delete all keys from grouping map that were marked for deletion
+            for key in keys_marked_for_deletion:
+                del youth_map[key]
             pprint(youth_map)
 
  
