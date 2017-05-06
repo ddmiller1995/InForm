@@ -2,3 +2,4 @@ Django==1.10.6
 django-webpack-loader==0.4.1
 djangorestframework==3.6.2
 gunicorn==19.7.1
+fuzzywuzzy==0.15.0

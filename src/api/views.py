@@ -1,22 +1,25 @@
+import csv
 import logging
 from datetime import datetime
-import csv
+from itertools import groupby
+from tempfile import TemporaryFile
+from fuzzywuzzy import fuzz
 
-from django.http import Http404, JsonResponse, HttpResponse
-from django.shortcuts import get_object_or_404, render, redirect
 from django import forms
-
+from django.http import Http404, HttpResponse, JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
 from rest_framework import status
 from rest_framework.decorators import api_view
+from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.renderers import JSONRenderer
 
-from api.models import PlacementType, Youth, YouthVisit, FormYouthVisit, FormType, Form
-from api.serializers import (PlacementTypeSerializer, serialize_youth,
-                             serialize_youth_visit, serialize_form_youth_visit,
-                             youth_field_names, youth_visit_field_names,
-                             FormTypeSerializer)
+from api.csv_serializers import youth_field_names, youth_visit_field_names
+from api.models import (Form, FormType, FormYouthVisit, PlacementType, Youth,
+                        YouthVisit)
+from api.serializers import (FormTypeSerializer, PlacementTypeSerializer,
+                             serialize_form_youth_visit, serialize_youth,
+                             serialize_youth_visit)
 
 logger = logging.getLogger(__name__)
 
@@ -399,8 +402,8 @@ class UploadFileForm(forms.Form):
     file = forms.FileField()
 
 
-from tempfile import TemporaryFile
 
+from pprint import pprint
 class ImportYouthVisits(APIView):
     renderer_classes = (JSONRenderer, )
 
@@ -408,13 +411,29 @@ class ImportYouthVisits(APIView):
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             f = request.FILES['file']
-            with TemporaryFile() as temp_file:
-                for chunk in f.chunks(): # Save uploaded file to tempfile in local disk in case it is large
-                    temp_file.write(chunk)
+            lines = []
+            for line in f.readlines():
+                line = line.strip()
+                line = line.split(b',')
+                lines.append(line)
 
-                temp_file.seek(0) # reset file pointer to beginning of file
-                for line in temp_file: # loop over file from local disk without loading the whole thing into memory all at once
-                    print(line.strip())
+            line_count = len(lines)
+            if line_count <= 1: # if it has only 1 line, that is the column names row
+                raise Http404
+            lines = lines[1:] # drop column names row
+
+
+            keyfunc = lambda line: line[1]
+            lines = sorted(lines, key=keyfunc)
+
+            youth_map = {}
+
+            for key, group in groupby(lines, keyfunc):
+                youth_map[key] = list(group)
+
+            pprint(youth_map)
+
+ 
             
             return redirect('/admin/')
 
@@ -447,7 +466,7 @@ class ExportYouthVisits(APIView):
     def get(self, request, format=None):
         # Create the HttpResponse object with the appropriate CSV header.
         response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename="somefilename.csv"'
+        response['Content-Disposition'] = 'attachment; filename="inform-data-export.csv"'
 
         writer = csv.writer(response)
 
