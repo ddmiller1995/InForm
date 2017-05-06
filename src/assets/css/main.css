@@ -263,10 +263,14 @@ h4 {
       width: 90%;
       margin: 15px auto;
       min-height: 125px; }
+      .board .col .demo-card-wide.mdl-card .mdl-card__title:hover {
+        cursor: pointer; }
       .board .col .demo-card-wide.mdl-card .mdl-card__title-text {
         font-size: 20px; }
       .board .col .demo-card-wide.mdl-card .mdl-card__title, .board .col .demo-card-wide.mdl-card .mdl-card__supporting-text {
         padding: 10px 16px; }
+      .board .col .demo-card-wide.mdl-card .mdl-card__menu {
+        top: 10px; }
       .board .col .demo-card-wide.mdl-card .mdl-button--colored {
         color: #8fbc49; }
       .board .col .demo-card-wide.mdl-card .due-done {
@@ -282,8 +286,6 @@ h4 {
     box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2); }
     .board .mdl-layout__header .mdl-layout-title {
       margin: 0px auto; }
-  .board .mdl-card {
-    min-height: 165px; }
   .board .align-right {
     float: right; }
   .board .form-type .form-type-title {
@@ -298,6 +300,8 @@ h4 {
     border-top: 1px solid #ccc; }
   .board .form-type .filled-form-type-title {
     color: black; }
+  .board .form-dialog {
+    width: 25% !important; }
 
 .presentation-container {
   position: relative;
