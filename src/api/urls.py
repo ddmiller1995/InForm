@@ -42,7 +42,7 @@ urlpatterns = [
 
     url(r'^import/template/$', views.DownloadImportTemplate.as_view(), \
         name='download-import-template'),
-    url(r'^import/$', views.ImportYouthVisits, \
+    url(r'^import/$', views.ImportYouthVisits.as_view(), \
         name='import-youth-visits'),
 
 

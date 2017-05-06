@@ -398,21 +398,26 @@ class DownloadImportTemplate(APIView):
 class UploadFileForm(forms.Form):
     file = forms.FileField()
 
-@api_view(['GET', 'POST'])
-def ImportYouthVisits(request):
-    if request.method == 'POST':
+
+from tempfile import TemporaryFile
+
+class ImportYouthVisits(APIView):
+    renderer_classes = (JSONRenderer, )
+
+    def post(self, request, format=None):
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             f = request.FILES['file']
-            for chunk in f.chunks():
-                print(chunk)
+            with TemporaryFile() as temp_file:
+                for chunk in f.chunks(): # Save uploaded file to tempfile in local disk in case it is large
+                    temp_file.write(chunk)
+
+                temp_file.seek(0) # reset file pointer to beginning of file
+                for line in temp_file: # loop over file from local disk without loading the whole thing into memory all at once
+                    print(line.strip())
             
-            return redirect('import-youth-visits')
+            return redirect('/admin/')
 
-    else:
-        form = UploadFileForm()
-
-    return render(request, 'api/import.html', {'form': form})
 
 class FormTypeList(APIView):
     '''
