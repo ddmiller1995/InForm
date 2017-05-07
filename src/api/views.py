@@ -402,7 +402,6 @@ class UploadFileForm(forms.Form):
     file = forms.FileField()
 
 
-
 from pprint import pprint
 class ImportYouthVisits(APIView):
     renderer_classes = (JSONRenderer, )
@@ -501,12 +500,14 @@ class ImportYouthVisits(APIView):
 
                     print(line)
                     # visit_exit_date = datetime.strptime(line[19].decode('ascii'), date_format) if line[19] else None
+                    current_placement_start_date = datetime.strptime(line[11].decode('ascii'), date_format) if line[11] else None
                     
                     youth_visit = YouthVisit.objects.create(
                         youth_id=youth,
                         visit_start_date=datetime.strptime(line[6].decode('ascii'), date_format),
                         current_placement_type=PlacementType.objects.get(pk=1),
-                        # current_placement_start_date=line[11],
+
+                        current_placement_start_date=current_placement_start_date,
                         # current_placement_extension_days=line[12],
                         # city_of_origin=line[13],
                         # state_of_origin=line[14],
@@ -598,11 +599,16 @@ class ExportYouthVisits(APIView):
             row.append(youth_visit.city_of_origin)
             row.append(youth_visit.state_of_origin)
             row.append(youth_visit.guardian_name)
+            row.append(youth_visit.guardian_relationship)
             row.append(youth_visit.referred_by)
             row.append(youth_visit.social_worker)
             row.append(youth_visit.visit_exit_date)
             row.append(youth_visit.permanent_housing)
             row.append(youth_visit.exited_to)
+            
+            row.append(youth_visit.csec_referral)
+            row.append(youth_visit.family_engagement_referral)
+            row.append(youth_visit.met_greater_than_50_percent_goals)
 
             # YouthVisit.User
             if (youth_visit.case_manager):
