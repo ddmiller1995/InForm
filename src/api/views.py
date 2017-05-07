@@ -498,16 +498,26 @@ class ImportYouthVisits(APIView):
                             notes=line[4]
                         )
 
-                    print(line)
+                    # print(line)
                     # visit_exit_date = datetime.strptime(line[19].decode('ascii'), date_format) if line[19] else None
                     current_placement_start_date = datetime.strptime(line[11].decode('ascii'), date_format) if line[11] else None
-                    
+                    current_placement_name = line[8] if line[8] else 'default placement type'
+                    current_placement_length = line[9]
+                    current_placement_ratio = line[10]
+ 
+                    current_placement_obj = PlacementType.objects.filter(placement_type_name=current_placement_name).first()
+                    if not current_placement_obj:
+                        current_placement_obj = PlacementType.objects.create(
+                            placement_type_name=current_placement_name,
+                            default_stay_length=current_placement_length,
+                            supervision_ratio=current_placement_ratio
+                        )
+                        
                     youth_visit = YouthVisit.objects.create(
                         youth_id=youth,
                         visit_start_date=datetime.strptime(line[6].decode('ascii'), date_format),
-                        current_placement_type=PlacementType.objects.get(pk=1),
-
                         current_placement_start_date=current_placement_start_date,
+                        current_placement_type=current_placement_obj,
                         # current_placement_extension_days=line[12],
                         # city_of_origin=line[13],
                         # state_of_origin=line[14],
