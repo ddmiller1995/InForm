@@ -4,6 +4,8 @@ from datetime import datetime
 from itertools import groupby
 from tempfile import TemporaryFile
 from fuzzywuzzy import fuzz
+from pprint import pprint
+
 
 from django import forms
 from django.http import Http404, HttpResponse, JsonResponse
@@ -14,7 +16,7 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from api.csv_serializers import youth_field_names, youth_visit_field_names
+from api.csv_serializers import youth_field_names, youth_visit_field_names, CsvLine
 from api.models import (Form, FormType, FormYouthVisit, PlacementType, Youth,
                         YouthVisit)
 from api.serializers import (FormTypeSerializer, PlacementTypeSerializer,
@@ -402,10 +404,8 @@ class UploadFileForm(forms.Form):
     file = forms.FileField()
 
 
-from pprint import pprint
-class ImportYouthVisits(APIView):
-    renderer_classes = (JSONRenderer, )
 
+class ImportYouthVisits(APIView):
     def post(self, request, format=None):
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
@@ -488,22 +488,27 @@ class ImportYouthVisits(APIView):
 
             for key, value in youth_map.items():
                 for line in value:
+
+                    line = CsvLine(line)
+
+                    name = line.get_string_field(1, '')
+
                     try:
-                        youth = Youth.objects.get(youth_name=line[1])
+                        youth = Youth.objects.get(youth_name=name)
                     except Youth.DoesNotExist:
                         youth = Youth.objects.create(
-                            youth_name=line[1],
-                            date_of_birth=datetime.strptime(line[2].decode('ascii'), date_format),
-                            ethnicity=line[3],
-                            notes=line[4]
+                            youth_name=name,
+                            date_of_birth=line.get_datetime_field(2),
+                            ethnicity=line.get_string_field(3, ''),
+                            notes=line.get_string_field(4, '')
                         )
 
                     # print(line)
                     # visit_exit_date = datetime.strptime(line[19].decode('ascii'), date_format) if line[19] else None
-                    current_placement_start_date = datetime.strptime(line[11].decode('ascii'), date_format) if line[11] else None
-                    current_placement_name = line[8] if line[8] else 'default placement type'
-                    current_placement_length = line[9]
-                    current_placement_ratio = line[10]
+                    current_placement_start_date = line.get_datetime_field(11)
+                    current_placement_name = line.get_string_field(8, 'default placement type')
+                    current_placement_length = line.get_string_field(9, 15)
+                    current_placement_ratio = line.get_string_field(10, '')
  
                     current_placement_obj = PlacementType.objects.filter(placement_type_name=current_placement_name).first()
                     if not current_placement_obj:
@@ -512,12 +517,15 @@ class ImportYouthVisits(APIView):
                             default_stay_length=current_placement_length,
                             supervision_ratio=current_placement_ratio
                         )
-                        
+
+                    extension_days = line.get_string_field(12, 0)
+
                     youth_visit = YouthVisit.objects.create(
                         youth_id=youth,
-                        visit_start_date=datetime.strptime(line[6].decode('ascii'), date_format),
-                        current_placement_start_date=current_placement_start_date,
+                        visit_start_date=line.get_datetime_field(6),
                         current_placement_type=current_placement_obj,
+                        current_placement_start_date=current_placement_start_date,
+                        current_placement_extension_days=extension_days,
                         # current_placement_extension_days=line[12],
                         # city_of_origin=line[13],
                         # state_of_origin=line[14],
