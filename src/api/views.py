@@ -481,22 +481,49 @@ class ImportYouthVisits(APIView):
             # delete all keys from grouping map that were marked for deletion
             for key in keys_marked_for_deletion:
                 del youth_map[key]
-            pprint(youth_map)
 
             Youth.objects.all().delete()
             YouthVisit.objects.all().delete()
 
+            date_format = '%Y-%m-%d'
+
             for key, value in youth_map.items():
                 for line in value:
                     try:
-                        Youth.objects.get(youth_name=line[1])
+                        youth = Youth.objects.get(youth_name=line[1])
                     except Youth.DoesNotExist:
-                        Youth.objects.create(
+                        youth = Youth.objects.create(
                             youth_name=line[1],
-                            date_of_birth=datetime.strptime(line[2].decode('ascii'), '%Y-%m-%d'),
+                            date_of_birth=datetime.strptime(line[2].decode('ascii'), date_format),
                             ethnicity=line[3],
                             notes=line[4]
                         )
+
+                    print(line)
+                    # visit_exit_date = datetime.strptime(line[19].decode('ascii'), date_format) if line[19] else None
+                    
+                    youth_visit = YouthVisit.objects.create(
+                        youth_id=youth,
+                        visit_start_date=datetime.strptime(line[6].decode('ascii'), date_format),
+                        current_placement_type=PlacementType.objects.get(pk=1),
+                        # current_placement_start_date=line[11],
+                        # current_placement_extension_days=line[12],
+                        # city_of_origin=line[13],
+                        # state_of_origin=line[14],
+                        # guardian_name=line[15],
+                        # guardian_relationship=line[16],
+                        # referred_by=line[17],
+                        # social_worker=line[18],
+                        # visit_exit_date=visit_exit_date,
+
+                        # permanent_housing=line[20]
+                        # exited_to=line[21].decode('utf-8'),
+                        # csec_referral=line[22],
+                        # family_engagement_referral=,
+                        # met_50_percent_goals=line[24]
+
+
+                    )
 
  
             
