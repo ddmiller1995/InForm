@@ -18,7 +18,7 @@ from rest_framework.views import APIView
 
 from api.csv_serializers import youth_field_names, youth_visit_field_names, CsvLine
 from api.models import (Form, FormType, FormYouthVisit, PlacementType, Youth,
-                        YouthVisit)
+                        YouthVisit, School)
 from api.serializers import (FormTypeSerializer, PlacementTypeSerializer,
                              serialize_form_youth_visit, serialize_youth,
                              serialize_youth_visit)
@@ -520,6 +520,22 @@ class ImportYouthVisits(APIView):
 
                     extension_days = line.get_string_field(12, 0)
 
+                    school_name = line.get_string_field(32, '')
+                    school_district = line.get_string_field(33, '')
+                    school_phone = line.get_string_field(34, '')
+                    school_notes = line.get_string_field(35, '')
+
+                    try:
+                        school = School.objects.get(school_name=school_name)
+                    except School.DoesNotExist:
+                        if school_name:
+                            school = School()
+                            school.school_name = school_name
+                            school.school_district = school_district
+                            school.phone = school_phone
+                            school.notes = school_notes
+                            school.save()
+
                     youth_visit = YouthVisit.objects.create(
                         youth_id=youth,
                         visit_start_date=line.get_datetime_field(6),
@@ -539,6 +555,8 @@ class ImportYouthVisits(APIView):
                         csec_referral=line.get_boolean_field(22, False),
                         family_engagement_referral=line.get_boolean_field(23, False),
                         met_greater_than_50_percent_goals=line.get_string_field(24, YouthVisit.MET_GOALS_NA),
+
+                        school=school,
                     )
 
  
