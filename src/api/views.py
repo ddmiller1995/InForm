@@ -508,7 +508,7 @@ class ImportYouthVisits(APIView):
                     current_placement_start_date = line.get_datetime_field(11)
                     current_placement_name = line.get_string_field(8, 'default placement type')
                     current_placement_length = line.get_string_field(9, 15)
-                    current_placement_ratio = line.get_string_field(10, '')
+                    current_placement_ratio = line.get_string_field(10)
  
                     current_placement_obj = PlacementType.objects.filter(placement_type_name=current_placement_name).first()
                     if not current_placement_obj:
@@ -526,22 +526,19 @@ class ImportYouthVisits(APIView):
                         current_placement_type=current_placement_obj,
                         current_placement_start_date=current_placement_start_date,
                         current_placement_extension_days=extension_days,
-                        # current_placement_extension_days=line[12],
-                        # city_of_origin=line[13],
-                        # state_of_origin=line[14],
-                        # guardian_name=line[15],
-                        # guardian_relationship=line[16],
-                        # referred_by=line[17],
-                        # social_worker=line[18],
-                        # visit_exit_date=visit_exit_date,
+                        city_of_origin=line.get_string_field(13),
+                        state_of_origin=line.get_string_field(14),
+                        guardian_name=line.get_string_field(15),
+                        guardian_relationship=line.get_string_field(16),
+                        referred_by=line.get_string_field(17),
+                        social_worker=line.get_string_field(18),
+                        visit_exit_date=line.get_datetime_field(19),
 
-                        # permanent_housing=line[20]
-                        # exited_to=line[21].decode('utf-8'),
-                        # csec_referral=line[22],
-                        # family_engagement_referral=,
-                        # met_50_percent_goals=line[24]
-
-
+                        permanent_housing=line.get_boolean_field(20, None),
+                        exited_to=line.get_string_field(21),
+                        csec_referral=line.get_boolean_field(22, False),
+                        family_engagement_referral=line.get_boolean_field(23, False),
+                        met_greater_than_50_percent_goals=line.get_string_field(24, YouthVisit.MET_GOALS_NA),
                     )
 
  
