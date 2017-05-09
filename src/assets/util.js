@@ -23,6 +23,7 @@ export function formatTime(time) {
 }
 
 export function registerDialog(parentNode, child) {
+
     let modal = document.getElementById("mdl-dialog");
     if (modal != null) {
         let dialog = document.querySelector("dialog");
@@ -41,6 +42,7 @@ export function closeDialog(dialog, parentNode, child) {
     dialog.open = "true";
     dialog.close();
     let parent = document.querySelector(parentNode);
+    console.log(parent.childNodes);
     parent.removeChild(parent.childNodes[child]);
 }
 
@@ -62,9 +64,8 @@ export function getRequest(url, that, prop) {
     });
 }
 
-export function postRequest(url, data) {
+export function postRequest(url, data, reload=true) {
     let csrf_token = Cookies.get('csrftoken');
-
     fetch(url, {
         method: "POST",
         credentials: "same-origin",
@@ -73,7 +74,9 @@ export function postRequest(url, data) {
         },
         body: data
     }).then(function(response) {
-        window.location.reload();
+        if(reload) {
+            window.location.reload();
+        }
         return response.json();
     }).then(function(data) {
         console.log(data); // log the response json

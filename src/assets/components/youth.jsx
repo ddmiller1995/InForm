@@ -5,18 +5,17 @@ import { getRequest } from '../util.js'
 import "whatwg-fetch";
 
 const GET_YOUTH_API = "/api/youth/"
-// const YOUTH_ID = store.getState();
+const YOUTH_ID = store.getState();
 
 export default class extends React.Component {
     constructor(props) {
         super(props);
-        // this.state = {youth: {}};
-        this.state = store.getState();
+        this.state = {youth: {}};
     }
 
     componentDidMount() {
         this.unsub = store.subscribe(() => this.setState(store.getState()));
-        let data = getRequest(GET_YOUTH_API + this.state.currentYouth.id, this, "youth");
+        let data = getRequest(GET_YOUTH_API + YOUTH_ID.currentYouth.id, this, "youth");
     }
 
     componentWillUnmount() {

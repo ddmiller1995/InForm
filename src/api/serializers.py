@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from api.models import PlacementType
+from api.models import PlacementType, FormType
 import logging
 logger = logging.getLogger(__name__)
 
@@ -10,10 +10,7 @@ def serialize_youth(youth):
     obj['youth_id'] = youth.pk
     obj['name'] = youth.youth_name
     obj['dob'] = youth.date_of_birth
-    if youth.ethnicity is not None:
-        obj['ethnicity'] = youth.ethnicity.ethnicity_name
-    else:
-        obj['ethnicity'] = None         
+    obj['ethnicity'] = youth.ethnicity
     obj['notes'] = youth.notes
 
     return obj
@@ -40,6 +37,7 @@ def serialize_youth_visit(youth_visit):
     obj['visit_start_date'] = youth_visit.visit_start_date
     obj['city_of_origin'] = youth_visit.city_of_origin
     obj['guardian_name'] = youth_visit.guardian_name
+    obj['guardian_relationship'] = youth_visit.guardian_relationship
     obj['referred_by'] = youth_visit.referred_by
     obj['social_worker'] = youth_visit.social_worker
     obj['permanent_housing'] = youth_visit.permanent_housing
@@ -84,27 +82,52 @@ youth_field_names = ['youth_id', 'youth_name', 'date_of_birth', 'ethnicity', 'yo
 
 youth_visit_field_names = ['youth_visit_id', 'visit_start_date',
 
-                            'current_placement_type_id', 'current_placement_type_name',
-                            'current_placement_type_default_stay_length', 'current_placement_type_supervision_ratio',
+                           'current_placement_type_id', 'current_placement_type_name',
+                           'current_placement_type_default_stay_length',
+                           'current_placement_type_supervision_ratio',
 
-                            'current_placement_start_date', 'current_placement_extension_days',
-                            'city_of_origin', 'state_of_origin', 'guardian_name', 'referred_by',
-                            'social_worker', 'visit_exit_date', 'permanent_housing', 'exited_to',
+                           'current_placement_start_date', 'current_placement_extension_days',
+                           'city_of_origin', 'state_of_origin', 'guardian_name', 'guardian_relationship', 'referred_by',
+                           'social_worker', 'visit_exit_date', 'permanent_housing', 'exited_to',
 
-                            'case_manager_id', 'case_manager_name', 'case_manager_username',
-                            'personal_counselor_id', 'personal_counselor_name', 'personal_counselor_username',
+                           'case_manager_id', 'case_manager_name', 'case_manager_username',
+                           'personal_counselor_id', 'personal_counselor_name',
+                           'personal_counselor_username',
 
-                            'school_id', 'school_name', 'school_district', 'school_phone', 'school_notes',
+                           'school_id', 'school_name', 'school_district',
+                           'school_phone', 'school_notes',
 
-                            'school_am_transport', 'school_am_pickup_time', 'school_am_phone',
-                            'school_pm_transport', 'school_pm_dropoff_time', 'school_pm_phone',
-                            'school_date_requested', 'school_mkv_complete', 'youth_visit_notes'
-                            
-                            ]
+                           'school_am_transport', 'school_am_pickup_time', 'school_am_phone',
+                           'school_pm_transport', 'school_pm_dropoff_time', 'school_pm_phone',
+                           'school_date_requested', 'school_mkv_complete', 'youth_visit_notes'
+                          ]
 
+
+def serialize_form_youth_visit(form_youth_visit):
+    'Serialize the form_youth_visit object'
+
+    obj = {}
+
+    obj['form_id'] = form_youth_visit.id
+    obj['form_name'] = form_youth_visit.form_id.form_name
+    obj['form_type'] = form_youth_visit.form_id.form_type_id.form_type_name
+    obj['form_description'] = form_youth_visit.form_id.form_description
+    obj['default_due_date'] = form_youth_visit.form_id.default_due_date
+    obj['assign_by_default'] = form_youth_visit.form_id.assign_by_default
+    obj['status'] = form_youth_visit.status
+    obj['completed_by'] = serialize_user(form_youth_visit.user_id)
+    obj['days_remaining'] = form_youth_visit.days_remaining()
+    obj['notes'] = form_youth_visit.notes
+
+    return obj
+    
 
 class PlacementTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = PlacementType
         fields = '__all__'
 
+class FormTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FormType
+        fields = '__all__'
