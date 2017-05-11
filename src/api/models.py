@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 def timezone_date():
     '''Returns just the date portion of the timezone.now() function
     Used as a callable to evaluate the current date as a default field value'''
-    return timezone.now().date()
+    return timezone.localtime(timezone.now()).date()
 
 class PlacementType(models.Model):
     '''PlacementType model
@@ -86,7 +86,7 @@ class Youth(models.Model):
         computed list of active youth
         '''
         active_youth = []
-        today = timezone.now().date()
+        today = timezone_date()
 
         for youth in Youth.objects.all():
             try:
@@ -173,14 +173,14 @@ class YouthVisit(models.Model):
 
     def is_active(self):
         '''Return True if the Youth for this visit is still active'''
-        today = timezone.now().date()
+        today = timezone_date()
         return self.visit_exit_date is None
     is_active.boolean = True
     is_active.short_description = 'Is Active?'
 
     def is_before_estimated_exited_date(self):
         '''Return True if the today is before the youth's estimated exit date'''
-        today = timezone.now().date()
+        today = timezone_date()
         return today <= self.estimated_exit_date()
 
 
@@ -196,7 +196,7 @@ class YouthVisit(models.Model):
 
     def total_days_stayed(self):
         '''Sums and returns the days in this visit, which can include multiple placements and extensions'''
-        end_date = self.visit_exit_date if self.visit_exit_date != None else timezone.now().date()
+        end_date = self.visit_exit_date if self.visit_exit_date != None else timezone_date()
         return (end_date - self.visit_start_date).days
 
     def form_type_progress(self):
@@ -291,7 +291,7 @@ class FormYouthVisit(models.Model):
     def days_remaining(self):
         if self.form_id.default_due_date is None:
             return None
-        result = self.form_id.default_due_date - (timezone.now().date() - self.youth_visit_id.visit_start_date).days
+        result = self.form_id.default_due_date - (timezone_date() - self.youth_visit_id.visit_start_date).days
         return result
 
 @receiver(post_save, sender=YouthVisit)

@@ -15,6 +15,11 @@ from .views import DATE_STRING_FORMAT
 class YouthModelTests(TestCase):
     '''Main test class for all Youth and YouthVisit model methods'''
 
+    def timezone_date():
+        '''Returns just the date portion of the timezone.now() function
+        Used as a callable to evaluate the current date as a default field value'''
+        return timezone.localtime(timezone.now()).date()
+
     def setUp(self):
         '''Runs before all of the actual tests, so these entities can be referenced by test'''
 
@@ -57,37 +62,37 @@ class YouthModelTests(TestCase):
         )
         visit2 = YouthVisit.objects.create(
             youth_id=youth1,
-            current_placement_start_date=timezone.now().date(),
+            current_placement_start_date=timezone_date(),
             city_of_origin="Seattle",
             current_placement_type=placement,
         )
         visit3 = YouthVisit.objects.create(
             youth_id=youth2,
-            current_placement_start_date=timezone.now().date() - timedelta(days=3),# Visit started 3 days ago
+            current_placement_start_date=timezone_date() - timedelta(days=3),# Visit started 3 days ago
             city_of_origin="Seattle",
             current_placement_type=placement,
         )
 
         visit4_exited_before_deadline = YouthVisit.objects.create(
             youth_id=youth3,
-            current_placement_start_date=timezone.now().date() - timedelta(days=2), # placement deadline is 3 days
+            current_placement_start_date=timezone_date() - timedelta(days=2), # placement deadline is 3 days
             city_of_origin="Everett",
             current_placement_type=placement,
-            visit_exit_date=timezone.now().date() # this youth should not be active b/c they have exit date
+            visit_exit_date=timezone_date() # this youth should not be active b/c they have exit date
         )
 
         
         visit5_exited_after_deadline = YouthVisit.objects.create(
             youth_id=youth3,
-            current_placement_start_date=timezone.now().date() - timedelta(days=5), # placement deadline is 3 days
+            current_placement_start_date=timezone_date() - timedelta(days=5), # placement deadline is 3 days
             city_of_origin="Everett",
             current_placement_type=placement,
-            visit_exit_date=timezone.now().date() # this youth should not be active b/c they have exit date
+            visit_exit_date=timezone_date() # this youth should not be active b/c they have exit date
         )
 
         visit6_deadline_extended = YouthVisit.objects.create(
             youth_id=youth4,
-            current_placement_start_date=timezone.now().date() - timedelta(days=22), # placed 22 days ago
+            current_placement_start_date=timezone_date() - timedelta(days=22), # placed 22 days ago
             city_of_origin="Mountlake Terrace",
             current_placement_type=placement2, # 21 day deadline
             current_placement_extension_days=15 # given 15 day extension
@@ -150,13 +155,13 @@ class YouthModelTests(TestCase):
         )
         YouthVisit.objects.create(
             youth_id=Youth.objects.get(pk=1),
-            current_placement_start_date=timezone.localtime(timezone.now()).date(),
+            current_placement_start_date=timezone_date(),
             city_of_origin="Seattle",
             current_placement_type=PlacementType.objects.get(pk=1),
         )
         YouthVisit.objects.create(
             youth_id=Youth.objects.get(pk=2),
-            current_placement_start_date=timezone.localtime(timezone.now()).date() - timedelta(days=3),
+            current_placement_start_date=timezone_date() - timedelta(days=3),
             city_of_origin="Seattle",
             current_placement_type=PlacementType.objects.get(pk=1),
         )  
@@ -191,7 +196,7 @@ class YouthModelTests(TestCase):
     def test_total_days_stayed_visit_started_today(self):
         visit = YouthVisit.objects.create(
             youth_id=Youth.objects.get(youth_name="Bob"),
-            visit_start_date=timezone.now().date(),
+            visit_start_date=timezone_date(),
             city_of_origin="Seattle",
             current_placement_type=PlacementType.objects.get(placement_type_name="Testing")
         )
@@ -200,7 +205,7 @@ class YouthModelTests(TestCase):
     def test_total_days_stayed_visit_ongoing(self):
         visit = YouthVisit.objects.create(
             youth_id=Youth.objects.get(youth_name="Bob"),
-            visit_start_date=timezone.now().date() - timedelta(days=10),
+            visit_start_date=timezone_date() - timedelta(days=10),
             city_of_origin="Seattle",
             current_placement_type=PlacementType.objects.get(placement_type_name="Testing")
         )
@@ -209,10 +214,10 @@ class YouthModelTests(TestCase):
     def test_total_days_stayed_visit_ended(self):
         visit = YouthVisit.objects.create(
             youth_id=Youth.objects.get(youth_name="Bob"),
-            visit_start_date=timezone.now().date() - timedelta(days=10),
+            visit_start_date=timezone_date() - timedelta(days=10),
             city_of_origin="Seattle",
             current_placement_type=PlacementType.objects.get(placement_type_name="Testing"),
-            visit_exit_date=timezone.now().date() - timedelta(days=7)
+            visit_exit_date=timezone_date() - timedelta(days=7)
         )
         self.assertEqual(visit.total_days_stayed(), 3)
 
@@ -447,7 +452,7 @@ class YouthModelTests(TestCase):
 
     def test_form_youth_visit_days_remaining_with_days_remaining(self):
         visit = YouthVisit.objects.get(pk=3) # Visit started 3 days ago
-        visit.visit_start_date = timezone.now().date() - timedelta(days=3)
+        visit.visit_start_date = timezone_date() - timedelta(days=3)
         form = Form.objects.get(form_name='Form 3')
         form.default_due_date = 5
         form_youth_visit = FormYouthVisit.objects.create(
@@ -459,7 +464,7 @@ class YouthModelTests(TestCase):
 
     def test_form_youth_visit_days_remaining_with_deadline_passed(self):
         visit = YouthVisit.objects.get(pk=3) # Visit started 3 days ago
-        visit.visit_start_date = timezone.now().date() - timedelta(days=3)
+        visit.visit_start_date = timezone_date() - timedelta(days=3)
         form = Form.objects.get(form_name='Form 3')
         form.default_due_date = 0
         form_youth_visit = FormYouthVisit.objects.create(
