@@ -22,6 +22,10 @@ export function formatTime(time) {
     return moment(time, "hh:mm").format("h:mm");
 }
 
+export function calcPercentage(number) {
+    return Math.round(number * 100) + "%";
+}
+
 export function registerDialog(parentNode, child) {
 
     let modal = document.getElementById("mdl-dialog");
@@ -42,7 +46,6 @@ export function closeDialog(dialog, parentNode, child) {
     dialog.open = "true";
     dialog.close();
     let parent = document.querySelector(parentNode);
-    console.log(parent.childNodes);
     parent.removeChild(parent.childNodes[child]);
 }
 
