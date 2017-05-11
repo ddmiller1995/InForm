@@ -23,6 +23,7 @@ export function formatTime(time) {
 }
 
 export function registerDialog(parentNode, child) {
+
     let modal = document.getElementById("mdl-dialog");
     if (modal != null) {
         let dialog = document.querySelector("dialog");
@@ -41,6 +42,7 @@ export function closeDialog(dialog, parentNode, child) {
     dialog.open = "true";
     dialog.close();
     let parent = document.querySelector(parentNode);
+    console.log(parent.childNodes);
     parent.removeChild(parent.childNodes[child]);
 }
 

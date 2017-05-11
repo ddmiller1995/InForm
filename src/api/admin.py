@@ -1,5 +1,11 @@
+from ajax_select import make_ajax_form
+from ajax_select.admin import (AjaxSelectAdmin, AjaxSelectAdminStackedInline,
+                               AjaxSelectAdminTabularInline)
 from django.contrib import admin
-from .models import Youth, YouthVisit, PlacementType, School, FormType, Form, FormYouthVisit
+
+from .models import (Form, FormType, FormYouthVisit, PlacementType, School,
+                     Youth, YouthVisit)
+
 
 # class QuestionInline(admin.TabularInline):
 #     model = Question
@@ -15,11 +21,16 @@ class YouthAdmin(admin.ModelAdmin):
         'ethnicity'
     )
 
-class YouthVisitAdmin(admin.ModelAdmin):
+class YouthVisitAdmin(AjaxSelectAdmin):
     list_display = ('youth_id', 'current_placement_start_date', 'city_of_origin', 'estimated_exit_date', 'is_active')
     search_fields = ['youth_id__youth_name']
     list_filter = ('youth_id', 'current_placement_start_date', 'city_of_origin',
                     'case_manager', 'personal_counselor')
+
+    form = make_ajax_form(YouthVisit, {
+        # fieldname: channel_name
+        'youth_id': 'youth'
+    })
 
     fieldsets = [
         (None, {'fields': [

@@ -1,11 +1,7 @@
 .mdl-layout__header {
-  background-color: #FFF; }
-
-.mdl-layout__header-row {
-  padding: 0 40px 0 40px;
-  color: #8fbc49; }
-  .mdl-layout__header-row .mdl-navigation__link {
-    color: #8fbc49; }
+  background-color: #8fbc49; }
+  .mdl-layout__header .mdl-navigation__link {
+    color: white; }
 
 .navbar-logo {
   height: inherit; }
@@ -13,17 +9,10 @@
     position: relative;
     top: -2px; }
 
-.header-divider {
-  border-right: 1px solid #16222c;
-  height: 25px; }
-
 .homepage-links {
   position: absolute;
   top: 120px;
   left: 100px; }
-  .homepage-links .presentation-link {
-    color: #E17000;
-    padding: 15px; }
 
 .homepage-bar {
   width: 100%; }
@@ -55,7 +44,7 @@
 .mdl-data-table.mdl-js-data-tabled th, .mdl-data-table.mdl-js-data-tabled td {
   text-align: left; }
 .mdl-data-table.mdl-js-data-tabled .seven-days .mdl-navigation__link {
-  color: #3f51b5; }
+  color: #E17000; }
 .mdl-data-table.mdl-js-data-tabled .three-days .mdl-navigation__link {
   color: red; }
 .mdl-data-table.mdl-js-data-tabled .exit-column {
@@ -77,6 +66,10 @@
   border: 1px solid gainsboro;
   margin: 15px;
   box-shadow: 0 11px 15px -7px rgba(0, 0, 0, 0.1), 0 24px 38px 3px transparent; }
+  .youth-tracker-container .mdl-layout__header {
+    background-color: white; }
+  .youth-tracker-container .presentation-link {
+    color: #8fbc49; }
   .youth-tracker-container tbody tr:focus, .youth-tracker-container tbody tr:hover {
     background-color: rgba(156, 177, 208, 0.67); }
   .youth-tracker-container #mdl-dialog {
@@ -96,13 +89,17 @@
 
 .youth-detail-container {
   border: 1px solid gainsboro;
-  margin: 15px;
   box-shadow: 0 9px 46px 8px rgba(0, 0, 0, 0.14), 0 11px 15px -7px rgba(0, 0, 0, 0.12), 0 24px 38px 3px rgba(0, 0, 0, 0.2);
   background-color: white; }
   .youth-detail-container .mdl-layout__header {
     box-shadow: none; }
   .youth-detail-container .mdl-layout__header-row {
+    background-color: white;
     padding: 0; }
+  .youth-detail-container .mdl-navigation__link {
+    color: #8fbc49; }
+  .youth-detail-container .mdl-navigation__link.active {
+    color: #E17000; }
   .youth-detail-container .youth-detail-divider {
     margin: 0 15px; }
   .youth-detail-container .mdl-select.mdl-js-select {
@@ -324,17 +321,21 @@ h4 {
     font-size: 35px; }
 
 .container {
-  margin: 3%; }
+  margin: 2%; }
 
 a.mdl-navigation__link.active {
-  color: #E17000;
+  color: white;
   font-weight: 700; }
 
 body {
-  background-color: #8fbc49; }
+  background-color: #f1f1f1; }
 
 .header-fix {
   position: relative;
   padding: 0; }
+
+.header-divider {
+  border-right: 1px solid lightgray;
+  height: 25px; }
 
 /*# sourceMappingURL=main.css.map */
