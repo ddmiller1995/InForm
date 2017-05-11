@@ -1,7 +1,7 @@
 import React from "react";
 import {Link, IndexLink} from "react-router";
 import "whatwg-fetch";
-import {postRequest, getRequest, registerDialog, closeDialog} from '../util.js';
+import {postRequest, getRequest, registerDialog, closeDialog, titleCase} from '../util.js';
 
 export default class extends React.Component {
     constructor(props) {
@@ -45,8 +45,8 @@ export default class extends React.Component {
             `<dialog id="mdl-dialog" class="exit-dialog form-dialog">
                 <h4>` + form.form_name + ` - ` + form.form_type + `</h4>
                 <p>Days remaining: ` + form.days_remaining + `</p>
-                <p>` + form.form_description + `</p>
-                <p>` + form.status + 
+                ` + (form.form_description.length > 0 ? `<p>Description: ` + form.form_description + `</p>` : ``) +
+                `<p>Status: ` + titleCase(form.status) + 
                     (form.status == "done" && form.completed_by.full_name != null ? 
                     " - Completed by: " + form.completed_by.full_name : 
                     "") + 
@@ -64,6 +64,8 @@ export default class extends React.Component {
     formatDaysRemaining(days, status) {
         if(status == "done") {
             return <span className="due-done">Done</span>;
+        } else if(days == null) {
+            return <span className="no-due-date">{"No due date"}</span>;
         } else if(days < 0) {
             return <span className="due-now">{"Due " + Math.abs(days) + " days ago"}</span>;
         } else if(days < 3) {

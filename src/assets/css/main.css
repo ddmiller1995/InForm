@@ -270,12 +270,20 @@ h4 {
         top: 10px; }
       .board .col .demo-card-wide.mdl-card .mdl-button--colored {
         color: #8fbc49; }
+      .board .col .demo-card-wide.mdl-card .no-due-date {
+        color: #CCC; }
       .board .col .demo-card-wide.mdl-card .due-done {
         color: #8fbc49; }
       .board .col .demo-card-wide.mdl-card .due-now {
         color: red; }
       .board .col .demo-card-wide.mdl-card .due-soon {
         color: #E17000; }
+    .board .col .no-forms-message {
+      color: black;
+      font-size: 16px;
+      text-align: center;
+      width: 100%;
+      margin-top: 100px; }
   .board .col:nth-of-type(2) {
     border-left: 1px solid #ccc;
     border-right: 1px solid #ccc; }
@@ -299,6 +307,8 @@ h4 {
     color: black; }
   .board .form-dialog {
     width: 25% !important; }
+  .board .mdl-layout__header-row {
+    background-color: #8fbc49; }
 
 .presentation-container {
   position: relative;

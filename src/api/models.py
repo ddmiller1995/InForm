@@ -127,7 +127,7 @@ class YouthVisit(models.Model):
     guardian_relationship = models.CharField(max_length=256, null=True, blank=True)
     referred_by = models.CharField(max_length=256, null=True, blank=True)
     social_worker = models.CharField(max_length=256, null=True, blank=True)
-    visit_exit_date = models.DateField('date youth actually exited', null=True, blank=True)
+    visit_exit_date = models.DateField(null=True, blank=True)
     permanent_housing = models.NullBooleanField(null=True, blank=True)
     exited_to = models.CharField(max_length=256, null=True, blank=True)
 
@@ -251,7 +251,7 @@ class Form(models.Model):
     '''Form model'''
     form_name = models.CharField(max_length=256)
     form_description = models.CharField(max_length=2048, null=True, blank=True)
-    form_type_id = models.ForeignKey(FormType, on_delete=models.CASCADE)
+    form_type_id = models.ForeignKey(FormType, on_delete=models.CASCADE, verbose_name='Form Type')
     # due date in days relative to entry date
     # forms without due dates are allowed
     default_due_date = models.IntegerField(null=True, blank=True)
@@ -272,9 +272,9 @@ class FormYouthVisit(models.Model):
     IN_PROGRESS = 'in progress'
     DONE = 'done'
 
-    form_id = models.ForeignKey(Form, on_delete=models.CASCADE)
-    youth_visit_id = models.ForeignKey(YouthVisit, on_delete=models.CASCADE)
-    user_id = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    form_id = models.ForeignKey(Form, on_delete=models.CASCADE, verbose_name='Form')
+    youth_visit_id = models.ForeignKey(YouthVisit, on_delete=models.CASCADE, verbose_name='Youth Visit')
+    user_id = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Completed by')
     # expected values: pending, in progess, done
     status = models.CharField(max_length=32, default=PENDING,
                               choices=(
@@ -286,11 +286,11 @@ class FormYouthVisit(models.Model):
     notes = models.TextField(null=True, blank=True)
 
     def __str__(self):
-        return 'Youth Visit ID: ' + str(self.youth_visit_id.id) + ' - Form Name: ' + self.form_id.form_name
+        return 'Youth Visit ID: ' + str(self.youth_visit_id.youth_id.youth_name) + ' - Form Name: ' + self.form_id.form_name
 
     def days_remaining(self):
         if self.form_id.default_due_date is None:
-            return 0
+            return None
         result = self.form_id.default_due_date - (timezone.now().date() - self.youth_visit_id.visit_start_date).days
         return result
 

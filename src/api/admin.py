@@ -60,7 +60,6 @@ class YouthVisitAdmin(AjaxSelectAdmin):
         }),
         ('School', {
             'classes': ('wide', 'extrapretty',), 
-            'description': 'School information',
             'fields': [
                 'school',
                 ('school_am_transport', 'school_pm_transport'),
