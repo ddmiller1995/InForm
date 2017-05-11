@@ -1,18 +1,26 @@
+import csv
 import logging
 from datetime import datetime
+from itertools import groupby
+from tempfile import TemporaryFile
+from fuzzywuzzy import fuzz
+from pprint import pprint
 
-from django.http import Http404, JsonResponse
-from django.shortcuts import get_object_or_404, render
-from django.views.decorators.csrf import csrf_exempt
 
+from django import forms
+from django.http import Http404, HttpResponse, JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
 from rest_framework import status
 from rest_framework.decorators import api_view
+from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.renderers import JSONRenderer
 
-from api.models import PlacementType, Youth, YouthVisit
-from api.serializers import (PlacementTypeSerializer, serialize_youth,
+from api.csv_serializers import youth_field_names, youth_visit_field_names, CsvLine
+from api.models import (Form, FormType, FormYouthVisit, PlacementType, Youth,
+                        YouthVisit, School)
+from api.serializers import (FormTypeSerializer, PlacementTypeSerializer,
+                             serialize_form_youth_visit, serialize_youth,
                              serialize_youth_visit)
 
 logger = logging.getLogger(__name__)
@@ -82,14 +90,87 @@ class YouthDetail(APIView):
         json = serialize_youth(youth)
 
         youth_visits = []
-        for youth_visit in YouthVisit.objects.filter(youth_id=youth).order_by('-current_placement_start_date'):
+        for youth_visit in YouthVisit.objects.filter(youth_id=youth).order_by('-visit_start_date'):
             serialized_youth_visit = serialize_youth_visit(youth_visit)
-            youth_visits.append(serialized_youth_visit)
 
+            forms = []
+            for form_youth_visit in FormYouthVisit.objects.filter(youth_visit_id=youth_visit.id):
+                serialized_form_youth_visit = serialize_form_youth_visit(form_youth_visit)
+                forms.append(serialized_form_youth_visit)
+
+            serialized_youth_visit['forms'] = forms
+
+            youth_visits.append(serialized_youth_visit)
         json['youth_visits'] = youth_visits 
+
 
         return Response(json, status=status.HTTP_200_OK)
 
+
+class ChangeFormStatus(APIView):
+    '''Change the status of a form'''
+
+    renderer_classes = (JSONRenderer, )
+
+    def post(self, request, youth_visit_id):
+        try:
+            youth_visit = YouthVisit.objects.get(pk=youth_visit_id)
+        except YouthVisit.DoesNotExist:
+            response = Response(status=status.HTTP_404_NOT_FOUND)
+            response['error'] = 'Youth visit pk=%s does not exist' % youth_visit_id
+            return response
+
+        form_id = request.POST.get('form_id', None)
+
+        if not form_id:
+            response = Response(status=status.HTTP_400_BAD_REQUEST)
+            response['error'] = 'Missing POST param "form_id"'
+            return response
+            
+        try:
+            form = Form.objects.get(pk=form_id)
+        except Form.DoesNotExist:
+            response = Response(status=status.HTTP_404_NOT_FOUND)
+            response['error'] = 'Form pk=%s does not exist' % form_id
+            return response
+
+        new_status = request.POST.get('status', None)
+        if not new_status:
+            response = Response(status=status.HTTP_400_BAD_REQUEST)
+            response['error'] = 'Missing POST param "status"'
+            return response
+        if new_status not in ['pending', 'in progress', 'done']:
+            response = Response(status=status.HTTP_406_NOT_ACCEPTABLE)
+            response['error'] = 'POST param "status" should be a "pending", "in progress", or "done"'
+            return response
+
+        try:
+            form_youth_visit = FormYouthVisit.objects.get(
+                youth_visit_id=youth_visit.id,
+                form_id=form.id)
+        except FormYouthVisit.DoesNotExist:
+            response = Response(status=status.HTTP_404_NOT_FOUND)
+            response['error'] = 'FormYouthVisit with YouthVisit pk=%d and Form pk=%d does not exist' % (youth_visit.id, form.id)
+            return response
+
+        if new_status == 'pending':
+            form_youth_visit.status = FormYouthVisit.PENDING
+        elif new_status == 'in progress':
+            form_youth_visit.status = FormYouthVisit.IN_PROGRESS
+        elif new_status == 'done':
+            form_youth_visit.status = FormYouthVisit.DONE
+        else:
+            raise Http404
+        form_youth_visit.save()
+
+
+        obj = {
+            'youth_visit_id': youth_visit.id,
+            'form_id': form.id,
+            'new_status': form_youth_visit.status
+        }
+
+        return Response(obj, status=status.HTTP_202_ACCEPTED)
 
 class YouthChangePlacement(APIView):
     '''Change youth placement type
@@ -122,6 +203,7 @@ class YouthChangePlacement(APIView):
     '''
 
     renderer_classes = (JSONRenderer, )
+    
 
     def post(self, request, youth_visit_id, format=None):
         # year/month/day YYYY-MM-DD
@@ -204,11 +286,16 @@ class YouthMarkExited(APIView):
             response = Response(status=status.HTTP_400_BAD_REQUEST)
             response['error'] = 'Missing POST param "permanent_housing"'
             return response
-        if not permanent_housing in ['true', 'True', 'false', 'False']:
+        if permanent_housing == 'true':
+            permanent_housing = True
+        elif permanent_housing == 'false':
+            permanent_housing = False
+        elif permanent_housing == 'unknown':
+            permanent_housing = None
+        else:
             response = Response(status=status.HTTP_406_NOT_ACCEPTABLE)
             response['error'] = 'POST param "permanent_housing" should be a true or false value'
             return response
-        permanent_housing = permanent_housing in ['true', 'True']
 
 
         youth_visit.visit_exit_date = datetime.strptime(exit_date_string, DATE_STRING_FORMAT)
@@ -223,6 +310,9 @@ class YouthAddExtension(APIView):
     '''
     Add an extension to a Youth Visit
     '''
+
+    renderer_classes = (JSONRenderer, )
+
     def post(self, request, youth_visit_id, format=None):
         try:
             youth_visit = YouthVisit.objects.get(pk=youth_visit_id)
@@ -252,6 +342,10 @@ class YouthAddExtension(APIView):
         return Response({}, status=status.HTTP_202_ACCEPTED)
 
 class YouthEditNote(APIView):
+    '''Edit a Youth visit's note
+    '''
+    renderer_classes = (JSONRenderer, )
+
     def post(self, request, youth_visit_id, format=None):
         try:
             youth_visit = YouthVisit.objects.get(pk=youth_visit_id)
@@ -291,6 +385,313 @@ class PlacementTypeList(APIView):
         placement_types = PlacementType.objects.all()
         serializer = PlacementTypeSerializer(placement_types, many=True)
         return Response(serializer.data)
+
+class DownloadImportTemplate(APIView):
+    '''Download the import csv template'''
+
+    def get(self, request):
+        # Create the HttpResponse object with the appropriate CSV header.
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="inform-data-import-template.csv"'
+
+        writer = csv.writer(response)
+
+        column_names = youth_field_names + youth_visit_field_names
+        writer.writerow(column_names)
+        return response
+
+class UploadFileForm(forms.Form):
+    file = forms.FileField()
+
+
+
+class ImportYouthVisits(APIView):
+    def post(self, request, format=None):
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            f = request.FILES['file']
+            lines = []
+            for line in f.readlines():
+                line = line.strip()
+                line = line.split(b',')
+                lines.append(line)
+
+            line_count = len(lines)
+            if line_count <= 1: # if it has only 1 line, that is the column names row
+                raise Http404
+            lines = lines[1:] # drop column names row
+
+
+            keyfunc = lambda line: line[1]
+            lines = sorted(lines, key=keyfunc)
+
+            youth_map = {}
+
+            for key, group in groupby(lines, keyfunc):
+                youth_map[key] = list(group)
+
+            MATCH_THRESHOLD_RATIO = 90
+
+            # loop over grouped data to find and merge duplicated groups of data
+            # using levenshtein distance (using fuzzywuzzy library)
+            for key_a, value_a in youth_map.items():
+                for key_b, value_b in youth_map.items():
+                    if key_a == key_b: # skips case where keys are the same (no action needed)
+                        continue
+                    match_ratio = fuzz.token_set_ratio(str(key_a), str(key_b)) # compute similarity ratio
+                    if match_ratio >= MATCH_THRESHOLD_RATIO: # if similarility ratio passes threshold, merge the two groupings
+                        # determine which key is longer and which is shorter
+                        # so we can always merge the shorter key's group
+                        # into the larger key's group
+                        if len(key_a) > len(key_b):
+                            longest_key = key_a
+                            shortest_key = key_b
+                        else:
+                            longest_key = key_b
+                            shortest_key = key_a
+
+                        # if the shortest key's group is empty, that means that it has already been merged.
+                        # this scenario will happen once for each pair that passes the similarity threshold,
+                        # because a gets compared to b, and then b gets compared to a
+                        # on the first comparison, this operation goes down and the shorter key gets marked as
+                        # deleted by emptying it's group
+                        # on the second comparison, we should skip because the work has already been done
+                        if not youth_map[shortest_key]:
+                            continue
+
+                        print('Merging %s with %s: %d' % (shortest_key, longest_key, match_ratio))
+                        # add shortest key's group to the longest key's group
+                        youth_map[longest_key] += youth_map[shortest_key]
+                        # mark the shortest key as deleted without changing dict size during loop
+                        youth_map[shortest_key] = []
+                        print('Done!')
+
+            keys_marked_for_deletion = []
+            for key, youth_visits in youth_map.items():
+                # record each key that was marked for deletion
+                if len(youth_visits) == 0:
+                    keys_marked_for_deletion.append(key)
+                # correct youth name anomalies that happened
+                # because of the previous fuzzy merge operation
+                for youth_visit in youth_visits:
+                    if youth_visit[1] != key:
+                        youth_visit[1] = key
+
+            # delete all keys from grouping map that were marked for deletion
+            for key in keys_marked_for_deletion:
+                del youth_map[key]
+
+            Youth.objects.all().delete()
+            YouthVisit.objects.all().delete()
+
+            date_format = '%Y-%m-%d'
+
+            for key, value in youth_map.items():
+                for line in value:
+
+                    line = CsvLine(line)
+
+                    name = line.get_string_field(1, '')
+
+                    try:
+                        youth = Youth.objects.get(youth_name=name)
+                    except Youth.DoesNotExist:
+                        youth = Youth.objects.create(
+                            youth_name=name,
+                            date_of_birth=line.get_datetime_field(2),
+                            ethnicity=line.get_string_field(3, ''),
+                            notes=line.get_string_field(4, '')
+                        )
+
+                    # print(line)
+                    # visit_exit_date = datetime.strptime(line[19].decode('ascii'), date_format) if line[19] else None
+                    current_placement_start_date = line.get_datetime_field(11)
+                    current_placement_name = line.get_string_field(8, 'default placement type')
+                    current_placement_length = line.get_string_field(9, 15)
+                    current_placement_ratio = line.get_string_field(10)
+ 
+                    current_placement_obj = PlacementType.objects.filter(placement_type_name=current_placement_name).first()
+                    if not current_placement_obj:
+                        current_placement_obj = PlacementType.objects.create(
+                            placement_type_name=current_placement_name,
+                            default_stay_length=current_placement_length,
+                            supervision_ratio=current_placement_ratio
+                        )
+
+                    extension_days = line.get_string_field(12, 0)
+
+                    school_name = line.get_string_field(32, '')
+                    school_district = line.get_string_field(33, '')
+                    school_phone = line.get_string_field(34, '')
+                    school_notes = line.get_string_field(35, '')
+
+                    try:
+                        school = School.objects.get(school_name=school_name)
+                    except School.DoesNotExist:
+                        if school_name:
+                            school = School()
+                            school.school_name = school_name
+                            school.school_district = school_district
+                            school.phone = school_phone
+                            school.notes = school_notes
+                            school.save()
+
+                    youth_visit = YouthVisit.objects.create(
+                        youth_id=youth,
+                        visit_start_date=line.get_datetime_field(6),
+                        current_placement_type=current_placement_obj,
+                        current_placement_start_date=current_placement_start_date,
+                        current_placement_extension_days=extension_days,
+                        city_of_origin=line.get_string_field(13),
+                        state_of_origin=line.get_string_field(14),
+                        guardian_name=line.get_string_field(15),
+                        guardian_relationship=line.get_string_field(16),
+                        referred_by=line.get_string_field(17),
+                        social_worker=line.get_string_field(18),
+                        visit_exit_date=line.get_datetime_field(19),
+
+                        permanent_housing=line.get_boolean_field(20, None),
+                        exited_to=line.get_string_field(21),
+                        csec_referral=line.get_boolean_field(22, False),
+                        family_engagement_referral=line.get_boolean_field(23, False),
+                        met_greater_than_50_percent_goals=line.get_string_field(24, YouthVisit.MET_GOALS_NA),
+
+                        school=school,
+                    )
+
+ 
+            
+            return redirect('/admin/')
+
+
+class FormTypeList(APIView):
+    '''
+    List all FormTypes
+
+    Support HTTP methods: GET
+
+    GET /api/form-type returns JSON Response
+    '''
+
+    renderer_classes = (JSONRenderer, )
+
+    def get(self, request, format=None):
+        form_types = FormType.objects.all()
+        serializer = FormTypeSerializer(form_types, many=True)
+        return Response(serializer.data)
+
+
+
+class ExportYouthVisits(APIView):
+    '''Export youth visit data as CSV
+    
+    Export flattened youth_visit objects, ordered by descending visit start date'''
+
+    renderer_classes = (JSONRenderer, )
+
+    def get(self, request, format=None):
+        # Create the HttpResponse object with the appropriate CSV header.
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="inform-data-export.csv"'
+
+        writer = csv.writer(response)
+
+        column_names = youth_field_names + youth_visit_field_names
+        writer.writerow(column_names)
+        
+
+        youth_visit_list = YouthVisit.objects.all().order_by('-visit_start_date')
+
+        if youth_visit_list.count() == 0:
+            logger.error("Tried to output to CSV but there is no data yet.")
+            # Warn the user about what happened
+            # Maybe redirect to an error page
+            raise Http404 # placeholder
+
+        for youth_visit in youth_visit_list:
+            row = []
+
+            # Youth table
+            row.append(youth_visit.youth_id.id)
+            row.append(youth_visit.youth_id.youth_name)
+            row.append(youth_visit.youth_id.date_of_birth)
+            row.append(youth_visit.youth_id.ethnicity)
+            row.append(youth_visit.youth_id.notes)
+
+            # YouthVisit table
+            row.append(youth_visit.id)
+            
+            row.append(youth_visit.visit_start_date)
+            # YouthVisit.PlacementType
+            row.append(youth_visit.current_placement_type.id)
+            row.append(youth_visit.current_placement_type.placement_type_name)
+            row.append(youth_visit.current_placement_type.default_stay_length)
+            row.append(youth_visit.current_placement_type.supervision_ratio)
+            row.append(youth_visit.current_placement_start_date)
+            row.append(youth_visit.current_placement_extension_days)
+            row.append(youth_visit.city_of_origin)
+            row.append(youth_visit.state_of_origin)
+            row.append(youth_visit.guardian_name)
+            row.append(youth_visit.guardian_relationship)
+            row.append(youth_visit.referred_by)
+            row.append(youth_visit.social_worker)
+            row.append(youth_visit.visit_exit_date)
+            row.append(youth_visit.permanent_housing)
+            row.append(youth_visit.exited_to)
+            
+            row.append(youth_visit.csec_referral)
+            row.append(youth_visit.family_engagement_referral)
+            row.append(youth_visit.met_greater_than_50_percent_goals)
+
+            # YouthVisit.User
+            if (youth_visit.case_manager):
+                row.append(youth_visit.case_manager.id)
+                row.append(youth_visit.case_manager.get_full_name())
+                row.append(youth_visit.case_manager.username)
+            else:
+                row.append('')
+                row.append('')
+                row.append('')   
+
+
+            # YouthVisit.User
+            if (youth_visit.personal_counselor):
+                row.append(youth_visit.personal_counselor.id)
+                row.append(youth_visit.personal_counselor.get_full_name())
+                row.append(youth_visit.personal_counselor.username)
+            else:
+                row.append('')
+                row.append('')
+                row.append('')   
+
+            # YouthVisit.School
+            if (youth_visit.school):
+                row.append(youth_visit.school.id)
+                row.append(youth_visit.school.school_name)
+                row.append(youth_visit.school.school_district)
+                row.append(youth_visit.school.school_phone)
+                row.append(youth_visit.school.notes)
+            else:
+                row.append('')
+                row.append('')
+                row.append('') 
+                row.append('')
+                row.append('')   
+
+            row.append(youth_visit.school_am_transport)
+            row.append(youth_visit.school_am_pickup_time)
+            row.append(youth_visit.school_am_phone)
+            row.append(youth_visit.school_pm_transport)
+            row.append(youth_visit.school_pm_dropoff_time)
+            row.append(youth_visit.school_pm_phone)
+            row.append(youth_visit.school_date_requested)
+            row.append(youth_visit.school_mkv_complete)
+            row.append(youth_visit.notes)
+
+
+            writer.writerow(row)
+
+        return response
 
 def api_docs(request):
     return render(request, 'api/docs.html')

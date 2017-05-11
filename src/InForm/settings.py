@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     # user defined below here
     'webpack_loader',
     'rest_framework',
+    'ajax_select',
     'api.apps.ApiConfig',
     'frontend.apps.FrontendConfig'
 ]
@@ -110,7 +111,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Los_Angeles'
 
 USE_I18N = True
 
@@ -174,5 +175,10 @@ REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
     )
 }
+
+LOGIN_URL = '/admin/login/'

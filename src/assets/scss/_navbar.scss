@@ -1,15 +1,10 @@
 @import "variables";
 
 .mdl-layout__header {
-    background-color: #FFF;
-}
-
-.mdl-layout__header-row {
-    padding: 0 40px 0 40px;
-    color: $light-green;
+    background-color: $light-green;
 
     .mdl-navigation__link {
-        color: $light-green;
+        color: white;
     }
 }
 
@@ -20,9 +15,4 @@
         position:relative;
         top: -2px;
     }
-}
-
-.header-divider {
-     border-right:1px solid #16222c; 
-     height:25px;
 }

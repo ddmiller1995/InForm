@@ -1,5 +1,6 @@
 import React from 'react';
 import {Link, IndexLink} from "react-router";
+import { getRequest } from '../util.js'
 import YouthTrackerRow from "./youth-tracker-row.jsx";
 import "whatwg-fetch";
 
@@ -12,10 +13,7 @@ export default class extends React.Component {
     }
 
     componentDidMount() {
-        fetch(ALL_YOUTH_API)
-            .then(response => response.json())
-            .then(data => this.setState({ youth: data }))
-            .catch(err => alert(err.message));
+        let data = getRequest(ALL_YOUTH_API, this, "youth");
     }
 
     getYouthData() {
@@ -43,12 +41,13 @@ export default class extends React.Component {
                             <th className="mdl-data-table__cell--non-numeric">Name</th>
                             <th>DOB</th>
                             <th>Entry Date</th>
+                            <th>Placement</th>
                             <th>School</th>
-                            <th>School Transport</th>
-                            <th>School Pickup</th>
-                            <th>Intake Forms</th>
-                            <th>Outtake Forms</th>
-                            <th>Planned Exit</th>
+                            <th>AM Transport</th>
+                            <th>PM Transport</th>
+                            <th>AM Pickup/PM Dropoff</th>
+                            <th>Form Progress</th>
+                            <th>Estimated Exit</th>
                         </tr>
                     </thead>
                     <tbody>

@@ -1,7 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import {Link, IndexLink} from "react-router";
-import { formatDate, getDateDiff, formatTime, registerDialog, closeDialog } from '../util.js'
+import { formatDate, getDateDiff, formatTime, registerDialog, 
+    closeDialog, postRequest, getRequest } from '../util.js'
 import "whatwg-fetch";
 
 var moment = require("moment");
@@ -19,11 +20,7 @@ export default class extends React.Component {
     }
 
     componentDidMount() {
-        fetch(PLACEMENT_API)
-            .then(response => response.json())
-            .then(data => this.setState({ 
-                placement_types: data}))
-            .catch(err => alert(err.message));
+        let data = getRequest(PLACEMENT_API, this, "placement_types");
     }
 
     // populate the visit date dropdown with all the visits of this particular youth
@@ -114,7 +111,7 @@ export default class extends React.Component {
                 <div id="dialog-descr">
                     <p>Extend stay for ${this.props.currentYouth.name}</p>
                     <p>Current extension days: 
-                        ${this.props.currentYouth.youth_visits[this.state.visitIndex].current_placement_type[this.props.currentYouth.youth_visits[this.state.visitIndex].current_placement_type.length -1].current_placement_extension_days}
+                        ${this.props.currentYouth.youth_visits[this.state.visitIndex].current_placement_type.current_placement_extension_days}
                     </p>
                     <p>Extend by 
                         <span>
@@ -143,7 +140,7 @@ export default class extends React.Component {
                 <div id="dialog-descr">
                     <p>Switch beds for ${this.props.currentYouth.name}</p>
                     <p>Current placement: 
-                        ${this.props.currentYouth.youth_visits[this.state.visitIndex].current_placement_type[this.props.currentYouth.youth_visits[this.state.visitIndex].current_placement_type.length -1].name}
+                        ${this.props.currentYouth.youth_visits[this.state.visitIndex].current_placement_type.name}
                     </p>
                     <p>New placement: 
                         <span><select className="mdl-select__input" id="placement-dropdown" name="placement"></select></span>
@@ -169,15 +166,17 @@ export default class extends React.Component {
         if (extend != null) {
             let update = function updateEstimate() {
                 let date = new Date(exit);
-                let day = date.getDate() + parseInt(extend.value);
+                date.setDate(date.getDate() + parseInt(extend.value));
+
+                let day = date.getDate();
                 let month = date.getMonth() + 1;
                 let year = date.getFullYear();
 
                 let newExit = document.getElementById("new-estimate");
                 newExit.textContent = month + "/" + day + "/" + year;
+
             };
             update();
-
             extend.addEventListener("input", update);
         }
     }
@@ -202,15 +201,7 @@ export default class extends React.Component {
         let data = new FormData();
         data.append("extension", extension);
 
-        fetch(url, {
-            method: "POST",
-            body: data
-        }).then(function(response) {
-            console.log(response);
-            window.location.reload();
-        }).catch(err => {
-            alert(err);
-        })
+        postRequest(url, data);
     }
 
     postSwitch(that) {
@@ -222,15 +213,7 @@ export default class extends React.Component {
         data.append("new_placement_type_id", placementID);
         data.append("new_placement_start_date", placementStartDate);
 
-        fetch(url, {
-            method: "POST",
-            body: data
-        }).then((resp) => {
-            console.log(resp);
-            window.location.reload();
-        }).catch(err => {
-            alert(err);
-        })
+        postRequest(url, data);
     }
 
     postNotes() {
@@ -240,26 +223,40 @@ export default class extends React.Component {
         let data = new FormData();
         data.append("note", notes);
 
-        fetch(url, {
-            method: "POST",
-            body: data
-        }).then(response => {
-            console.log(response);
-        }).catch(ex => {
-            console.log(ex);
-        })
+        postRequest(url, data);
     }
 
     render() {
         let visitDates = [];
-        let currentVisit;
-        let currentPlacement;
+        let currentVisit, currentPlacement;
+        let AM, PM, permHousing, guardian, relationship;
         if (this.props.currentYouth.youth_visits) {
             let visits = this.props.currentYouth.youth_visits;
             visitDates = this.getVisits(visits, visitDates);
 
             currentVisit = visits[this.state.visitIndex];
-            currentPlacement = currentVisit.current_placement_type[currentVisit.current_placement_type.length -1];
+
+            if (currentVisit.school_am_pickup_time) {
+                AM = formatTime(currentVisit.school_am_pickup_time) + " AM"
+            }
+            if (currentVisit.school_pm_dropoff_time) {
+                PM = formatTime(currentVisit.school_pm_dropoff_time) + " PM"
+            }
+
+            if (currentVisit.permanent_housing) {
+                permHousing = "Yes";
+            } else if (currentVisit.permanent_housing === false) {
+                permHousing = "No"; 
+            }
+
+            if (currentVisit.guardian_name) {
+                guardian = currentVisit.guardian_name;
+                if (currentVisit.guardian_relationship) {
+                    relationship = " (" + currentVisit.guardian_relationship + ")";
+                } else {
+                    relationship = "";
+                }
+            }
         }
 
         if (currentVisit == null) {
@@ -285,7 +282,7 @@ export default class extends React.Component {
                             <p>Name: <span className="value">{this.props.currentYouth.name}</span></p>
                             <p>Birthdate: <span className="value">{formatDate(this.props.currentYouth.dob)}</span></p>
                             <p>Age: <span className="value">{getDateDiff(this.props.currentYouth.dob, "years")}</span></p>
-                            <p>Ethnicity: <span className="value">{this.props.currentYouth.ethnicity || DEFAULT_VALUE}</span></p>
+                            <p>Guardian: <span className="value">{guardian + relationship || DEFAULT_VALUE}</span></p>
                             <p>City: <span className="value">{currentVisit.city_of_origin || DEFAULT_VALUE}</span></p>
                         </div>
                     </div>
@@ -301,15 +298,15 @@ export default class extends React.Component {
                             </p>
                             <p>Current Placement Date:  
                                 <span className="value"> 
-                                    {formatDate(currentPlacement.current_placement_start_date)}
+                                    {formatDate(currentVisit.current_placement_type.current_placement_start_date)}
                                 </span>
                             </p>
                             <p>Placement Type:  
-                                <span className="value"> {currentPlacement.name}</span>
+                                <span className="value"> {currentVisit.current_placement_type.name}</span>
                             </p>
                             <p>Estimated Stay:  
-                                <span className="value"> { currentPlacement.default_stay_length} days (+ 
-                                    { currentPlacement.current_placement_extension_days} day extension)
+                                <span className="value"> { currentVisit.current_placement_type.default_stay_length} days (+ 
+                                    { currentVisit.current_placement_type.current_placement_extension_days} day extension)
                                 </span>
                             </p>
                         </div>
@@ -323,7 +320,7 @@ export default class extends React.Component {
                             <p>Estimated Exit: <span className="value">{formatDate(currentVisit.estimated_exit_date)}</span></p>
                             <p>Actual Exit: <span className="value">{formatDate(currentVisit.visit_exit_date) || "N/A"}</span></p>
                             <p>Where Exited: <span className="value">{currentVisit.exited_to || DEFAULT_VALUE}</span></p>
-                            <p>Permanent Housing: <span className="value">{currentVisit.permanent_housing || DEFAULT_VALUE}</span></p>
+                            <p>Permanent Housing: <span className="value">{permHousing || DEFAULT_VALUE}</span></p>
                         </div>
                     </div>
                 </div>
@@ -339,18 +336,18 @@ export default class extends React.Component {
                     </div>
                     <div className="inner-col">
                         <p>AM Transport: <span className="value">{currentVisit.school_am_transport || DEFAULT_VALUE}</span></p>
-                        <p>AM Pickup Time: <span className="value">{formatTime(currentVisit.school_am_pickup_time) || DEFAULT_VALUE}</span></p>
+                        <p>AM Pickup Time: <span className="value">{AM || DEFAULT_VALUE}</span></p>
                         <p>AM Phone: <span className="value">{currentVisit.school_am_phone || DEFAULT_VALUE}</span></p>
                     </div>
                     <div className="inner-col">
                         <p>PM Transport: <span className="value">{currentVisit.school_pm_transport || DEFAULT_VALUE}</span></p>
-                        <p>PM Dropoff Time: <span className="value">{formatTime(currentVisit.school_pm_dropoff_time) || DEFAULT_VALUE}</span></p>
+                        <p>PM Dropoff Time: <span className="value">{PM || DEFAULT_VALUE}</span></p>
                         <p>PM Phone: <span className="value">{currentVisit.school_pm_phone || DEFAULT_VALUE}</span></p>
                     </div>
                     <div className="inner-col">
                         <p>Date Requested: 
                                 <span className="value">{formatDate(currentVisit.school_date_requested) || DEFAULT_VALUE}</span></p>
-                        <p>MKV Complete: <span className="value">{currentVisit.school_mkv_complete || DEFAULT_VALUE}</span></p>
+                        <p>MKV/Enroll Complete: <span className="value">{currentVisit.school_mkv_complete || DEFAULT_VALUE}</span></p>
                     </div>
                 </div>
                 <div className="youth-row">
