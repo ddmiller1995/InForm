@@ -147,8 +147,8 @@
             was exited to
         - permanent_housing is a POST param that is required. It
             is a string which represents whether or not a youth
-            received permanent_housing. It must be in the format of
-            "true" or "false" or the request will throw an error
+            received permanent_housing. It must be one of the EXACT
+            string values: ("true", "false", "unknown")
 
     Success:
         - If the request was succesfull, you will receive a
@@ -240,6 +240,62 @@
             </div>
         </div>
 
+
+        <div class="endpoint">
+            <div class="path">
+                <h2>/api/form-type</h2>
+            </div>
+
+
+            <div class="method">
+                <h3>GET</h3>
+                <h4>Behavior</h4>
+                <p>List view of all form types and their ids</p>
+            </div>
+        </div>
+
+
+        <div class="endpoint">
+            <div class="path">
+                <h2>/api/visit/&lt;pk&gt;/change-form-status</h2>
+            </div>
+
+
+            <div class="method">
+                <h3>POST</h3>
+                <h4>Behavior</h4>
+                <p>Change the status of a specific form for a specific youth visit</p>
+
+                <pre>
+    Params:
+        - youth_visit_id is parsed from the url and represents the pk
+            of the youth_visit whose placement we are going to change
+        - form_id is a POST param that is required. It 
+            is the primary key of the form whose status you
+            are trying to update for this particular visit
+        - status is a POST param that is required. It
+            is a string which represents the status you are changing.
+            It must be one of the EXACT
+            string values: ('pending', 'in progress', 'done')
+
+    Success:
+        - If the request was succesfull, you will receive a
+            HTTP_202_ACCEPTED response
+    Failure:
+        - If the request does not include an existing youth_visit_id,
+            you will get a HTTP_404_NOT_FOUND response
+        - If the request does not include an existing form_id,
+            you will get a HTTP_404_NOT_FOUND response
+        - If the status param does not have a valid value,
+            you will get a HTTP_406_NOT_ACCEPTABLE response
+        - If the request does not include all of the required
+            POST params, you will receive a HTTP_400_BAD_REQUEST response
+        - All failure responses will have a "error" header with an
+            error message
+                </pre>
+
+            </div>
+        </div>
 
     </div>
 

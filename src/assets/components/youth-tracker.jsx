@@ -1,6 +1,7 @@
 import React from 'react';
 import {Link, IndexLink} from "react-router";
 import YouthTrackerRow from "./youth-tracker-row.jsx";
+import { getRequest } from '../util.js'
 import "whatwg-fetch";
 
 const ALL_YOUTH_API = "/api/youth/?activeOnly=";
@@ -13,11 +14,7 @@ export default class extends React.Component {
     }
 
     componentDidMount() {
-        fetch(ALL_YOUTH_API + showActive)
-            .then(response => response.json())
-            .then(data => this.setState({ youth: data }))
-            .catch(err => alert(err.message));
-
+        let data = getRequest(ALL_YOUTH_API + showActive, this, "youth");
         this.registerActiveOnly();
     }
 
@@ -33,11 +30,7 @@ export default class extends React.Component {
         let that = this;
         $("#active-only").change(function() {
             showActive = !showActive;
-
-            fetch(ALL_YOUTH_API + showActive)
-                .then(response => response.json())
-                .then(data => that.setState({ youth: data }))
-                .catch(err => alert(err.message));
+            let data = getRequest(ALL_YOUTH_API + showActive, that, "youth");
         });
     }
 
@@ -45,7 +38,7 @@ export default class extends React.Component {
         let youthData = this.getYouthData();
 
         return (
-            <table className="mdl-data-table mdl-js-data-tabled youth-table youth-tracker-container">
+            <table className="mdl-data-table mdl-js-data-tabled youth-tracker-container">
                 <thead>
                     <tr className="header-row">
                         <th className="mdl-data-table__cell--non-numeric">Name</th>
@@ -53,8 +46,9 @@ export default class extends React.Component {
                         <th>Entry Date</th>
                         <th>Placement</th>
                         <th>School</th>
-                        <th>School Transport</th>
-                        <th>Pickup/Dropoff</th>
+                        <th>AM Transport</th>
+                        <th>PM Transport</th>
+                        <th>AM Pickup/PM Dropoff</th>
                         <th>Form Progress</th>
                         <th>Estimated Exit</th>
                         <th>Exit Date</th>

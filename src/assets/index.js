@@ -6,7 +6,6 @@ import {render} from "react-dom";
 import App from "./components/app.jsx";
 import Homepage from "./components/homepage.jsx";
 import Presentation from "./components/presentation.jsx";
-import ProgressReport from "./components/progress-report.jsx";
 import Youth from "./components/youth.jsx";
 import YouthInfo from "./components/youth-info.jsx";
 import YouthProgress from "./components/youth-progress.jsx";
@@ -19,7 +18,6 @@ var router = (
     <Router history={hashHistory}>
         <Route path="/" component={App}>
             <IndexRoute component={Homepage}></IndexRoute>
-            <Route path="/progress" component={ProgressReport}></Route> 
             <Route path="/presentation" component={Presentation}></Route> 
             <Route path="/youth" component={Youth}>
                 <IndexRoute component={YouthInfo}></IndexRoute>

@@ -1,10 +1,12 @@
 import React from 'react';
 import {store, setCurrentYouth} from "./shared-state.js";
 import {Link, IndexLink} from "react-router";
-import { formatDate, formatTime, registerDialog, closeDialog } from '../util.js'
+import { formatDate, formatTime, registerDialog} from '../util.js'
+import { closeDialog, postRequest, calcPercentage } from '../util.js'
 import "whatwg-fetch";
 
 var moment = require("moment");
+const DEFAULT_VALUE = "Not Provided"
 
 export default class extends React.Component {
     constructor(props) {
@@ -42,21 +44,12 @@ export default class extends React.Component {
         let exitDate = document.getElementById("date-input").value;
         let whereExited = document.getElementById("exited-to-input").value;
         let permHousing = $('input[name="housing"]:checked').val();
-        console.log(permHousing);
         let data = new FormData();
         data.append("exit_date_string", exitDate);
         data.append("where_exited", whereExited);
         data.append("permanent_housing", permHousing);
 
-        fetch(url, {
-            method: "POST",
-            body: data
-        }).then((resp) => {
-            console.log(resp);
-            window.location.reload();
-        }).catch(err => {
-            alert(err);
-        })
+        postRequest(url, data);
     }
 
     toggleModal() {
@@ -96,7 +89,7 @@ export default class extends React.Component {
                         <span> 
                          <input id="yes-checkbox" name="housing" type="radio" value="true"></input>Yes 
                          <input id="no-checkbox" name="housing" type="radio" value="false"></input>No 
-                         <input id="unknown-checkbox" name="housing" type="radio" value="Not Provided"></input>Unknown 
+                         <input id="unknown-checkbox" name="housing" type="radio" value="unknown"></input>Unknown 
                         </span>
                     </p>
                 </div>
@@ -127,30 +120,43 @@ export default class extends React.Component {
         }
     }
 
-    render() {
-        // show AM school info 12AM-11:59AM, otherwise show PM
-        let hour = new Date().getHours();
-        let pickupTime = this.props.youth.school_am_pickup_time;
-        let transport = this.props.youth.school_am_transport;
-        if (hour >= 12) {
-            pickupTime = this.props.youth.school_pm_dropoff_time;
-            transport = this.props.youth.school_pm_transport;
-        }
+    checkExitDate() {
+        let from = moment(moment(), "YYYY-MM-DD"); 
+        let to = moment(this.props.youth.estimated_exit_date, "YYYY-MM-DD");
+        let duration = to.diff(from, 'days')     
 
-        let currentPlacement = this.props.youth.current_placement_type;
+        if (duration <= 3) {
+            return "three-days";
+        } else if (duration <= 7) {
+            return "seven-days";
+        } else {
+            return ""
+        }
+    }
+
+    render() {
         let exitColumn = this.checkIfPresentationMode();
+        let duration = this.checkExitDate();
+        let AM = "NA / ", PM = "NA";
+        if (this.props.youth.school_am_pickup_time) {
+            AM = formatTime(this.props.youth.school_am_pickup_time) + " AM / "
+        }
+        if (this.props.youth.school_pm_dropoff_time) {
+            PM = formatTime(this.props.youth.school_pm_dropoff_time) + " PM"
+        }
 
         return (
             <tr>
                 <td className="mdl-data-table__cell--non-numeric">{this.wrapIndexLink(this.props.youth.name)}</td>
                 <td>{this.wrapIndexLink(formatDate(this.props.youth.dob))}</td>
                 <td>{this.wrapIndexLink(formatDate(this.props.youth.visit_start_date))}</td>
-                <td>{this.wrapIndexLink(currentPlacement[currentPlacement.length - 1].name)}</td>
-                <td>{this.wrapIndexLink(this.props.youth.school.school_name)}</td>
-                <td>{this.wrapIndexLink(transport)}</td>
-                <td>{this.wrapIndexLink(formatTime(pickupTime))}</td>
-                <td>{this.wrapIndexLink(this.props.youth.overall_form_progress)}</td>
-                <td>{this.wrapIndexLink(formatDate(this.props.youth.estimated_exit_date))}</td>
+                <td>{this.wrapIndexLink(this.props.youth.current_placement_type.name)}</td>
+                <td>{this.wrapIndexLink(this.props.youth.school.school_name || DEFAULT_VALUE)}</td>
+                <td>{this.wrapIndexLink(this.props.youth.school_am_transport || DEFAULT_VALUE)}</td>
+                <td>{this.wrapIndexLink(this.props.youth.school_pm_transport || DEFAULT_VALUE)}</td>
+                <td>{this.wrapIndexLink(AM + PM)}</td>
+                <td>{this.wrapIndexLink(calcPercentage(this.props.youth.overall_form_progress))}</td>
+                <td className={duration}>{this.wrapIndexLink(formatDate(this.props.youth.estimated_exit_date))}</td>
                 {exitColumn}
             </tr>
         );

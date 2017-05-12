@@ -4,11 +4,6 @@
     position: absolute;
     top: 120px;
     left: 100px;
-
-    .progress-link, .presentation-link {
-        color: $orange-accent;
-        padding: 15px;
-    }
 }
 
 .homepage-bar {
@@ -18,8 +13,8 @@
 .mdl-data-table.mdl-js-data-tabled.youth-tracker-container {
     display: table;
     position: relative;
-    width: 100%;
     margin: auto;
+    width: 100%;
 }
 
 .add-youth {
@@ -38,6 +33,7 @@
 #show-active {
     position: absolute;
     right: 135px;
+    color: black;
 
     #active-only {
         margin: 7px;

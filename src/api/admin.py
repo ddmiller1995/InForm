@@ -1,5 +1,11 @@
+from ajax_select import make_ajax_form
+from ajax_select.admin import (AjaxSelectAdmin, AjaxSelectAdminStackedInline,
+                               AjaxSelectAdminTabularInline)
 from django.contrib import admin
-from .models import Youth, YouthVisit, PlacementType, School, Ethnicity, FormType, Form, FormYouthVisit
+
+from .models import (Form, FormType, FormYouthVisit, PlacementType, School,
+                     Youth, YouthVisit)
+
 
 # class QuestionInline(admin.TabularInline):
 #     model = Question
@@ -15,11 +21,16 @@ class YouthAdmin(admin.ModelAdmin):
         'ethnicity'
     )
 
-class YouthVisitAdmin(admin.ModelAdmin):
+class YouthVisitAdmin(AjaxSelectAdmin):
     list_display = ('youth_id', 'current_placement_start_date', 'city_of_origin', 'estimated_exit_date', 'is_active')
     search_fields = ['youth_id__youth_name']
     list_filter = ('youth_id', 'current_placement_start_date', 'city_of_origin',
                     'case_manager', 'personal_counselor')
+
+    form = make_ajax_form(YouthVisit, {
+        # fieldname: channel_name
+        'youth_id': 'youth'
+    })
 
     fieldsets = [
         (None, {'fields': [
@@ -31,11 +42,13 @@ class YouthVisitAdmin(admin.ModelAdmin):
 
          ]}
         ),
-        ('Staff', {
+        ('People', {
             'fields': [
                 'social_worker',
                 'case_manager',
-                'personal_counselor'
+                'personal_counselor',
+                'guardian_name',
+                'guardian_relationship',
             ]
         }),
         ('Placement', {
@@ -47,7 +60,6 @@ class YouthVisitAdmin(admin.ModelAdmin):
         }),
         ('School', {
             'classes': ('wide', 'extrapretty',), 
-            'description': 'School information',
             'fields': [
                 'school',
                 ('school_am_transport', 'school_pm_transport'),
@@ -60,11 +72,13 @@ class YouthVisitAdmin(admin.ModelAdmin):
         ('Misc', {
             # 'classes': ('collapse',),
             'fields': [
-                'guardian_name',
                 'referred_by',
                 'visit_exit_date',
                 'exited_to',
-                'permanent_housing'
+                'permanent_housing',
+                'csec_referral',
+                'family_engagement_referral',
+                'met_greater_than_50_percent_goals'
             ]
         })
     ]
@@ -91,9 +105,6 @@ class SchoolAdmin(admin.ModelAdmin):
         'notes'
     ]
 
-class EthnicityAdmin(admin.ModelAdmin):
-    pass
-
 class FormTypeAdmin(admin.ModelAdmin):
     pass
 
@@ -102,7 +113,7 @@ class FormAdmin(admin.ModelAdmin):
         'form_name',
         'form_type_id',
         'default_due_date',
-        'required'
+        'assign_by_default'
     )
     
     list_filter = (
@@ -121,7 +132,6 @@ admin.site.register(Youth, YouthAdmin)
 admin.site.register(YouthVisit, YouthVisitAdmin)
 admin.site.register(PlacementType, PlacementTypeAdmin)
 admin.site.register(School, SchoolAdmin)
-admin.site.register(Ethnicity, EthnicityAdmin)
 admin.site.register(FormType, FormTypeAdmin)
 admin.site.register(Form, FormAdmin)
 admin.site.register(FormYouthVisit, FormYouthVisitAdmin)
