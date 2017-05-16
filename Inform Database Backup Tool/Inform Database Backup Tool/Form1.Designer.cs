@@ -31,9 +31,8 @@
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.backupButton = new System.Windows.Forms.Button();
             this.restoreButton = new System.Windows.Forms.Button();
-            this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
-            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
+            this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -81,17 +80,17 @@
             this.restoreButton.UseVisualStyleBackColor = true;
             this.restoreButton.Click += new System.EventHandler(this.restoreButton_Click);
             // 
-            // openFileDialog1
+            // openFileDialog
             // 
-            this.openFileDialog1.DereferenceLinks = false;
-            this.openFileDialog1.FileName = "openFileDialog1";
-            this.openFileDialog1.Filter = "JSON Files (*.json)|*.json|All files (*.*)|*.*";
+            this.openFileDialog.DereferenceLinks = false;
+            this.openFileDialog.FileName = "openFileDialog1";
+            this.openFileDialog.Filter = "JSON Files (*.json)|*.json|All files (*.*)|*.*";
             // 
-            // saveFileDialog1
+            // saveFileDialog
             // 
-            this.saveFileDialog1.DereferenceLinks = false;
-            this.saveFileDialog1.Filter = "JSON Files (*.json)|*.json|All files (*.*)|*.*";
-            this.saveFileDialog1.Title = "Save a database backup";
+            this.saveFileDialog.DereferenceLinks = false;
+            this.saveFileDialog.Filter = "JSON Files (*.json)|*.json|All files (*.*)|*.*";
+            this.saveFileDialog.Title = "Save a database backup";
             // 
             // Form1
             // 
@@ -111,9 +110,8 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Button backupButton;
         private System.Windows.Forms.Button restoreButton;
-        private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
-        private System.Windows.Forms.OpenFileDialog openFileDialog1;
-        private System.Windows.Forms.SaveFileDialog saveFileDialog1;
+        private System.Windows.Forms.OpenFileDialog openFileDialog;
+        private System.Windows.Forms.SaveFileDialog saveFileDialog;
     }
 }
 

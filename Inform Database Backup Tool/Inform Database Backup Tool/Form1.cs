@@ -23,7 +23,7 @@ namespace Inform_Database_Backup_Tool
         private void backupButton_Click(object sender, EventArgs e)
         {
 
-            if (saveFileDialog1.ShowDialog() == DialogResult.OK || saveFileDialog1.FileName != "")
+            if (saveFileDialog.ShowDialog() == DialogResult.OK || saveFileDialog.FileName != "")
             {
                 // determine where the project is stored in the file system
                 string projectRoot = ProjectRootService.ComputeProjectRoot();
@@ -32,7 +32,7 @@ namespace Inform_Database_Backup_Tool
                 // execute the command to retrieve the database dump
                 string json = CommandService.Execute(projectRoot, command);
                 // save the database dump to the user specified file
-                bool fileSaved = SaveFileService.SaveFile(saveFileDialog1.FileName, json);
+                bool fileSaved = SaveFileService.SaveFile(saveFileDialog.FileName, json);
 
                 StringBuilder message = new StringBuilder();
                 if (fileSaved)
@@ -42,7 +42,7 @@ namespace Inform_Database_Backup_Tool
                 {
                     message.Append("Failed to backup database to ");
                 }
-                message.Append(saveFileDialog1.FileName);
+                message.Append(saveFileDialog.FileName);
 
                 string caption = "InForm Database Backup";
                 MessageBoxButtons buttons = MessageBoxButtons.OK;
@@ -54,17 +54,17 @@ namespace Inform_Database_Backup_Tool
 
         private void restoreButton_Click(object sender, EventArgs e)
         {
-            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 // determine where the project is stored in the file system
                 string projectRoot = ProjectRootService.ComputeProjectRoot();
 
-                string filename = openFileDialog1.FileName;
+                string filename = openFileDialog.FileName;
                 string command = "python manage.py loaddata " + filename;
                 // execute the command to retrieve the database dump
                 string json = CommandService.Execute(projectRoot, command);
 
-                string message = "Succesfully restored database from backup file: " + openFileDialog1.FileName;
+                string message = "Succesfully restored database from backup file: " + openFileDialog.FileName;
 
                 string caption = "InForm Database Restore";
                 MessageBoxButtons buttons = MessageBoxButtons.OK;
