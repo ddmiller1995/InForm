@@ -254,7 +254,7 @@ class Form(models.Model):
     form_type_id = models.ForeignKey(FormType, on_delete=models.CASCADE, verbose_name='Form Type')
     # due date in days relative to entry date
     # forms without due dates are allowed
-    default_due_date = models.IntegerField(null=True, blank=True)
+    default_due_date = models.IntegerField(null=True, blank=True, verbose_name='Due in _ days')
     # Form location - file location in static files?
     assign_by_default = models.BooleanField(default=False,
                                             help_text='Check this box if you want this form to be assigned\
