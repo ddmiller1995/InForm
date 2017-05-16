@@ -22,28 +22,30 @@ namespace Inform_Database_Backup_Tool
 
         private void backupButton_Click(object sender, EventArgs e)
         {
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK || saveFileDialog1.FileName != "")
+            {
+                // determine where the project is stored in the file system
+                string projectRoot = ProjectRootService.ComputeProjectRoot();
 
-            // determine where the project is stored in the file system
-            string projectRoot = ProjectRootService.ComputeProjectRoot();
-
-            string command = "python manage.py dumpdata";
-            // execute the command to retrieve the database dump
-            string json = CommandService.Execute(projectRoot, command);
-            // save the database dump to the user specified file
-            bool result = SaveFileService.SaveFile("", "");
-
-            //if (saveFileDialog1.ShowDialog() == DialogResult.OK || saveFileDialog1.FileName != "")
-            //{
-   
-            //}
+                string command = "python manage.py dumpdata";
+                // execute the command to retrieve the database dump
+                string json = CommandService.Execute(projectRoot, command);
+                // save the database dump to the user specified file
+                bool result = SaveFileService.SaveFile(saveFileDialog1.FileName, json);
+            }
         }
 
         private void restoreButton_Click(object sender, EventArgs e)
         {
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
-                string fileName = openFileDialog1.FileName;
-                var dialog = openFileDialog1;
+                // determine where the project is stored in the file system
+                string projectRoot = ProjectRootService.ComputeProjectRoot();
+
+                string filename = openFileDialog1.FileName;
+                string command = "python manage.py loaddata " + filename;
+                // execute the command to retrieve the database dump
+                string json = CommandService.Execute(projectRoot, command);
             }
         }
     }

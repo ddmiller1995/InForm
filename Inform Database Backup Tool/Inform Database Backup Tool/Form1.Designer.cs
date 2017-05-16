@@ -85,7 +85,7 @@
             // 
             this.openFileDialog1.DereferenceLinks = false;
             this.openFileDialog1.FileName = "openFileDialog1";
-            this.openFileDialog1.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
+            this.openFileDialog1.Filter = "JSON Files (*.json)|*.json|All files (*.*)|*.*";
             // 
             // saveFileDialog1
             // 
