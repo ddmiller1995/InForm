@@ -22,7 +22,12 @@ export function formatTime(time) {
     return moment(time, "hh:mm").format("h:mm");
 }
 
+export function calcPercentage(number) {
+    return Math.round(number * 100) + "%";
+}
+
 export function registerDialog(parentNode, child) {
+
     let modal = document.getElementById("mdl-dialog");
     if (modal != null) {
         let dialog = document.querySelector("dialog");
@@ -81,4 +86,11 @@ export function postRequest(url, data, reload=true) {
     }).catch(function(ex) {
         console.log("parsing failed", ex);
     });
+}
+export function titleCase(s) {
+    let words = s.split(' ');
+    for(let i = 0; i < words.length; i++) {
+        words[i] = words[i].charAt(0).toUpperCase() + words[i].slice(1);
+    }
+    return words.join(' ');
 }

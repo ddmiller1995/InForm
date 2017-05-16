@@ -19,7 +19,7 @@ export default class extends React.Component {
       
     render() {
         let isChecked = this.state.checked ? "checked" : "";
-        
+
         return (
             <div className="youth-tracker-container">
                 <header className="mdl-layout__header">

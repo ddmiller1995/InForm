@@ -83,7 +83,7 @@ def serialize_form_youth_visit(form_youth_visit):
 
     obj = {}
 
-    obj['form_id'] = form_youth_visit.id
+    obj['form_id'] = form_youth_visit.form_id.id
     obj['form_name'] = form_youth_visit.form_id.form_name
     obj['form_type'] = form_youth_visit.form_id.form_type_id.form_type_name
     obj['form_description'] = form_youth_visit.form_id.form_description

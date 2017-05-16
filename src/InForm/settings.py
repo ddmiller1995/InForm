@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     # user defined below here
     'webpack_loader',
     'rest_framework',
+    'ajax_select',
     'api.apps.ApiConfig',
     'frontend.apps.FrontendConfig'
 ]

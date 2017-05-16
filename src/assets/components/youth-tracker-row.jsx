@@ -1,7 +1,8 @@
 import React from 'react';
 import {store, setCurrentYouth} from "./shared-state.js";
 import {Link, IndexLink} from "react-router";
-import { formatDate, formatTime, registerDialog, closeDialog, postRequest } from '../util.js'
+import { formatDate, formatTime, registerDialog} from '../util.js'
+import { closeDialog, postRequest, calcPercentage } from '../util.js'
 import "whatwg-fetch";
 
 var moment = require("moment");
@@ -154,7 +155,7 @@ export default class extends React.Component {
                 <td>{this.wrapIndexLink(this.props.youth.school_am_transport || DEFAULT_VALUE)}</td>
                 <td>{this.wrapIndexLink(this.props.youth.school_pm_transport || DEFAULT_VALUE)}</td>
                 <td>{this.wrapIndexLink(AM + PM)}</td>
-                <td>{this.wrapIndexLink(this.props.youth.overall_form_progress)}</td>
+                <td>{this.wrapIndexLink(calcPercentage(this.props.youth.overall_form_progress))}</td>
                 <td className={duration}>{this.wrapIndexLink(formatDate(this.props.youth.estimated_exit_date))}</td>
                 {exitColumn}
             </tr>

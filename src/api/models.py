@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 def timezone_date():
     '''Returns just the date portion of the timezone.now() function
     Used as a callable to evaluate the current date as a default field value'''
-    return timezone.now().date()
+    return timezone.localtime(timezone.now()).date()
 
 class PlacementType(models.Model):
     '''PlacementType model
@@ -86,7 +86,7 @@ class Youth(models.Model):
         computed list of active youth
         '''
         active_youth = []
-        today = timezone.now().date()
+        today = timezone_date()
 
         for youth in Youth.objects.all():
             try:
@@ -127,7 +127,7 @@ class YouthVisit(models.Model):
     guardian_relationship = models.CharField(max_length=256, null=True, blank=True)
     referred_by = models.CharField(max_length=256, null=True, blank=True)
     social_worker = models.CharField(max_length=256, null=True, blank=True)
-    visit_exit_date = models.DateField('date youth actually exited', null=True, blank=True)
+    visit_exit_date = models.DateField(null=True, blank=True)
     permanent_housing = models.NullBooleanField(null=True, blank=True)
     exited_to = models.CharField(max_length=256, null=True, blank=True)
 
@@ -173,14 +173,14 @@ class YouthVisit(models.Model):
 
     def is_active(self):
         '''Return True if the Youth for this visit is still active'''
-        today = timezone.now().date()
+        today = timezone_date()
         return self.visit_exit_date is None
     is_active.boolean = True
     is_active.short_description = 'Is Active?'
 
     def is_before_estimated_exited_date(self):
         '''Return True if the today is before the youth's estimated exit date'''
-        today = timezone.now().date()
+        today = timezone_date()
         return today <= self.estimated_exit_date()
 
 
@@ -196,7 +196,7 @@ class YouthVisit(models.Model):
 
     def total_days_stayed(self):
         '''Sums and returns the days in this visit, which can include multiple placements and extensions'''
-        end_date = self.visit_exit_date if self.visit_exit_date != None else timezone.now().date()
+        end_date = self.visit_exit_date if self.visit_exit_date != None else timezone_date()
         return (end_date - self.visit_start_date).days
 
     def form_type_progress(self):
@@ -251,7 +251,7 @@ class Form(models.Model):
     '''Form model'''
     form_name = models.CharField(max_length=256)
     form_description = models.CharField(max_length=2048, null=True, blank=True)
-    form_type_id = models.ForeignKey(FormType, on_delete=models.CASCADE)
+    form_type_id = models.ForeignKey(FormType, on_delete=models.CASCADE, verbose_name='Form Type')
     # due date in days relative to entry date
     # forms without due dates are allowed
     default_due_date = models.IntegerField(null=True, blank=True)
@@ -272,9 +272,9 @@ class FormYouthVisit(models.Model):
     IN_PROGRESS = 'in progress'
     DONE = 'done'
 
-    form_id = models.ForeignKey(Form, on_delete=models.CASCADE)
-    youth_visit_id = models.ForeignKey(YouthVisit, on_delete=models.CASCADE)
-    user_id = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    form_id = models.ForeignKey(Form, on_delete=models.CASCADE, verbose_name='Form')
+    youth_visit_id = models.ForeignKey(YouthVisit, on_delete=models.CASCADE, verbose_name='Youth Visit')
+    user_id = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Completed by')
     # expected values: pending, in progess, done
     status = models.CharField(max_length=32, default=PENDING,
                               choices=(
@@ -286,12 +286,12 @@ class FormYouthVisit(models.Model):
     notes = models.TextField(null=True, blank=True)
 
     def __str__(self):
-        return 'Youth Visit ID: ' + str(self.youth_visit_id.id) + ' - Form Name: ' + self.form_id.form_name
+        return 'Youth Visit ID: ' + str(self.youth_visit_id.youth_id.youth_name) + ' - Form Name: ' + self.form_id.form_name
 
     def days_remaining(self):
         if self.form_id.default_due_date is None:
-            return 0
-        result = self.form_id.default_due_date - (timezone.now().date() - self.youth_visit_id.visit_start_date).days
+            return None
+        result = self.form_id.default_due_date - (timezone_date() - self.youth_visit_id.visit_start_date).days
         return result
 
 @receiver(post_save, sender=YouthVisit)

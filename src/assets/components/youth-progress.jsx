@@ -23,7 +23,6 @@ export default class extends React.Component {
         if(this.props.currentYouth.youth_id) {
             getRequest("/api/youth/" + this.props.currentYouth.youth_id, this, "currentYouth");
         }
-        
     }
 
     componentWillReceiveProps(nextProps) {

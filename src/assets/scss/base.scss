@@ -8,19 +8,24 @@
 @import "presentation";
 
 .container {
-    margin: 3%;
+    margin: 2%;
 }
 
 a.mdl-navigation__link.active {
-    color: $orange-accent;
+    color: white;
     font-weight: 700;
 }
 
 body {
-    background-color: $light-green;
+    background-color: $background-gray;
 }
 
 .header-fix {
     position: relative;
     padding: 0;
+}
+
+.header-divider {
+     border-right:1px solid lightgray; 
+     height:25px;
 }

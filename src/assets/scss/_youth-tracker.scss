@@ -8,7 +8,7 @@
 
     .seven-days {
         .mdl-navigation__link {
-            color: rgb(63,81,181);
+            color: $orange-accent;
         }
     }
 
@@ -43,6 +43,14 @@
     border: 1px solid rgb(220,220,220);
     margin: 15px;
     box-shadow: 0 11px 15px -7px rgba(0, 0, 0, 0.1), 0 24px 38px 3px rgba(0, 0, 0, 0);
+
+    .mdl-layout__header {
+        background-color: white;
+    }
+
+    .presentation-link {
+        color: $light-green;
+    }
 
     tbody tr:focus, tbody tr:hover {
         background-color: rgba(156, 177, 208, 0.67);
