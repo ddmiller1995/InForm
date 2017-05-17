@@ -42,8 +42,9 @@ export default class extends React.Component {
     postExit() {
         let url = "/api/visit/" + this.props.youth.youth_visit_id + "/mark-exited/";
         let exitDate = document.getElementById("date-input").value;
-        let whereExited = document.getElementById("exited-to-input").value;
+        let whereExited = document.getElementById("exited-to-input").value || "Not Provided";
         let permHousing = $('input[name="housing"]:checked').val();
+
         let data = new FormData();
         data.append("exit_date_string", exitDate);
         data.append("where_exited", whereExited);
@@ -89,7 +90,7 @@ export default class extends React.Component {
                         <span> 
                          <input id="yes-checkbox" name="housing" type="radio" value="true"></input>Yes 
                          <input id="no-checkbox" name="housing" type="radio" value="false"></input>No 
-                         <input id="unknown-checkbox" name="housing" type="radio" value="unknown"></input>Unknown 
+                         <input id="unknown-checkbox" name="housing" type="radio" value="unknown" checked></input>Unknown 
                         </span>
                     </p>
                 </div>

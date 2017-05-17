@@ -82,7 +82,7 @@ export function postRequest(url, data, reload=true) {
         }
         return response.json();
     }).then(function(data) {
-        console.log(data); // log the response json
+        console.log(data); 
     }).catch(function(ex) {
         console.log("parsing failed", ex);
     });
