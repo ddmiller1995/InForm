@@ -4,7 +4,7 @@ venv
 virtualenv
 node_modules
 webpack-stats.json
-assets/bundles/
+src/assets/bundles/*
 src/assets/.sass-cache/*
 *main.css.map
 .idea/*

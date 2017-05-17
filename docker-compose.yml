@@ -4,7 +4,7 @@ services:
     image: nginx:latest
     container_name: ng01
     ports:
-      - "8000:8000"
+      - "80:8000"
     volumes:
       - ./src:/src
       - ./config/nginx:/etc/nginx/conf.d
@@ -22,15 +22,15 @@ services:
       - /static:/static
     expose:
       - "8000"
-  hotloader:
-    build:
-      context: .
-      dockerfile: docker/hotloader.Dockerfile
-    container_name: hl01
-    command: bash -c "npm install --no-bin-links && npm start"
-    volumes:
-      - ./src:/src
-    expose:
-      - "3000"
-    ports:
-      - "3000:3000"
+  # hotloader:
+  #   build:
+  #     context: .
+  #     dockerfile: docker/hotloader.Dockerfile
+  #   container_name: hl01
+  #   command: bash -c "npm install --no-bin-links && npm start"
+  #   volumes:
+  #     - ./src:/src
+  #   expose:
+  #     - "3000"
+  #   ports:
+  #     - "3000:3000"
