@@ -11,6 +11,7 @@ services:
       - /static:/static
     depends_on:
       - web
+    restart: always
   web:
     build:
       context: .
@@ -22,6 +23,7 @@ services:
       - /static:/static
     expose:
       - "8000"
+    restart: always
   # hotloader:
   #   build:
   #     context: .
