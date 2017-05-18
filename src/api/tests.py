@@ -237,7 +237,7 @@ class YouthModelTests(TestCase):
 
     def test_overall_form_progress_in_progress(self):
         visit = YouthVisit.objects.get(pk=2)
-        self.assertEqual(visit.overall_form_progress(), 0.75) 
+        self.assertEqual(visit.overall_form_progress(), 1.0) 
         form_youth_visit = FormYouthVisit.objects.create(
             form_id=Form.objects.get(form_name='Form 3'), 
             youth_visit_id=visit, 
