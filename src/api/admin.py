@@ -126,7 +126,40 @@ class FormAdmin(admin.ModelAdmin):
         'form_type_id__form_type_name'
     ]
 class FormYouthVisitAdmin(admin.ModelAdmin):
-    pass
+    list_display = [
+        'get_youth_name',
+        'get_youth_visit_start_date',
+        'get_form_name',
+        'status'
+    ]
+
+    def get_youth_name(self, obj):
+        return obj.youth_visit_id.youth_id.youth_name
+    get_youth_name.admin_order_field = 'youth_visit_id__youth_id__youth_name'
+    get_youth_name.short_description = 'Youth Name'
+
+    def get_youth_visit_start_date(self, obj):
+        return obj.youth_visit_id.visit_start_date
+    get_youth_visit_start_date.admin_order_field = 'youth_visit_id__visit_start_date'
+    get_youth_visit_start_date.short_description = 'Youth Visit Start Date'
+
+    def get_form_name(self, obj):
+        return obj.form_id.form_name
+    get_form_name.admin_order_field = 'form_id__form_name'
+    get_form_name.short_description = 'Form Name'
+
+    list_filter = (
+        'youth_visit_id__youth_id__youth_name',
+        'youth_visit_id__visit_start_date',
+        'form_id__form_name',
+        'status'
+    )
+
+    search_fields = [
+        'youth_visit_id__youth_id__youth_name',
+        'form_id__form_name',
+        'form_id__form_description'
+    ]
 
 admin.site.register(Youth, YouthAdmin)
 admin.site.register(YouthVisit, YouthVisitAdmin)
