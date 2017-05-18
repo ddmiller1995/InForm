@@ -294,6 +294,27 @@ class FormYouthVisit(models.Model):
         result = self.form_id.default_due_date - (timezone_date() - self.youth_visit_id.visit_start_date).days
         return result
 
+
+class YouthTrackerField(models.Model):
+    '''YouthTrackerField model'''
+
+    # Formatted name for the field to be displayed
+    field_name = models.CharField(max_length=256)
+    # Computer readable path in the Youth object to lookup. Expected format:
+    #   - | (pipe) character indicates the next level of an array or object
+    #   - + (plus) character indicates to combine the two fields into one column
+    field_path = models.CharField(max_length=256)
+    displayed = models.BooleanField(default=False)
+    order = models.IntegerField(default=0, blank=True, null=True)
+
+    @staticmethod
+    def get_youth_tracker_fields():
+        return YouthTrackerField.objects.filter(displayed=True).order_by('order', 'field_name')
+
+    def __str__(self):
+        return self.field_name
+
+
 @receiver(post_save, sender=YouthVisit)
 def AddDefaultForms(sender, **kwargs):
     if kwargs['created']:

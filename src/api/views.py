@@ -18,10 +18,10 @@ from rest_framework.views import APIView
 
 from api.csv_serializers import youth_field_names, youth_visit_field_names, CsvLine
 from api.models import (Form, FormType, FormYouthVisit, PlacementType, Youth,
-                        YouthVisit, School)
+                        YouthVisit, School, YouthTrackerField)
 from api.serializers import (FormTypeSerializer, PlacementTypeSerializer,
                              serialize_form_youth_visit, serialize_youth,
-                             serialize_youth_visit)
+                             serialize_youth_visit, serialize_youth_tracker_field)
 
 logger = logging.getLogger(__name__)
 
@@ -692,6 +692,33 @@ class ExportYouthVisits(APIView):
             writer.writerow(row)
 
         return response
+
+
+class YouthTrackerFieldList(APIView):
+    '''
+    List all display YouthTrackerFields in order
+
+    Support HTTP methods: GET
+
+    GET /api/youth-tracker-fields returns JSON Response
+    '''
+
+    renderer_classes = (JSONRenderer, )
+
+    def get(self, request, format=None):
+
+        json = {
+            'fields': []
+        }
+
+        field_list = YouthTrackerField.get_youth_tracker_fields()
+
+        for field in field_list:
+            serialized_field = serialize_youth_tracker_field(field)
+            json['fields'].append(serialized_field)
+
+        return Response(json, status=status.HTTP_200_OK)
+
 
 def api_docs(request):
     return render(request, 'api/docs.html')
