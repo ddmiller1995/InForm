@@ -127,9 +127,9 @@ class FormAdmin(admin.ModelAdmin):
     ]
 class FormYouthVisitAdmin(admin.ModelAdmin):
     list_display = [
+        'get_form_name',
         'get_youth_name',
         'get_youth_visit_start_date',
-        'get_form_name',
         'status'
     ]
 
@@ -149,9 +149,9 @@ class FormYouthVisitAdmin(admin.ModelAdmin):
     get_form_name.short_description = 'Form Name'
 
     list_filter = (
+        'form_id__form_name',
         'youth_visit_id__youth_id__youth_name',
         'youth_visit_id__visit_start_date',
-        'form_id__form_name',
         'status'
     )
 

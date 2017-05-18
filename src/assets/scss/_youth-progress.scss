@@ -1,5 +1,35 @@
 @import "variables";
 
+.progress-header {
+    margin: 0px 40px -30px 40px;
+    width: calc(100% - 80px);
+
+    .mdl-button { 
+        float: right;
+    }
+
+    .mdl-navigation__link {
+        color: black !important;
+    }
+
+    .material-icons {
+        padding-right: 3px;
+    }
+
+    .visit-date {
+        color: rgba(0,0,0,0.5);
+        font-size: 16px;
+        display: inline-block;
+        height: 36px;
+        line-height: 36px;
+        vertical-align: middle;
+    }
+
+    .date-part {
+        color: black;
+    }
+}
+
 .board {
     margin: 40px;
     border: 1px solid #ccc;
