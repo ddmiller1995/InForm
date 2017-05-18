@@ -30,6 +30,7 @@
 
             .mdl-card__title, .mdl-card__supporting-text {
                 padding: 10px 16px;
+                font-weight: bold;
             }
 
             .mdl-card__menu {
@@ -46,6 +47,7 @@
 
             .due-done {
                 color: $light-green;
+                font-weight: bold;
             }
 
             .due-now {

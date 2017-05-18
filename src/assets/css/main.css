@@ -265,7 +265,8 @@ h4 {
       .board .col .demo-card-wide.mdl-card .mdl-card__title-text {
         font-size: 20px; }
       .board .col .demo-card-wide.mdl-card .mdl-card__title, .board .col .demo-card-wide.mdl-card .mdl-card__supporting-text {
-        padding: 10px 16px; }
+        padding: 10px 16px;
+        font-weight: bold; }
       .board .col .demo-card-wide.mdl-card .mdl-card__menu {
         top: 10px; }
       .board .col .demo-card-wide.mdl-card .mdl-button--colored {
@@ -273,7 +274,8 @@ h4 {
       .board .col .demo-card-wide.mdl-card .no-due-date {
         color: #CCC; }
       .board .col .demo-card-wide.mdl-card .due-done {
-        color: #8fbc49; }
+        color: #8fbc49;
+        font-weight: bold; }
       .board .col .demo-card-wide.mdl-card .due-now {
         color: red; }
       .board .col .demo-card-wide.mdl-card .due-soon {
