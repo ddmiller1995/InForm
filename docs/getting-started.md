@@ -65,7 +65,7 @@ As the popup specifies, this should only be used when the youth has left the she
 ### Extending exit dates and changing placement types
 ![youth profile](https://github.com/ddmiller1995/InForm/blob/tessa-homepage/docs/screenshots/youth-profile-short.png)
 
-Extend Modal | Placement Modal
+Extend Stay | Switch Beds
 :-----------:|:-----------:
 <img src="https://github.com/ddmiller1995/InForm/blob/tessa-homepage/docs/screenshots/extend-modal.png" alt="extend youth visit modal" width="400"/>  | <img src="https://github.com/ddmiller1995/InForm/blob/tessa-homepage/docs/screenshots/placement-modal.png" alt="change placement type modal" width="400"/>
 
