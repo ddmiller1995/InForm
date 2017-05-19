@@ -48,6 +48,9 @@ The color displayed for a youth's estimated exit date will change depending on h
 
 ![homepage upcoming exits](https://github.com/ddmiller1995/InForm/blob/tessa-homepage/docs/screenshots/homepage-colors.png)
 
+### Marking a youth as exited
+<img src="https://github.com/ddmiller1995/InForm/blob/tessa-homepage/docs/screenshots/exit-modal.png" alt="youth exit modal" width="200"/>
+
 ### Presentation View
 ![presentation view](https://github.com/ddmiller1995/InForm/blob/tessa-homepage/docs/screenshots/presentation.png)
 
@@ -89,6 +92,6 @@ By default, all forms will be in the leftmost column but can be moved around usi
 ### Adding admin user accounts
 ![admin accounts](https://github.com/ddmiller1995/InForm/blob/tessa-homepage/docs/screenshots/admin-accounts.png)
 
-### Entering a new youth or editing and existing youth data
+### Entering a new youth or editing existing youth data
 ![admin youth visit](https://github.com/ddmiller1995/InForm/blob/tessa-homepage/docs/screenshots/admin-youth-visit.png)
 
