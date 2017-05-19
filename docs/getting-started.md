@@ -43,7 +43,7 @@ This tutorial will guide you through the general user flow for *InForm*.
 ![homepage upcoming exits](https://github.com/ddmiller1995/InForm/blob/tessa-homepage/docs/screenshots/homepage-colors.png)
 
 ### Marking a youth as exited
-![mark youth exited](https://github.com/ddmiller1995/InForm/blob/tessa-homepage/docs/screenshots/exit-modal.png)
+![mark youth exited](https://github.com/ddmiller1995/InForm/blob/tessa-homepage/docs/screenshots/exit-modal.png =100x)
 
 ### Presentation View
 ![presentation view](https://github.com/ddmiller1995/InForm/blob/tessa-homepage/docs/screenshots/presentation.png)
@@ -63,6 +63,6 @@ This tutorial will guide you through the general user flow for *InForm*.
 ### Adding admin user accounts
 ![admin accounts](https://github.com/ddmiller1995/InForm/blob/tessa-homepage/docs/screenshots/admin-accounts.png)
 
-### Entering a new youth or editing and existing youth data
+### Entering a new youth or editing existing youth data
 ![admin youth visit](https://github.com/ddmiller1995/InForm/blob/tessa-homepage/docs/screenshots/admin-youth-visit.png)
 
