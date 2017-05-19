@@ -4,7 +4,7 @@ from ajax_select.admin import (AjaxSelectAdmin, AjaxSelectAdminStackedInline,
 from django.contrib import admin
 
 from .models import (Form, FormType, FormYouthVisit, PlacementType, School,
-                     Youth, YouthVisit)
+                     Youth, YouthVisit, YouthTrackerField)
 
 
 # class QuestionInline(admin.TabularInline):
@@ -161,6 +161,35 @@ class FormYouthVisitAdmin(admin.ModelAdmin):
         'form_id__form_description'
     ]
 
+class YouthTrackerFieldAdmin(admin.ModelAdmin):
+    # Uncomment before releasing to Client
+    # exclude = ('field_path',)
+    ordering = ('-displayed', 'order',)
+
+    list_display = [
+        'field_name',
+        'order',
+        'displayed'
+    ]
+
+    list_filter = [
+        'displayed'
+    ]
+
+    search_fields = [
+        'field_name'
+    ]
+
+    def get_actions(self, request):
+        #Disable delete
+        actions = super(YouthTrackerFieldAdmin, self).get_actions(request)
+        del actions['delete_selected']
+        return actions
+
+    def has_delete_permission(self, request, obj=None):
+        #Disable delete
+        return False
+
 admin.site.register(Youth, YouthAdmin)
 admin.site.register(YouthVisit, YouthVisitAdmin)
 admin.site.register(PlacementType, PlacementTypeAdmin)
@@ -168,3 +197,4 @@ admin.site.register(School, SchoolAdmin)
 admin.site.register(FormType, FormTypeAdmin)
 admin.site.register(Form, FormAdmin)
 admin.site.register(FormYouthVisit, FormYouthVisitAdmin)
+admin.site.register(YouthTrackerField, YouthTrackerFieldAdmin)

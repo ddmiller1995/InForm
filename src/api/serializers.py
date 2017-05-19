@@ -97,6 +97,19 @@ def serialize_form_youth_visit(form_youth_visit):
     return obj
     
 
+def serialize_youth_tracker_field(field):
+    'Serialize the youth_tracker_fields object'
+
+    obj = {}
+
+    obj['field_name'] = field.field_name
+    obj['field_path'] = field.field_path
+    obj['displayed'] = field.displayed
+    obj['order'] = field.order
+
+    return obj
+
+
 class PlacementTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = PlacementType
