@@ -226,14 +226,14 @@ class YouthVisit(models.Model):
         '''Return the percentage of forms completed out of possible forms as a ratio
         '''
         # Count the total number of forms in the database
-        total_forms = Form.objects.count()
+        youth_visit_total_forms = FormYouthVisit.objects.filter(youth_visit_id=self).count()
         # Count the number of forms maked as completed for this youth's visit
         youth_visit_done_form_count = FormYouthVisit.objects.filter(youth_visit_id=self, status='done').count()
 
-        if total_forms == 0:
+        if youth_visit_total_forms == 0:
             return 0.0
 
-        return youth_visit_done_form_count / total_forms
+        return youth_visit_done_form_count / youth_visit_total_forms
 
     def get_absolute_url(self):
         return reverse('youth-detail', args=[str(self.id)])
@@ -254,7 +254,7 @@ class Form(models.Model):
     form_type_id = models.ForeignKey(FormType, on_delete=models.CASCADE, verbose_name='Form Type')
     # due date in days relative to entry date
     # forms without due dates are allowed
-    default_due_date = models.IntegerField(null=True, blank=True)
+    default_due_date = models.IntegerField(null=True, blank=True, verbose_name='Due in _ days')
     # Form location - file location in static files?
     assign_by_default = models.BooleanField(default=False,
                                             help_text='Check this box if you want this form to be assigned\
@@ -293,6 +293,27 @@ class FormYouthVisit(models.Model):
             return None
         result = self.form_id.default_due_date - (timezone_date() - self.youth_visit_id.visit_start_date).days
         return result
+
+
+class YouthTrackerField(models.Model):
+    '''YouthTrackerField model'''
+
+    # Formatted name for the field to be displayed
+    field_name = models.CharField(max_length=256)
+    # Computer readable path in the Youth object to lookup. Expected format:
+    #   - | (pipe) character indicates the next level of an array or object
+    #   - + (plus) character indicates to combine the two fields into one column
+    field_path = models.CharField(max_length=256) #, editable=False)
+    displayed = models.BooleanField(default=False)
+    order = models.IntegerField(default=0, blank=True, null=True)
+
+    @staticmethod
+    def get_youth_tracker_fields():
+        return YouthTrackerField.objects.filter(displayed=True).order_by('order', 'field_name')
+
+    def __str__(self):
+        return self.field_name
+
 
 @receiver(post_save, sender=YouthVisit)
 def AddDefaultForms(sender, **kwargs):
