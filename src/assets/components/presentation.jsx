@@ -5,6 +5,7 @@ import YouthTrackerRow from "./youth-tracker-row.jsx";
 import "whatwg-fetch";
 
 const ALL_YOUTH_API = "/api/youth/?activeOnly=true";
+const TRACKER_FIELDS_API = "/api/youth-tracker-field-list/"
 
 export default class extends React.Component {
     constructor(props) {
@@ -14,18 +15,29 @@ export default class extends React.Component {
 
     componentDidMount() {
         let data = getRequest(ALL_YOUTH_API, this, "youth");
+        getRequest(TRACKER_FIELDS_API, this, "fields");
+
     }
 
     getYouthData() {
         let rows;
-        if (this.state.youth) { 
-            rows = this.state.youth.youth.map(youth => <YouthTrackerRow key={youth.name} youth={youth} />);
+        if (this.state.youth && this.state.fields) { 
+            rows = this.state.youth.youth.map(youth => <YouthTrackerRow key={youth.name} youth={youth} fields={this.state.fields.fields} />);
         }
         return rows;
     }
 
+    getFields() {
+        let headers;
+        if(this.state.fields) {
+            headers = this.state.fields.fields.map(field => <th key={field.field_name} >{field.field_name}</th>);
+        }
+        return headers;
+    }
+
     render() {
         let youthData = this.getYouthData();
+        let fieldData = this.getFields();
 
         return (
             <div>
@@ -38,16 +50,7 @@ export default class extends React.Component {
                     <div className="overlay"></div>
                     <thead>
                         <tr>
-                            <th className="mdl-data-table__cell--non-numeric">Name</th>
-                            <th>DOB</th>
-                            <th>Entry Date</th>
-                            <th>Placement</th>
-                            <th>School</th>
-                            <th>AM Transport</th>
-                            <th>PM Transport</th>
-                            <th>AM Pickup/PM Dropoff</th>
-                            <th>Form Progress</th>
-                            <th>Estimated Exit</th>
+                            {fieldData}
                         </tr>
                     </thead>
                     <tbody>

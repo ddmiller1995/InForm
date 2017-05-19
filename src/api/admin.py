@@ -171,14 +171,23 @@ class YouthTrackerFieldAdmin(admin.ModelAdmin):
         'displayed'
     ]
 
-    list_filter = (
-        'order',
+    list_filter = [
         'displayed'
-    )
+    ]
 
     search_fields = [
         'field_name'
     ]
+
+    def get_actions(self, request):
+        #Disable delete
+        actions = super(YouthTrackerFieldAdmin, self).get_actions(request)
+        del actions['delete_selected']
+        return actions
+
+    def has_delete_permission(self, request, obj=None):
+        #Disable delete
+        return False
 
 admin.site.register(Youth, YouthAdmin)
 admin.site.register(YouthVisit, YouthVisitAdmin)
