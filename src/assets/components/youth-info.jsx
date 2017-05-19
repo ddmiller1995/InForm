@@ -312,8 +312,8 @@ export default class extends React.Component {
                             </p>
                         </div>
                         <div className="inner-col">
-                            <p>Case Manager: <span className="value">{currentVisit.case_manager.name || DEFAULT_VALUE}</span></p>
-                            <p>Personal Counselor: <span className="value">{currentVisit.personal_counselor.name || DEFAULT_VALUE}</span></p>
+                            <p>Case Manager: <span className="value">{currentVisit.case_manager.full_name || currentVisit.case_manager.username || DEFAULT_VALUE}</span></p>
+                            <p>Personal Counselor: <span className="value">{currentVisit.personal_counselor.full_name || currentVisit.personal_counselor.username || DEFAULT_VALUE}</span></p>
                             <p>Social Worker: <span className="value">{currentVisit.social_worker || DEFAULT_VALUE}</span></p>
                             <p>Referred By: <span className="value">{currentVisit.referred_by || DEFAULT_VALUE}</span></p>
                         </div>

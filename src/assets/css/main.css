@@ -43,6 +43,10 @@
 
 .mdl-data-table.mdl-js-data-tabled th, .mdl-data-table.mdl-js-data-tabled td {
   text-align: left; }
+.mdl-data-table.mdl-js-data-tabled td {
+  white-space: normal;
+  word-wrap: break-word;
+  max-width: 215px; }
 .mdl-data-table.mdl-js-data-tabled .seven-days .mdl-navigation__link {
   color: #E17000; }
 .mdl-data-table.mdl-js-data-tabled .three-days .mdl-navigation__link {
@@ -69,7 +73,9 @@
   .youth-tracker-container .mdl-layout__header {
     background-color: white; }
   .youth-tracker-container .presentation-link {
-    color: #8fbc49; }
+    color: black; }
+  .youth-tracker-container .present-icon {
+    padding-right: 3px; }
   .youth-tracker-container tbody tr:focus, .youth-tracker-container tbody tr:hover {
     background-color: rgba(156, 177, 208, 0.67); }
   .youth-tracker-container #mdl-dialog {

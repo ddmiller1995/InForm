@@ -69,8 +69,6 @@ Extend Stay | Switch Beds
 :-----------:|:-----------:
 <img src="https://github.com/ddmiller1995/InForm/blob/tessa-homepage/docs/screenshots/extend-modal.png" alt="extend youth visit modal" width="400"/>  | <img src="https://github.com/ddmiller1995/InForm/blob/tessa-homepage/docs/screenshots/placement-modal.png" alt="change placement type modal" width="400"/>
 
-<!--<img src="https://github.com/ddmiller1995/InForm/blob/tessa-homepage/docs/screenshots/extend-modal.png" alt="extend youth visit modal" width="400"/><img src="https://github.com/ddmiller1995/InForm/blob/tessa-homepage/docs/screenshots/placement-modal.png" alt="change placement type modal" width="400"/>-->
-
 Clicking on a youth from the homepage will bring you to that youth's case profile. A snippet of the case profile is shown above with the two update actions highlighted. 
 
 Note that if the youth has multiple visits, you can view past visits by clicking through the dropdown menu in the top left corner.
