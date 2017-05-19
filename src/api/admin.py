@@ -164,6 +164,7 @@ class FormYouthVisitAdmin(admin.ModelAdmin):
 class YouthTrackerFieldAdmin(admin.ModelAdmin):
     # Uncomment before releasing to Client
     # exclude = ('field_path',)
+    ordering = ('-displayed', 'order',)
 
     list_display = [
         'field_name',

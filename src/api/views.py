@@ -3,7 +3,6 @@ import logging
 from datetime import datetime
 from itertools import groupby
 from tempfile import TemporaryFile
-from fuzzywuzzy import fuzz
 from pprint import pprint
 
 
@@ -407,6 +406,8 @@ class UploadFileForm(forms.Form):
 
 class ImportYouthVisits(APIView):
     def post(self, request, format=None):
+        from fuzzywuzzy import fuzz
+        
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             f = request.FILES['file']
