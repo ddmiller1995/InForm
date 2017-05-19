@@ -150,9 +150,9 @@ class FormYouthVisitAdmin(admin.ModelAdmin):
 
     list_filter = (
         'form_id__form_name',
-        'youth_visit_id__youth_id__youth_name',
         'youth_visit_id__visit_start_date',
-        'status'
+        'status',
+        'youth_visit_id__youth_id__youth_name'        
     )
 
     search_fields = [
