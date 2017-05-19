@@ -89,23 +89,23 @@ By default, all forms will be in the leftmost column but can be moved around usi
 ### Data overview
 <img src="https://github.com/ddmiller1995/InForm/blob/tessa-homepage/docs/screenshots/admin-tables.png" alt="admin page data" width="600"/>
 
-1. Groups - Groups allow you to define a set of access roles that will be applied to any user within that group. For example, I can define an Admin group and enable all permissions. Any user that is adding to the Admin group will also be given all permissions.
+1. **Groups** - Groups allow you to define a set of access roles that will be applied to any user within that group. For example, I can define an Admin group and enable all permissions. Any user that is adding to the Admin group will also be given all permissions.
 
-2. Users - Users are those that have a username and password to access this system. Users can be added to different groups and be given different permissions and restrictions.
+2. **Users** - Users are those that have a username and password to access this system. Users can be added to different groups and be given different permissions and restrictions.
 
-3. Form Types - Think of Form Types as form categories. These are the overarching buckets that various forms fall into i.e. Intake Forms, Psychosocial Forms, etc. Every form must have a Form Type. 
+3. **Form Types** - Think of Form Types as form categories. These are the overarching buckets that various forms fall into i.e. Intake Forms, Psychosocial Forms, etc. Every form must have a Form Type. 
 
-4. Form Youth Visits - As the required forms may vary from youth to youth or youth visit to youth visit, this is where you can add or modify the forms that are required for a particular youth's stay in the shelter.
+4. **Form Youth Visits** - As the required forms may vary from youth to youth or youth visit to youth visit, this is where you can add or modify the forms that are required for a particular youth's stay in the shelter.
 
-5. Forms - Here you can find all the forms that exist in the system.
+5. **Forms** - Here you can find all the forms that exist in the system.
 
-6. Placement Types - Similar to Form Types, Placement Types represent the various bed types that can be assigned to youth. Every youth must have a Placement Type.
+6. **Placement Types** - Similar to Form Types, Placement Types represent the various bed types that can be assigned to youth. Every youth must have a Placement Type.
 
-7. School - All schools that have ever been added into the system along with their district and phone number. We store this data to save you time when you enter new youth into the system.
+7. **School** - All schools that have ever been added into the system along with their district and phone number. We store this data to save you time when you enter new youth into the system.
 
-8. Youth Visits - All youth visit data. A youth's name will appear one time for every visit they've ever had at this shelter. 
+8. **Youth Visits** - All youth visit data. A youth's name will appear one time for every visit they've ever had at this shelter. 
 
-9. Youth - All youth in the system. This is separate from Youth Visits as it only displays the data that is non changing between different visits i.e. date of birth, ethnicity, etc.
+9. **Youth** - All youth in the system. This is separate from Youth Visits as it only displays the data that is non changing between different visits i.e. date of birth, ethnicity, etc.
 
 ### Adding admin user accounts
 ![admin accounts](https://github.com/ddmiller1995/InForm/blob/tessa-homepage/docs/screenshots/admin-accounts.png)
