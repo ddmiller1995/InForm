@@ -48,9 +48,6 @@ The color displayed for a youth's estimated exit date will change depending on h
 
 ![homepage upcoming exits](https://github.com/ddmiller1995/InForm/blob/tessa-homepage/docs/screenshots/homepage-colors.png)
 
-### Marking a youth as exited
-<img src="https://github.com/ddmiller1995/InForm/blob/tessa-homepage/docs/screenshots/exit-modal.png" alt="youth exit modal" width="200"/>
-
 ### Presentation View
 ![presentation view](https://github.com/ddmiller1995/InForm/blob/tessa-homepage/docs/screenshots/presentation.png)
 
@@ -68,8 +65,11 @@ As the popup specifies, this should only be used when the youth has left the she
 ### Extending exit dates and changing placement types
 ![youth profile](https://github.com/ddmiller1995/InForm/blob/tessa-homepage/docs/screenshots/youth-profile-short.png)
 
-<img src="https://github.com/ddmiller1995/InForm/blob/tessa-homepage/docs/screenshots/extend-modal.png" alt="extend youth visit modal" width="400"/>
-<img src="https://github.com/ddmiller1995/InForm/blob/tessa-homepage/docs/screenshots/placement-modal.png" alt="change placement type modal" width="400"/>
+Extend Modal | Placement Modal
+:-----------:|:-----------:
+<img src="https://github.com/ddmiller1995/InForm/blob/tessa-homepage/docs/screenshots/extend-modal.png" alt="extend youth visit modal" width="400"/>  | <img src="https://github.com/ddmiller1995/InForm/blob/tessa-homepage/docs/screenshots/placement-modal.png" alt="change placement type modal" width="400"/>
+
+<!--<img src="https://github.com/ddmiller1995/InForm/blob/tessa-homepage/docs/screenshots/extend-modal.png" alt="extend youth visit modal" width="400"/><img src="https://github.com/ddmiller1995/InForm/blob/tessa-homepage/docs/screenshots/placement-modal.png" alt="change placement type modal" width="400"/>-->
 
 Clicking on a youth from the homepage will bring you to that youth's case profile. A snippet of the case profile is shown above with the two update actions highlighted. 
 
@@ -89,9 +89,34 @@ By default, all forms will be in the leftmost column but can be moved around usi
 ### Data overview
 <img src="https://github.com/ddmiller1995/InForm/blob/tessa-homepage/docs/screenshots/admin-tables.png" alt="admin page data" width="600"/>
 
+1. Groups - Groups allow you to define a set of access roles that will be applied to any user within that group. For example, I can define an Admin group and enable all permissions. Any user that is adding to the Admin group will also be given all permissions.
+
+2. Users - Users are those that have a username and password to access this system. Users can be added to different groups and be given different permissions and restrictions.
+
+3. Form Types - Think of Form Types as form categories. These are the overarching buckets that various forms fall into i.e. Intake Forms, Psychosocial Forms, etc. Every form must have a Form Type. 
+
+4. Form Youth Visits - As the required forms may vary from youth to youth or youth visit to youth visit, this is where you can add or modify the forms that are required for a particular youth's stay in the shelter.
+
+5. Forms - Here you can find all the forms that exist in the system.
+
+6. Placement Types - Similar to Form Types, Placement Types represent the various bed types that can be assigned to youth. Every youth must have a Placement Type.
+
+7. School - All schools that have ever been added into the system along with their district and phone number. We store this data to save you time when you enter new youth into the system.
+
+8. Youth Visits - All youth visit data. A youth's name will appear one time for every visit they've ever had at this shelter. 
+
+9. Youth - All youth in the system. This is separate from Youth Visits as it only displays the data that is non changing between different visits i.e. date of birth, ethnicity, etc.
+
 ### Adding admin user accounts
 ![admin accounts](https://github.com/ddmiller1995/InForm/blob/tessa-homepage/docs/screenshots/admin-accounts.png)
+
+To add new users, navigate to the Admin page and click `Users`. It's important to note that users are people that you want to have access to this system and the sensitive data it contains. The Admin page will prompt you for a username and password initially. After hitting save, you will be directed to a more robust user page that will allow you set strict permissions for this new user. These permissions are well-described on the page itself, but read them carefully as they permit users to perform various create, update, and delete actions.
 
 ### Entering a new youth or editing existing youth data
 ![admin youth visit](https://github.com/ddmiller1995/InForm/blob/tessa-homepage/docs/screenshots/admin-youth-visit.png)
 
+This page can be accessed either by clicking the `Add Youth` button off the homepage or through the admin page directly. If you're editing an existing youth's data, this page will look identical, but with the appropriate date fields already filled.
+
+If the youth has been to the shelter before and has previous visit data in the system, start typing their name into the search box to autofill some of the required data. Otherwise, click the `add` button next to the youth field. 
+
+The only fields required to enter a youth into the system are in **bold**. You are welcome to leave the remaining fields blank and return to edit them later. Be sure to click Save near the bottom of the page to finish the process. 
