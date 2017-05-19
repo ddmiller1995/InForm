@@ -166,6 +166,7 @@ export default class extends React.Component {
         if (extend != null) {
             let update = function updateEstimate() {
                 let date = new Date(exit);
+                date.setTime( date.getTime() + date.getTimezoneOffset()*60*1000);
                 date.setDate(date.getDate() + parseInt(extend.value));
 
                 let day = date.getDate();
