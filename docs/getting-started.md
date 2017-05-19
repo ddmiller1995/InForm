@@ -43,7 +43,7 @@ This tutorial will guide you through the general user flow for *InForm*.
 ![homepage upcoming exits](https://github.com/ddmiller1995/InForm/blob/tessa-homepage/docs/screenshots/homepage-colors.png)
 
 ### Marking a youth as exited
-<img src="https://github.com/ddmiller1995/InForm/blob/tessa-homepage/docs/screenshots/exit-modal.png" alt="youth exit modal" style="width: 200px;"/>
+<img src="https://github.com/ddmiller1995/InForm/blob/tessa-homepage/docs/screenshots/exit-modal.png" alt="youth exit modal" width="200"/>
 
 ### Presentation View
 ![presentation view](https://github.com/ddmiller1995/InForm/blob/tessa-homepage/docs/screenshots/presentation.png)
