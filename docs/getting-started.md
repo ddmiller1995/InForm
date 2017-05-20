@@ -21,23 +21,25 @@ This tutorial will guide you through the general user flow for *InForm*.
 
 ### Main
 
-* [Reading the front page](#Reading-the-front-page)
+* [Reading the front page](#reading-the-front-page)
 
 * [Presentation View](#presentation-view)
 
-* [Marking a youth exited](#Marking-a-youth-as-exited)
+* [Marking a youth exited](#marking-a-youth-as-exited)
 
-* [Extending exit dates and changing placement types](#Extending-exit-dates-and-changing-placement-types)
+* [Extending exit dates and changing placement types](#extending-exit-dates-and-changing-placement-types)
 
-* [Viewing and moving forms](#Viewing-and-moving-forms)
+* [Viewing and moving forms](#viewing-and-moving-forms)
 
 ### Admin
 
 * [Data overview](#data-overview)
 
-* [Adding admin user accounts](#Adding-admin-user-accounts)
+* [Adding admin user accounts](#adding-admin-user-accounts)
 
-* [Entering a new youth or editing and existing youth data](#Entering-a-new-youth-or-editing-and-existing-youth-data)
+* [Entering a new youth or editing and existing youth data](#entering-a-new-youth-or-editing-and-existing-youth-data)
+
+* [Changing columns on the homepage youth tracker](#changing-columns)
 
 ### Reading the front page
 ![homepage](https://github.com/ddmiller1995/InForm/blob/tessa-homepage/docs/screenshots/homepage.png)
@@ -118,3 +120,10 @@ This page can be accessed either by clicking the `Add Youth` button off the home
 If the youth has been to the shelter before and has previous visit data in the system, start typing their name into the search box to autofill some of the required data. Otherwise, click the `add` button next to the youth field. 
 
 The only fields required to enter a youth into the system are in **bold**. You are welcome to leave the remaining fields blank and return to edit them later. Be sure to click Save near the bottom of the page to finish the process. 
+
+### Changing columns
+![admin youth tracker columns](https://github.com/ddmiller1995/InForm/blob/tessa-homepage/docs/screenshots/columns.png)
+
+Use this page to modify the columns visible on the homepage. All available data fields will be listed, but you will have to select which ones will be displayed and in what order. Select a field name to change its ordering or its displayed name.
+
+The ordering starts at 0, so given the example ordering in the screenshot above, `Youth Name` will be the first column shown in the homepage youth tracker.
