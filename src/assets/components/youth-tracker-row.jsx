@@ -43,7 +43,8 @@ export default class extends React.Component {
         postRequest(url, data);
     }
 
-    toggleModal() {
+    toggleModal(e) {
+        e.stopPropagation();
         let that = this;
         let div = this.buildDialog();
         // if dialog doesn't exist, append it
@@ -103,7 +104,7 @@ export default class extends React.Component {
             return (
                 <td key={this.props.youth.visit_exit_date} className="exit-column">
                     {formatDate(this.props.youth.visit_exit_date) ||
-                    <button className="mdl-button mdl-js-button add-exit" onClick={() => this.toggleModal()}>
+                    <button className="mdl-button mdl-js-button add-exit" onClick={(e) => this.toggleModal(e)}>
                         <i className="material-icons add-exit-icon">add</i>Add
                     </button>}
                 </td>
