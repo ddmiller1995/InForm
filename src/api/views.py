@@ -457,7 +457,6 @@ class UploadFileForm(forms.Form):
 class ImportYouthVisits(APIView):
     def post(self, request, format=None):
         from fuzzywuzzy import fuzz
-        
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             f = request.FILES['file']
