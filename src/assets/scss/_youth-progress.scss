@@ -138,7 +138,22 @@
     }
 
     .form-dialog {
-        width: 25% !important;
+        width: 40% !important;
+        padding: 5px 1%;
+
+        #notes-textarea {
+            font-family: "Helvetica","Arial",sans-serif;
+            width: calc(100% - 6px);
+        }
+
+        .form-info-divider {
+            border-color: $light-green;
+            width: 200px;
+        }
+
+        .notes-header {
+            margin-bottom: 5px;
+        }
     }
 
     .mdl-layout__header-row {

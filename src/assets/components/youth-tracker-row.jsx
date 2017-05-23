@@ -64,7 +64,7 @@ export default class extends React.Component {
         // @param2: index of dialog in childNodes array
         registerDialog(".youth-tracker-container", 2);
         // create post request on "save", then close modal
-        document.getElementById("dialog-submit").addEventListener("click", function () {
+        document.getElementById("submit-dialog").addEventListener("click", function () {
             that.postExit();
             let dialog = document.querySelector("dialog");
             closeDialog(dialog, ".youth-tracker-container", 2);
@@ -95,8 +95,8 @@ export default class extends React.Component {
                     </p>
                 </div>
                 <div id="dialog-actions">
-                    <button type="button" id="dialog-submit">Save</button>
-                    <button type="button" id="dialog-close">Cancel</button>
+                    <button type="button" class="mdl-button mdl-js-button" id="submit-dialog">Save</button>
+                    <button type="button" class="mdl-button mdl-js-button" id="close-dialog">Cancel</button>
                 </div>
             </dialog>
         `);

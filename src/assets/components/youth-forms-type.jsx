@@ -37,6 +37,15 @@ export default class extends React.Component {
         // @param1: parent container that dialog child will be added and removed from
         // @param2: index of dialog in childNodes array
         registerDialog(".board", 3);
+        
+
+        let button = document.getElementById("save-notes");
+        let _this = this;
+        button.addEventListener('click', function() {
+            _this.postNotes(form.form_id);
+        });
+
+        
     }
 
     buildDialog(form) {
@@ -44,21 +53,35 @@ export default class extends React.Component {
         let modal = (
             `<dialog id="mdl-dialog" class="exit-dialog form-dialog">
                 <h4>` + form.form_name + ` - ` + form.form_type + `</h4>
-                <p>Days remaining: ` + this.formatDaysRemainingText(form.days_remaining, form.status) + `</p>
-                ` + (form.form_description.length > 0 ? `<p>Description: ` + form.form_description + `</p>` : ``) +
-                `<p>Status: ` + titleCase(form.status) + 
+                <hr class="form-info-divider">
+                <p><strong>Days remaining:</strong> ` + this.formatDaysRemainingText(form.days_remaining, form.status) + `</p>
+                ` + (form.form_description.length > 0 ? `<p><strong>Description:</strong> ` + form.form_description + `</p>` : ``) +
+                `<p><strong>Status:</strong> ` + titleCase(form.status) + 
                     (form.status == "done" && form.completed_by.full_name != null ? 
-                    " - Completed by: " + form.completed_by.full_name : 
+                    " - <strong>Completed by:</strong> " + form.completed_by.full_name : 
                     "") + 
                 `</p>
+                <p class="notes-header"><strong>Notes:</strong></p>
+                <textarea name="notes" id="notes-textarea" cols="30" rows="8">` + form.notes + `</textarea>
                 <div id="dialog-actions">
-                    <button type="button" class="mdl-button mdl-js-button" id="dialog-close">Close</button>
+                    <button type="button" class="mdl-button mdl-js-button" id="save-notes">Submit</button>
+                    <button type="button" class="mdl-button mdl-js-button" id="close-dialog">Close</button>
                 </div>
             </dialog>`
         );
 
         div.innerHTML = modal;
         return div;
+    }
+
+    postNotes(formID) {
+        let visitID = this.props.visitID;
+        let url = "/api/visit/" + visitID + "/edit-form-note/";
+        let notes = document.getElementById("notes-textarea").value;
+        let data = new FormData();
+        data.append("form_id", formID);
+        data.append("note", notes);
+        postRequest(url, data);
     }
 
     formatDaysRemaining(days, status) {
