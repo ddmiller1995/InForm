@@ -1,6 +1,6 @@
 import React from 'react';
 import {store, setCurrentYouth} from "./shared-state.js";
-import {Link, IndexLink} from "react-router";
+import {Link, IndexLink, hashHistory} from "react-router";
 import { formatDate, formatTime, registerDialog} from '../util.js'
 import { closeDialog, postRequest, calcPercentage } from '../util.js'
 import "whatwg-fetch";
@@ -12,6 +12,8 @@ export default class extends React.Component {
     constructor(props) {
         super(props);
         this.state = store.getState();
+
+        this.handleRowClick = this.handleRowClick.bind(this);
     }
 
     componentDidMount() {
@@ -20,18 +22,6 @@ export default class extends React.Component {
 
     componentWillUnmount() {
         this.unsub();
-    }
-
-    wrapIndexLink(data) {
-        return (
-            <IndexLink 
-                className="mdl-navigation__link" 
-                to="/youth"
-                key={data} 
-                onClick={() => this.registerYouth()}>
-                {data}
-            </IndexLink>
-        );
     }
 
     registerYouth() {
@@ -53,7 +43,8 @@ export default class extends React.Component {
         postRequest(url, data);
     }
 
-    toggleModal() {
+    toggleModal(e) {
+        e.stopPropagation();
         let that = this;
         let div = this.buildDialog();
         // if dialog doesn't exist, append it
@@ -64,7 +55,7 @@ export default class extends React.Component {
         // @param2: index of dialog in childNodes array
         registerDialog(".youth-tracker-container", 2);
         // create post request on "save", then close modal
-        document.getElementById("dialog-submit").addEventListener("click", function () {
+        document.getElementById("submit-dialog").addEventListener("click", function () {
             that.postExit();
             let dialog = document.querySelector("dialog");
             closeDialog(dialog, ".youth-tracker-container", 2);
@@ -95,8 +86,8 @@ export default class extends React.Component {
                     </p>
                 </div>
                 <div id="dialog-actions">
-                    <button type="button" id="dialog-submit">Save</button>
-                    <button type="button" id="dialog-close">Cancel</button>
+                    <button type="button" class="mdl-button mdl-js-button" id="submit-dialog">Save</button>
+                    <button type="button" class="mdl-button mdl-js-button" id="close-dialog">Cancel</button>
                 </div>
             </dialog>
         `);
@@ -113,7 +104,7 @@ export default class extends React.Component {
             return (
                 <td key={this.props.youth.visit_exit_date} className="exit-column">
                     {formatDate(this.props.youth.visit_exit_date) ||
-                    <button className="mdl-button mdl-js-button add-exit" onClick={() => this.toggleModal()}>
+                    <button className="mdl-button mdl-js-button add-exit" onClick={(e) => this.toggleModal(e)}>
                         <i className="material-icons add-exit-icon">add</i>Add
                     </button>}
                 </td>
@@ -144,13 +135,25 @@ export default class extends React.Component {
                 let field = this.props.fields[i];
                 // Special case that needs a CSS class added
                 if(field.field_path == "estimated_exit_date") {
-                    cells.push(<td key={field.field_name} className={duration}>{this.wrapIndexLink(this.parseFieldPath(field.field_path))}</td>);
+                    cells.push(
+                        <td key={field.field_name} className={duration + " mdl-navigation__link"}>
+                            {this.parseFieldPath(field.field_path)}
+                        </td>
+                    );
                 } else {
-                    cells.push(<td key={field.field_name} >{this.wrapIndexLink(this.parseFieldPath(field.field_path))}</td>);
+                    cells.push(
+                        <td key={field.field_name} className="mdl-navigation__link">
+                            {this.parseFieldPath(field.field_path)}
+                        </td>
+                    );
                 }
             }
             // Add the "+ Add" Exit Date button in not in presentation mode
-            cells.push(this.checkIfPresentationMode()); 
+            if(cells.length > 0) {
+                cells.push(this.checkIfPresentationMode()); 
+            } else {
+                cells.push(<td className="mdl-navigation__link">No Fields to Display</td>);
+            }
         }
         return cells;
     }
@@ -177,11 +180,17 @@ export default class extends React.Component {
             return calcPercentage(value[path]);
         }
 
-        // Iteratively lookup the value  in the object
-        for(let i = 0; i < parts.length; i++) {
-            let part = parts[i].trim();
-            value = value[part];
+        // Iteratively lookup the value in the object
+        try {
+            for(let i = 0; i < parts.length; i++) {
+                let part = parts[i].trim();
+                value = value[part];
+            }
+        } catch(TypeError) {
+            console.log("Error: Youth Tracker Field Path '" + path + "' is incorrectly formatted");
+            return "Data Lookup Error";
         }
+
 
         // Regex for the expected date format
         let pattern = /\d{4}-\d{2}-\d{2}/;
@@ -195,11 +204,17 @@ export default class extends React.Component {
         return value
     }
 
+    handleRowClick() {
+        hashHistory.push("/youth");
+        this.registerYouth();
+        
+    }
+
     render() {
         let cells = this.getCells();
 
         return (
-            <tr>
+            <tr onClick={this.handleRowClick} >
                 {cells}
             </tr>
         )

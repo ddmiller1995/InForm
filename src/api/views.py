@@ -368,6 +368,56 @@ class YouthEditNote(APIView):
         }, status=status.HTTP_202_ACCEPTED)
 
 
+class FormEditNote(APIView):
+    '''Edit a Form Youth visit's note
+    '''
+    renderer_classes = (JSONRenderer, )
+
+    def post(self, request, youth_visit_id, format=None):
+        try:
+            youth_visit = YouthVisit.objects.get(pk=youth_visit_id)
+        except YouthVisit.DoesNotExist:
+            response = Response(status=status.HTTP_404_NOT_FOUND)
+            response['error'] = 'Youth visit pk=%s does not exist' % youth_visit_id
+            return response
+
+        form_id = request.POST.get('form_id', None)
+
+        if not form_id:
+            response = Response(status=status.HTTP_400_BAD_REQUEST)
+            response['error'] = 'Missing POST param "form_id"'
+            return response
+            
+        try:
+            form = Form.objects.get(pk=form_id)
+        except Form.DoesNotExist:
+            response = Response(status=status.HTTP_404_NOT_FOUND)
+            response['error'] = 'Form pk=%s does not exist' % form_id
+            return response
+
+        note = request.POST.get('note', None)
+        if not note:
+            response = Response(status=status.HTTP_400_BAD_REQUEST)
+            response['error'] = 'Missing POST param "note"'
+            return response
+
+        try:
+            form_youth_visit = FormYouthVisit.objects.get(
+                youth_visit_id=youth_visit.id,
+                form_id=form.id)
+        except FormYouthVisit.DoesNotExist:
+            response = Response(status=status.HTTP_404_NOT_FOUND)
+            response['error'] = 'FormYouthVisit with YouthVisit pk=%d and Form pk=%d does not exist' % (youth_visit.id, form.id)
+            return response
+
+        form_youth_visit.notes = note
+        form_youth_visit.save()
+
+        return Response({
+            'form_youth_visit_id': form_youth_visit.id,
+            'note': note
+        }, status=status.HTTP_202_ACCEPTED)
+
 class PlacementTypeList(APIView):
     '''~
     List all placement types

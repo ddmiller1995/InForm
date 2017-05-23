@@ -240,6 +240,41 @@
             </div>
         </div>
 
+        <div class="endpoint">
+            <div class="path">
+                <h2>/api/visit/&lt;pk&gt;/edit-form-note</h2>
+            </div>
+
+
+            <div class="method">
+                <h3>POST</h3>
+                <h4>Behavior</h4>
+                <p>Edit the form youth visit's note field</p>
+
+                <pre>
+    Params:
+        - youth_visit_id is parsed from the url and represents the pk
+            of the youth_visit whose placement we are going to change
+        - form_id is a POST param that is required. It
+            is the pk of the Form that the FormYouthVisit we are going to
+            change has a foreign key to
+        - note is a POST param that is required. It 
+            is a string value that gets stored in the youth_visit entry
+    Success:
+        - If the request was succesfull, you will receive a
+            HTTP_202_ACCEPTED response
+        - The response will include the note value that was set
+    Failure:
+        - If the request does not include a valid youth_visit_id,
+            you will get a HTTP_404_NOT_FOUND response
+        - If the request does not include all of the required
+            POST params, you will receive a HTTP_400_BAD_REQUEST response
+        - All failure responses will have a "error" header with an
+            error message
+                </pre>
+
+            </div>
+        </div>
 
         <div class="endpoint">
             <div class="path">
