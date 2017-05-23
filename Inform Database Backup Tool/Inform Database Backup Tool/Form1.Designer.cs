@@ -33,6 +33,7 @@
             this.restoreButton = new System.Windows.Forms.Button();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
+            this.restartButton_Click = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -43,6 +44,7 @@
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.Controls.Add(this.backupButton, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.restoreButton, 0, 2);
+            this.tableLayoutPanel1.Controls.Add(this.restartButton_Click, 0, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -92,6 +94,19 @@
             this.saveFileDialog.Filter = "JSON Files (*.json)|*.json|All files (*.*)|*.*";
             this.saveFileDialog.Title = "Save a database backup";
             // 
+            // restartButton_Click
+            // 
+            this.tableLayoutPanel1.SetColumnSpan(this.restartButton_Click, 2);
+            this.restartButton_Click.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.restartButton_Click.Location = new System.Drawing.Point(200, 200);
+            this.restartButton_Click.Margin = new System.Windows.Forms.Padding(200);
+            this.restartButton_Click.Name = "restartButton_Click";
+            this.restartButton_Click.Size = new System.Drawing.Size(1518, 282);
+            this.restartButton_Click.TabIndex = 2;
+            this.restartButton_Click.Text = "Restart";
+            this.restartButton_Click.UseVisualStyleBackColor = true;
+            this.restartButton_Click.Click += new System.EventHandler(this.restartButton_Click_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
@@ -112,6 +127,7 @@
         private System.Windows.Forms.Button restoreButton;
         private System.Windows.Forms.OpenFileDialog openFileDialog;
         private System.Windows.Forms.SaveFileDialog saveFileDialog;
+        private System.Windows.Forms.Button restartButton_Click;
     }
 }
 

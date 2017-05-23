@@ -27,6 +27,30 @@ namespace BackupApi
                 {
                     return null;
                 }
+                return projectRoot.FullName;
+            }
+            return null;
+        }
+
+        public static string ComputeProjectSrc()
+        {
+            string[] drives = Environment.GetLogicalDrives();
+            foreach (string dr in drives)
+            {
+                DriveInfo di = new DriveInfo(dr);
+                if (!di.IsReady)
+                {
+                    continue;
+                }
+                DirectoryInfo driveRootDir = di.RootDirectory;
+
+
+
+                DirectoryInfo projectRoot = GetChildDirOrNull(driveRootDir, "InForm");
+                if (projectRoot == null)
+                {
+                    return null;
+                }
 
                 DirectoryInfo projectSrc = GetChildDirOrNull(projectRoot, "src");
                 if (projectSrc == null)

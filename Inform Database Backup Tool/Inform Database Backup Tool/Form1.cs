@@ -62,12 +62,12 @@ namespace Inform_Database_Backup_Tool
             {
                 Cursor.Current = Cursors.WaitCursor;
                 // determine where the project is stored in the file system
-                string projectRoot = ProjectRootService.ComputeProjectRoot();
+                string projectSrc = ProjectRootService.ComputeProjectSrc();
 
                 string filename = openFileDialog.FileName;
                 string command = "python manage.py loaddata " + filename;
                 // execute the command to retrieve the database dump
-                string json = CommandService.Execute(projectRoot, command);
+                string json = CommandService.Execute(projectSrc, command);
                 Cursor.Current = Cursors.Default;
 
                 string message = "Succesfully restored database from backup file: " + openFileDialog.FileName;
@@ -78,6 +78,16 @@ namespace Inform_Database_Backup_Tool
 
                 if (dialogResult == DialogResult.Yes) { this.Close(); }
             }
+        }
+
+        private void restartButton_Click_Click(object sender, EventArgs e)
+        {
+            Cursor.Current = Cursors.WaitCursor;
+            string projectRoot = ProjectRootService.ComputeProjectRoot();
+            string command = "docker-compose restart";
+            string result = CommandService.Execute(projectRoot, command);
+            Cursor.Current = Cursors.Default;
+
         }
     }
 }
