@@ -22,6 +22,7 @@ namespace Inform_Database_Backup_Tool
 
         private void backupButton_Click(object sender, EventArgs e)
         {
+            ProjectRootService.ComputeProjectRoot();
 
             if (saveFileDialog.ShowDialog() == DialogResult.OK || saveFileDialog.FileName != "")
             {
