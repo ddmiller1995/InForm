@@ -20,6 +20,10 @@ caption, h2, .submit-row input {
     border: none;
 }
 
+.login .submit-row {
+    position: relative;
+}
+
 #branding h1, #branding h1 a:link, #branding h1 a:visited {
     color: white;
 }
