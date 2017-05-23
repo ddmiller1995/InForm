@@ -25,6 +25,7 @@ namespace Inform_Database_Backup_Tool
 
             if (saveFileDialog.ShowDialog() == DialogResult.OK || saveFileDialog.FileName != "")
             {
+                Cursor.Current = Cursors.WaitCursor;
                 // determine where the project is stored in the file system
                 string projectRoot = ProjectRootService.ComputeProjectRoot();
 
@@ -38,11 +39,13 @@ namespace Inform_Database_Backup_Tool
                 if (fileSaved)
                 {
                     message.Append("Succesfully backed up database to ");
-                } else
+                }
+                else
                 {
                     message.Append("Failed to backup database to ");
                 }
                 message.Append(saveFileDialog.FileName);
+                Cursor.Current = Cursors.Default;
 
                 string caption = "InForm Database Backup";
                 MessageBoxButtons buttons = MessageBoxButtons.OK;
@@ -56,6 +59,7 @@ namespace Inform_Database_Backup_Tool
         {
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
+                Cursor.Current = Cursors.WaitCursor;
                 // determine where the project is stored in the file system
                 string projectRoot = ProjectRootService.ComputeProjectRoot();
 
@@ -63,6 +67,7 @@ namespace Inform_Database_Backup_Tool
                 string command = "python manage.py loaddata " + filename;
                 // execute the command to retrieve the database dump
                 string json = CommandService.Execute(projectRoot, command);
+                Cursor.Current = Cursors.Default;
 
                 string message = "Succesfully restored database from backup file: " + openFileDialog.FileName;
 
