@@ -111,10 +111,27 @@ export default class extends React.Component {
         
     }
 
+    compareForms(a, b) {
+        let days_diff = a.days_remaining - b.days_remaining;
+        if(days_diff == 0) {
+            let a_name_upper = a.form_name.toUpperCase();
+            let b_name_upper = b.form_name.toUpperCase();
+            if(a_name_upper < b_name_upper) {
+                return -1;
+            } else if(a_name_upper > b_name_upper) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+        return days_diff;
+    }
+
     getFormCards() {
         let cards = [];
-        for(let i = 0; i < this.props.forms.length; i++) {
-            let form = this.props.forms[i];
+        let sortedForms = this.props.forms.sort(this.compareForms);
+        for(let i = 0; i < sortedForms.length; i++) {
+            let form = sortedForms[i];
             cards.push(
                 <div key={form.form_name} className="demo-card-wide mdl-card mdl-shadow--2dp">
                     <div className="mdl-card__title" onClick={() => this.toggleModal(form)}>
