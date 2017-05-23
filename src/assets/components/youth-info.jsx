@@ -96,7 +96,7 @@ export default class extends React.Component {
         // @param2: index of dialog in childNodes array
         registerDialog(".youth-info-container", 5);
         // create post request on "save", then close modal
-        document.getElementById("dialog-submit").addEventListener("click", function () {
+        document.getElementById("submit-dialog").addEventListener("click", function () {
             postFunction(that);
             let dialog = document.querySelector("dialog");
             closeDialog(dialog, ".youth-info-container", 5);
@@ -121,8 +121,8 @@ export default class extends React.Component {
                     <p>New estimated exit: <span id="new-estimate"></span></p>
                 </div>
                 <div id="dialog-actions">
-                    <button type="button" id="dialog-submit">Save</button>
-                    <button type="button" id="dialog-close">Cancel</button>
+                    <button class="mdl-button mdl-js-button" type="button" id="submit-dialog">Save</button>
+                    <button class="mdl-button mdl-js-button" type="button" id="close-dialog">Cancel</button>
                 </div>
             </dialog>
         `);
@@ -148,8 +148,8 @@ export default class extends React.Component {
                     <p>Transfer Date: <span><input id="date-input" type="date" value=`+today+`></input></span></p>
                 </div>
                 <div id="dialog-actions">
-                    <button type="button" id="dialog-submit">Save</button>
-                    <button type="button" id="dialog-close">Cancel</button>
+                    <button type="button" class="mdl-button mdl-js-button" id="submit-dialog">Save</button>
+                    <button type="button" class="mdl-button mdl-js-button" id="close-dialog">Cancel</button>
                 </div>
             </dialog>
         `);

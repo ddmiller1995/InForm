@@ -36,7 +36,7 @@ export function registerDialog(parentNode, child) {
         }
 
         dialog.showModal();
-        document.getElementById("dialog-close").addEventListener("click", function () {
+        document.getElementById("close-dialog").addEventListener("click", function () {
             closeDialog(dialog, parentNode, child);
         });
     }

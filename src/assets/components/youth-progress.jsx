@@ -73,6 +73,7 @@ export default class extends React.Component {
         for(let i = 0; i < statuses.length; i++) {
             let status = statuses[i];
             columns.push(<YouthFormsColumn key={status} status={status} handler={this.changeFormStatusHandler} 
+                                           visitID={this.visitExists() ? this.state.currentYouth.youth_visits[0].youth_visit_id : null}
                                            formTypes={this.state.form_types} forms={forms_by_status[status]} />);
         }
         return columns;

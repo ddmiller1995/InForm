@@ -450,6 +450,30 @@ class YouthModelTests(TestCase):
         self.assertEqual(response.status_code, 202)
         self.assertEqual(youth_visit.notes, note)
 
+    def test_form_edit_note_success(self):
+        client = APIClient()
+        client.force_authenticate(self.user)
+
+        youth_visit_id = 2
+        form_id = 1
+
+        note = '''
+        blah blah
+        lorem ipsum notes
+        yay'''
+
+        url = reverse('form-edit-note', args=[youth_visit_id])
+
+        response = client.post(url, {
+            'form_id': form_id,
+            'note': note
+        })
+
+        form_youth_visit = FormYouthVisit.objects.get(youth_visit_id=youth_visit_id, form_id=form_id)
+
+        self.assertEqual(response.status_code, 202)
+        self.assertEqual(form_youth_visit.notes, note)
+
     def test_form_youth_visit_days_remaining_with_days_remaining(self):
         visit = YouthVisit.objects.get(pk=3) # Visit started 3 days ago
         visit.visit_start_date = timezone_date() - timedelta(days=3)

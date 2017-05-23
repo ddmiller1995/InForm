@@ -47,10 +47,12 @@
   white-space: normal;
   word-wrap: break-word;
   max-width: 215px; }
-.mdl-data-table.mdl-js-data-tabled .seven-days .mdl-navigation__link {
-  color: #E17000; }
-.mdl-data-table.mdl-js-data-tabled .three-days .mdl-navigation__link {
-  color: red; }
+.seven-days {
+  color: #E17000;
+}
+.three-days {
+  color: red;
+}
 .mdl-data-table.mdl-js-data-tabled .exit-column {
   padding: 0 0 0 5px; }
 
@@ -78,6 +80,8 @@
     padding-right: 3px; }
   .youth-tracker-container tbody tr:focus, .youth-tracker-container tbody tr:hover {
     background-color: rgba(156, 177, 208, 0.67); }
+  .youth-tracker-container tbody tr:hover {
+    cursor: pointer; }
   .youth-tracker-container #mdl-dialog {
     width: 375px; }
     .youth-tracker-container #mdl-dialog #exit-warning {
@@ -243,7 +247,8 @@ h4 {
 #notes-input {
   width: 96%;
   margin: 1%;
-  margin-bottom: 3%; }
+  margin-bottom: 3%;
+  font-family: "Helvetica","Arial",sans-serif; }
 
 .save-notes {
   position: absolute;
@@ -333,7 +338,16 @@ h4 {
   .board .form-type .filled-form-type-title {
     color: black; }
   .board .form-dialog {
-    width: 25% !important; }
+    width: 40% !important;
+    padding: 5px 1%; }
+    .board .form-dialog #notes-textarea {
+      font-family: "Helvetica","Arial",sans-serif;
+      width: calc(100% - 6px); }
+    .board .form-dialog .form-info-divider {
+      border-color: #8fbc49;
+      width: 200px; }
+    .board .form-dialog .notes-header {
+      margin-bottom: 5px; }
   .board .mdl-layout__header-row {
     background-color: #8fbc49; }
 
