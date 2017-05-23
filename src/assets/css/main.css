@@ -78,6 +78,8 @@
     padding-right: 3px; }
   .youth-tracker-container tbody tr:focus, .youth-tracker-container tbody tr:hover {
     background-color: rgba(156, 177, 208, 0.67); }
+  .youth-tracker-container tbody tr:hover {
+    cursor: pointer; }
   .youth-tracker-container #mdl-dialog {
     width: 375px; }
     .youth-tracker-container #mdl-dialog #exit-warning {

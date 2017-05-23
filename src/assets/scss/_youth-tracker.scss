@@ -66,6 +66,10 @@
         background-color: rgba(156, 177, 208, 0.67);
     }
 
+    tbody tr:hover {
+        cursor: pointer;
+    }
+
     #mdl-dialog {
         width: 375px;
 

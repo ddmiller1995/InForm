@@ -1,6 +1,6 @@
 import React from 'react';
 import {store, setCurrentYouth} from "./shared-state.js";
-import {Link, IndexLink} from "react-router";
+import {Link, IndexLink, hashHistory} from "react-router";
 import { formatDate, formatTime, registerDialog} from '../util.js'
 import { closeDialog, postRequest, calcPercentage } from '../util.js'
 import "whatwg-fetch";
@@ -12,6 +12,8 @@ export default class extends React.Component {
     constructor(props) {
         super(props);
         this.state = store.getState();
+
+        this.handleRowClick = this.handleRowClick.bind(this);
     }
 
     componentDidMount() {
@@ -20,18 +22,6 @@ export default class extends React.Component {
 
     componentWillUnmount() {
         this.unsub();
-    }
-
-    wrapIndexLink(data) {
-        return (
-            <IndexLink 
-                className="mdl-navigation__link" 
-                to="/youth"
-                key={data} 
-                onClick={() => this.registerYouth()}>
-                {data}
-            </IndexLink>
-        );
     }
 
     registerYouth() {
@@ -144,9 +134,17 @@ export default class extends React.Component {
                 let field = this.props.fields[i];
                 // Special case that needs a CSS class added
                 if(field.field_path == "estimated_exit_date") {
-                    cells.push(<td key={field.field_name} className={duration}>{this.wrapIndexLink(this.parseFieldPath(field.field_path))}</td>);
+                    cells.push(
+                        <td key={field.field_name} className={duration + " mdl-navigation__link"}>
+                            {this.parseFieldPath(field.field_path)}
+                        </td>
+                    );
                 } else {
-                    cells.push(<td key={field.field_name} >{this.wrapIndexLink(this.parseFieldPath(field.field_path))}</td>);
+                    cells.push(
+                        <td key={field.field_name} className="mdl-navigation__link">
+                            {this.parseFieldPath(field.field_path)}
+                        </td>
+                    );
                 }
             }
             // Add the "+ Add" Exit Date button in not in presentation mode
@@ -195,11 +193,17 @@ export default class extends React.Component {
         return value
     }
 
+    handleRowClick() {
+        hashHistory.push("/youth");
+        this.registerYouth();
+        
+    }
+
     render() {
         let cells = this.getCells();
 
         return (
-            <tr>
+            <tr onClick={this.handleRowClick} >
                 {cells}
             </tr>
         )
