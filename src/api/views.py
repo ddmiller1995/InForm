@@ -414,7 +414,7 @@ class FormEditNote(APIView):
         form_youth_visit.save()
 
         return Response({
-            'form_youth_visit_id': form_youth_visit_id,
+            'form_youth_visit_id': form_youth_visit.id,
             'note': note
         }, status=status.HTTP_202_ACCEPTED)
 
