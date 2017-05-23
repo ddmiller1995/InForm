@@ -148,7 +148,11 @@ export default class extends React.Component {
                 }
             }
             // Add the "+ Add" Exit Date button in not in presentation mode
-            cells.push(this.checkIfPresentationMode()); 
+            if(cells.length > 0) {
+                cells.push(this.checkIfPresentationMode()); 
+            } else {
+                cells.push(<td className="mdl-navigation__link">No Fields to Display</td>);
+            }
         }
         return cells;
     }
@@ -175,11 +179,17 @@ export default class extends React.Component {
             return calcPercentage(value[path]);
         }
 
-        // Iteratively lookup the value  in the object
-        for(let i = 0; i < parts.length; i++) {
-            let part = parts[i].trim();
-            value = value[part];
+        // Iteratively lookup the value in the object
+        try {
+            for(let i = 0; i < parts.length; i++) {
+                let part = parts[i].trim();
+                value = value[part];
+            }
+        } catch(TypeError) {
+            console.log("Error: Youth Tracker Field Path '" + path + "' is incorrectly formatted");
+            return "Data Lookup Error";
         }
+
 
         // Regex for the expected date format
         let pattern = /\d{4}-\d{2}-\d{2}/;
