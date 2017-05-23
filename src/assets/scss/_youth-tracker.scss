@@ -5,6 +5,12 @@
         text-align: left;
 
     }
+    
+    td {
+        white-space: normal;
+        word-wrap: break-word;
+        max-width: 215px;
+    }
 
     .seven-days {
         .mdl-navigation__link {
@@ -49,7 +55,11 @@
     }
 
     .presentation-link {
-        color: $light-green;
+        color: black;
+    }
+
+    .present-icon {
+        padding-right: 3px;
     }
 
     tbody tr:focus, tbody tr:hover {

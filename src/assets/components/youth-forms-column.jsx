@@ -1,6 +1,7 @@
 import React from "react";
 import {Link, IndexLink} from "react-router";
 import YouthFormsType from "./youth-forms-type.jsx";
+import {titleCase} from '../util.js';
 import "whatwg-fetch";
 
 
@@ -40,15 +41,6 @@ export default class extends React.Component {
 
         return type_components;
     }
-
-    titleCase(s) {
-        let words = s.split(' ');
-        for(let i = 0; i < words.length; i++) {
-            words[i] = words[i].charAt(0).toUpperCase() + words[i].slice(1);
-        }
-        return words.join(' ');
-    }
-
       
     render() {
         let types = this.getFormTypes();
@@ -57,10 +49,10 @@ export default class extends React.Component {
             <div className="col">
                 <header className="mdl-layout__header is-casting-shadow">
                     <div className="mdl-layout__header-row">
-                        <span className="mdl-layout-title">{this.titleCase(this.props.status)}</span>
+                        <span className="mdl-layout-title">{titleCase(this.props.status)}</span>
                     </div>
                 </header>
-                {types}
+                {types != null ? types : <span className="no-forms-message">No Forms Found</span> }
             </div>
         );
     }

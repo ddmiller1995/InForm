@@ -36,9 +36,17 @@ urlpatterns = [
         name='youth-edit-note'),
     url(r'^visit/(?P<youth_visit_id>[0-9]+)/change-form-status/$',
         views.ChangeFormStatus.as_view(), name='change-form-status'),
+    url(r'^youth-tracker-field-list/$', views.YouthTrackerFieldList.as_view(), \
+        name='youth-tracker-field-list'),
 
-    url(r'^export/youth-visits/', views.ExportYouthVisits.as_view(), \
+    url(r'^export/youth-visits/$', views.ExportYouthVisits.as_view(), \
         name='export-youth-vists'),
+
+    url(r'^import/template/$', views.DownloadImportTemplate.as_view(), \
+        name='download-import-template'),
+    url(r'^import/$', views.ImportYouthVisits.as_view(), \
+        name='import-youth-visits'),
+
 
     url(r'docs/$', views.api_docs, name='docs')
 ]

@@ -43,6 +43,10 @@
 
 .mdl-data-table.mdl-js-data-tabled th, .mdl-data-table.mdl-js-data-tabled td {
   text-align: left; }
+.mdl-data-table.mdl-js-data-tabled td {
+  white-space: normal;
+  word-wrap: break-word;
+  max-width: 215px; }
 .mdl-data-table.mdl-js-data-tabled .seven-days .mdl-navigation__link {
   color: #E17000; }
 .mdl-data-table.mdl-js-data-tabled .three-days .mdl-navigation__link {
@@ -69,7 +73,9 @@
   .youth-tracker-container .mdl-layout__header {
     background-color: white; }
   .youth-tracker-container .presentation-link {
-    color: #8fbc49; }
+    color: black; }
+  .youth-tracker-container .present-icon {
+    padding-right: 3px; }
   .youth-tracker-container tbody tr:focus, .youth-tracker-container tbody tr:hover {
     background-color: rgba(156, 177, 208, 0.67); }
   .youth-tracker-container #mdl-dialog {
@@ -245,6 +251,25 @@ h4 {
   right: 25px;
   text-transform: none; }
 
+.progress-header {
+  margin: 0px 40px -30px 40px;
+  width: calc(100% - 80px); }
+  .progress-header .mdl-button {
+    float: right; }
+  .progress-header .mdl-navigation__link {
+    color: black !important; }
+  .progress-header .material-icons {
+    padding-right: 3px; }
+  .progress-header .visit-date {
+    color: rgba(0, 0, 0, 0.5);
+    font-size: 16px;
+    display: inline-block;
+    height: 36px;
+    line-height: 36px;
+    vertical-align: middle; }
+  .progress-header .date-part {
+    color: black; }
+
 .board {
   margin: 40px;
   border: 1px solid #ccc;
@@ -260,18 +285,32 @@ h4 {
       width: 90%;
       margin: 15px auto;
       min-height: 125px; }
+      .board .col .demo-card-wide.mdl-card .mdl-card__title:hover {
+        cursor: pointer; }
       .board .col .demo-card-wide.mdl-card .mdl-card__title-text {
         font-size: 20px; }
       .board .col .demo-card-wide.mdl-card .mdl-card__title, .board .col .demo-card-wide.mdl-card .mdl-card__supporting-text {
-        padding: 10px 16px; }
+        padding: 10px 16px;
+        font-weight: bold; }
+      .board .col .demo-card-wide.mdl-card .mdl-card__menu {
+        top: 10px; }
       .board .col .demo-card-wide.mdl-card .mdl-button--colored {
         color: #8fbc49; }
+      .board .col .demo-card-wide.mdl-card .no-due-date {
+        color: #CCC; }
       .board .col .demo-card-wide.mdl-card .due-done {
-        color: #8fbc49; }
+        color: #8fbc49;
+        font-weight: bold; }
       .board .col .demo-card-wide.mdl-card .due-now {
         color: red; }
       .board .col .demo-card-wide.mdl-card .due-soon {
         color: #E17000; }
+    .board .col .no-forms-message {
+      color: black;
+      font-size: 16px;
+      text-align: center;
+      width: 100%;
+      margin-top: 100px; }
   .board .col:nth-of-type(2) {
     border-left: 1px solid #ccc;
     border-right: 1px solid #ccc; }
@@ -279,8 +318,6 @@ h4 {
     box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2); }
     .board .mdl-layout__header .mdl-layout-title {
       margin: 0px auto; }
-  .board .mdl-card {
-    min-height: 165px; }
   .board .align-right {
     float: right; }
   .board .form-type .form-type-title {
@@ -295,6 +332,10 @@ h4 {
     border-top: 1px solid #ccc; }
   .board .form-type .filled-form-type-title {
     color: black; }
+  .board .form-dialog {
+    width: 25% !important; }
+  .board .mdl-layout__header-row {
+    background-color: #8fbc49; }
 
 .presentation-container {
   position: relative;

@@ -2,7 +2,9 @@ import React from "react";
 import {Link, IndexLink} from "react-router";
 import YouthFormsColumn from "./youth-forms-column.jsx";
 import "whatwg-fetch";
-import {postRequest, getRequest} from '../util.js';
+import {postRequest, getRequest, formatDate} from '../util.js';
+
+var moment = require("moment");
 
 const statuses = ["pending", "in progress", "done"]
 
@@ -23,13 +25,20 @@ export default class extends React.Component {
         if(this.props.currentYouth.youth_id) {
             getRequest("/api/youth/" + this.props.currentYouth.youth_id, this, "currentYouth");
         }
-        
     }
 
     componentWillReceiveProps(nextProps) {
         if(nextProps.currentYouth.youth_id) {
             getRequest("/api/youth/" + nextProps.currentYouth.youth_id, this, "currentYouth");
         }
+    }
+
+    visitExists() {
+        return (
+            this.state.currentYouth 
+            && this.state.currentYouth.youth_visits 
+            && this.state.currentYouth.youth_visits.length > 0
+        )
     }
 
     changeFormStatusHandler(form, direction) {
@@ -54,7 +63,7 @@ export default class extends React.Component {
         for(let i = 0; i < statuses.length; i++) {
             forms_by_status[statuses[i]] = [];
         }
-        if(this.state.currentYouth && this.state.currentYouth.youth_visits && this.state.currentYouth.youth_visits.length > 0) {
+        if(this.visitExists()) {
             let form_data = this.state.currentYouth.youth_visits[0].forms;
             for(let i = 0; i < form_data.length; i++) {
                 let form = form_data[i];
@@ -68,12 +77,41 @@ export default class extends React.Component {
         }
         return columns;
     }
+
+    getAdminPageLink() {
+        let path = "/admin/api/formyouthvisit/";
+        if(this.state.currentYouth) {
+            let name = this.state.currentYouth.name;
+            path += "?youth_visit_id__youth_id__youth_name=" + name;
+            if(this.visitExists()) {
+                let date = this.state.currentYouth.youth_visits[0].visit_start_date;
+                // Django admin URL parameters requires a range of dates, so this is start date to start date + 1 day
+                let endRange = moment(date).add(1, "days");
+                path += "&youth_visit_id__visit_start_date__gte=" + date 
+                    + "&youth_visit_id__visit_start_date__lt=" + endRange.format("YYYY-MM-DD");
+            }
+        }
+        return path;
+    }
       
     render() {
         let columns = this.getColumns();
 
         return (
             <div className="container">
+                <div className="progress-header">
+                    <span className="visit-date">Visit Date: {
+                        this.visitExists() ?
+                            <span className="date-part">{formatDate(this.state.currentYouth.youth_visits[0].visit_start_date)}</span> :
+                            ""
+                    }</span>
+                    <button className="mdl-button mdl-js-button edit-youth">
+                        <a className="mdl-navigation__link" href={this.getAdminPageLink()}>
+                            <i className="material-icons">mode_edit</i>
+                             Edit Visit Forms
+                        </a>
+                    </button>
+                </div>
                 <div className="board">
                     {columns}
                 </div>

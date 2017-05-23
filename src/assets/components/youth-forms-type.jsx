@@ -1,7 +1,7 @@
 import React from "react";
 import {Link, IndexLink} from "react-router";
 import "whatwg-fetch";
-import {postRequest, getRequest} from '../util.js';
+import {postRequest, getRequest, registerDialog, closeDialog, titleCase} from '../util.js';
 
 export default class extends React.Component {
     constructor(props) {
@@ -27,18 +27,65 @@ export default class extends React.Component {
         });
     }
 
+    toggleModal(form) {
+        let that = this;
+        let div = this.buildDialog(form);
+        // if dialog doesn't exist, append it
+        if (document.getElementById("mdl-dialog") == null) {
+            document.querySelector(".board").appendChild(div.firstElementChild);
+        } 
+        // @param1: parent container that dialog child will be added and removed from
+        // @param2: index of dialog in childNodes array
+        registerDialog(".board", 3);
+    }
+
+    buildDialog(form) {
+        let div = document.createElement("div"); 
+        let modal = (
+            `<dialog id="mdl-dialog" class="exit-dialog form-dialog">
+                <h4>` + form.form_name + ` - ` + form.form_type + `</h4>
+                <p>Days remaining: ` + this.formatDaysRemainingText(form.days_remaining, form.status) + `</p>
+                ` + (form.form_description.length > 0 ? `<p>Description: ` + form.form_description + `</p>` : ``) +
+                `<p>Status: ` + titleCase(form.status) + 
+                    (form.status == "done" && form.completed_by.full_name != null ? 
+                    " - Completed by: " + form.completed_by.full_name : 
+                    "") + 
+                `</p>
+                <div id="dialog-actions">
+                    <button type="button" class="mdl-button mdl-js-button" id="dialog-close">Close</button>
+                </div>
+            </dialog>`
+        );
+
+        div.innerHTML = modal;
+        return div;
+    }
+
     formatDaysRemaining(days, status) {
         if(status == "done") {
-            return <span className="due-done">Done</span>;
-        } else if(days < 0) {
-            return <span className="due-now">{"Due " + Math.abs(days) + " days ago"}</span>;
+            return <span className="due-done">{this.formatDaysRemainingText(days, status)}</span>;
+        } else if(days == null) {
+            return <span className="no-due-date">{this.formatDaysRemainingText(days, status)}</span>;
         } else if(days < 3) {
-            return <span className="due-now">{"Due in " + days + (days == 1 ? " day" : " days")}</span>;
+            return <span className="due-now">{this.formatDaysRemainingText(days, status)}</span>;
         } else if(days < 7) {
-            return <span className="due-soon">{"Due in " + days + " days"}</span>;
+            return <span className="due-soon">{this.formatDaysRemainingText(days, status)}</span>;
         } else {
-            return <span className="due-later">{"Due in " + days + " days"}</span>;
+            return <span className="due-later">{this.formatDaysRemainingText(days, status)}</span>;
         }
+    }
+
+    formatDaysRemainingText(days, status) {
+        if(status == "done") {
+            return "Done";
+        } else if(days == null) {
+            return "No due date";
+        } else if(days < 0) {
+            return "Due " + Math.abs(days) + " days ago";
+        } else {
+            return "Due in " + days + (days == 1 ? " day" : " days");
+        }
+        
     }
 
     getFormCards() {
@@ -47,7 +94,7 @@ export default class extends React.Component {
             let form = this.props.forms[i];
             cards.push(
                 <div key={form.form_name} className="demo-card-wide mdl-card mdl-shadow--2dp">
-                    <div className="mdl-card__title">
+                    <div className="mdl-card__title" onClick={() => this.toggleModal(form)}>
                         <h2 className="mdl-card__title-text">{form.form_name}</h2>
                     </div>
                     <div className="mdl-card__supporting-text">
@@ -67,12 +114,11 @@ export default class extends React.Component {
                             : ""
                         }
                     </div>
-                    
-                    {/*<div className="mdl-card__menu">
-                        <button className="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect mdl-button--colored">
-                        <i className="material-icons">share</i>
+                    <div className="mdl-card__menu">
+                        <button className="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" onClick={() => this.toggleModal(form)}>
+                            <i className="material-icons">info_outline</i>
                         </button>
-                    </div>*/}
+                    </div>
                 </div>
             );
 

@@ -3,7 +3,7 @@
 {% block title %}{{ title }} | {{ site_title|default:_('InForm site admin') }}{% endblock %}
 
 {% block branding %}
-<h1 id="site-name"><a href="{% url 'admin:index' %}">InForm Administration</a></h1>
+<h1 id="site-name"><a href="{{ site_url }}">InForm Administration</a></h1>
 {% endblock %}
 
 {% block nav-global %}{% endblock %}

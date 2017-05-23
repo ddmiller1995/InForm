@@ -1,5 +1,11 @@
+from ajax_select import make_ajax_form
+from ajax_select.admin import (AjaxSelectAdmin, AjaxSelectAdminStackedInline,
+                               AjaxSelectAdminTabularInline)
 from django.contrib import admin
-from .models import Youth, YouthVisit, PlacementType, School, FormType, Form, FormYouthVisit
+
+from .models import (Form, FormType, FormYouthVisit, PlacementType, School,
+                     Youth, YouthVisit, YouthTrackerField)
+
 
 # class QuestionInline(admin.TabularInline):
 #     model = Question
@@ -15,11 +21,16 @@ class YouthAdmin(admin.ModelAdmin):
         'ethnicity'
     )
 
-class YouthVisitAdmin(admin.ModelAdmin):
+class YouthVisitAdmin(AjaxSelectAdmin):
     list_display = ('youth_id', 'current_placement_start_date', 'city_of_origin', 'estimated_exit_date', 'is_active')
     search_fields = ['youth_id__youth_name']
     list_filter = ('youth_id', 'current_placement_start_date', 'city_of_origin',
                     'case_manager', 'personal_counselor')
+
+    form = make_ajax_form(YouthVisit, {
+        # fieldname: channel_name
+        'youth_id': 'youth'
+    })
 
     fieldsets = [
         (None, {'fields': [
@@ -49,7 +60,6 @@ class YouthVisitAdmin(admin.ModelAdmin):
         }),
         ('School', {
             'classes': ('wide', 'extrapretty',), 
-            'description': 'School information',
             'fields': [
                 'school',
                 ('school_am_transport', 'school_pm_transport'),
@@ -116,7 +126,69 @@ class FormAdmin(admin.ModelAdmin):
         'form_type_id__form_type_name'
     ]
 class FormYouthVisitAdmin(admin.ModelAdmin):
-    pass
+    list_display = [
+        'get_form_name',
+        'get_youth_name',
+        'get_youth_visit_start_date',
+        'status'
+    ]
+
+    def get_youth_name(self, obj):
+        return obj.youth_visit_id.youth_id.youth_name
+    get_youth_name.admin_order_field = 'youth_visit_id__youth_id__youth_name'
+    get_youth_name.short_description = 'Youth Name'
+
+    def get_youth_visit_start_date(self, obj):
+        return obj.youth_visit_id.visit_start_date
+    get_youth_visit_start_date.admin_order_field = 'youth_visit_id__visit_start_date'
+    get_youth_visit_start_date.short_description = 'Youth Visit Start Date'
+
+    def get_form_name(self, obj):
+        return obj.form_id.form_name
+    get_form_name.admin_order_field = 'form_id__form_name'
+    get_form_name.short_description = 'Form Name'
+
+    list_filter = (
+        'form_id__form_name',
+        'youth_visit_id__visit_start_date',
+        'status',
+        'youth_visit_id__youth_id__youth_name'        
+    )
+
+    search_fields = [
+        'youth_visit_id__youth_id__youth_name',
+        'form_id__form_name',
+        'form_id__form_description'
+    ]
+
+class YouthTrackerFieldAdmin(admin.ModelAdmin):
+    # Uncomment before releasing to Client
+    # exclude = ('field_path',)
+    ordering = ('-displayed', 'order',)
+
+    list_display = [
+        'field_name',
+        'order',
+        'displayed'
+    ]
+
+    list_filter = [
+        'displayed'
+    ]
+
+    search_fields = [
+        'field_name'
+    ]
+
+    def get_actions(self, request):
+        #Disable delete
+        actions = super(YouthTrackerFieldAdmin, self).get_actions(request)
+        del actions['delete_selected']
+        return actions
+
+    def has_delete_permission(self, request, obj=None):
+        #Disable delete
+        return False
 
 admin.site.register(Youth, YouthAdmin)
 admin.site.register(YouthVisit, YouthVisitAdmin)
@@ -125,3 +197,4 @@ admin.site.register(School, SchoolAdmin)
 admin.site.register(FormType, FormTypeAdmin)
 admin.site.register(Form, FormAdmin)
 admin.site.register(FormYouthVisit, FormYouthVisitAdmin)
+admin.site.register(YouthTrackerField, YouthTrackerFieldAdmin)
