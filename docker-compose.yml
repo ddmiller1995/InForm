@@ -28,15 +28,3 @@
       ports:
         - "8001:80"
       restart: always
-  # hotloader:
-  #   build:
-  #     context: .
-  #     dockerfile: docker/hotloader.Dockerfile
-  #   container_name: hl01
-  #   command: bash -c "npm install --no-bin-links && npm start"
-  #   volumes:
-  #     - ./src:/src
-  #   expose:
-  #     - "3000"
-  #   ports:
-  #     - "3000:3000"
