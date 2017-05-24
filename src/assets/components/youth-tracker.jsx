@@ -32,7 +32,11 @@ export default class extends React.Component {
         let headers;
         if(this.state.fields) {
             headers = this.state.fields.fields.map(field => <th key={field.field_name} >{field.field_name}</th>);
-            headers.push(<th key='Exit date'>Exit Date</th>);
+            if(headers.length > 0) {
+                headers.push(<th key='Exit date'>Exit Date</th>);
+            } else {
+                headers.push(<th key={0}></th>);
+            }
         }
         return headers;
     }

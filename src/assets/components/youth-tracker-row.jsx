@@ -152,7 +152,7 @@ export default class extends React.Component {
             if(cells.length > 0) {
                 cells.push(this.checkIfPresentationMode()); 
             } else {
-                cells.push(<td className="mdl-navigation__link">No Fields to Display</td>);
+                cells.push(<td key={0} className="mdl-navigation__link">No Fields to Display</td>);
             }
         }
         return cells;
