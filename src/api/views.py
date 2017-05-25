@@ -533,9 +533,9 @@ class ImportYouthVisits(APIView):
             # Delete youth and youth visit objects in the database
             Youth.objects.all().delete()
             YouthVisit.objects.all().delete()
-            FormType.objects.all().delete()
+            PlacementType.objects.all().delete()
             FormYouthVisit.objects.all().delete()
-            School.objects.all().delete()
+            # School.objects.all().delete()
 
             for key, value in youth_map.items():
                 for line in value:
