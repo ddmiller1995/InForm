@@ -43,6 +43,7 @@ class CsvLine(object):
             raise CsvLineParseError()
 
         self.DATE_FORMAT = '%Y-%m-%d'
+        self.TIME_FORMAT = '%H:%M:%S'
 
     def __getitem__(self, value):
         return self.line[value]
@@ -54,13 +55,24 @@ class CsvLine(object):
         if index > len(self.line) - 1:
             raise CsvLineAccessError()
 
-        return self.line[index] if self.line[index] else default
+        field = self.line[index] if self.line[index] else default
+        if isinstance(field, bytes):
+            field = field.decode('ascii')
+        return field
+
+    def get_time_field(self, index, default=None):
+        string_field = self.get_string_field(index, default)
+        if not string_field:
+            return None
+        # string_field = string_field.decode('ascii')
+        time_field = datetime.strptime(string_field, self.TIME_FORMAT)
+        return time_field
         
     def get_datetime_field(self, index, default=None):
         string_field = self.get_string_field(index, default)
         if not string_field:
             return None
-        string_field = string_field.decode('ascii')
+        # string_field = string_field.decode('ascii')
         date_field = datetime.strptime(string_field, self.DATE_FORMAT)
         return date_field
 
@@ -68,9 +80,9 @@ class CsvLine(object):
         string_field = self.get_string_field(index, default)
         if not string_field:
             return None
-        string_field = string_field.decode('ascii')
-        print('string_field')
-        print(string_field)
+        # string_field = string_field.decode('ascii')
+        # print('string_field')
+        # print(string_field)
         if string_field == 'True':
             return True
         elif string_field == 'False':
