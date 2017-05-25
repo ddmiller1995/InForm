@@ -310,7 +310,7 @@ class YouthTrackerField(models.Model):
     # Computer readable path in the Youth object to lookup. Expected format:
     #   - | (pipe) character indicates the next level of an array or object
     #   - + (plus) character indicates to combine the two fields into one column
-    field_path = models.CharField(max_length=256) #, editable=False)
+    field_path = models.CharField(max_length=256)
     displayed = models.BooleanField(default=False)
     order = models.IntegerField(default=0, blank=True, null=True)
 

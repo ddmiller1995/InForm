@@ -194,11 +194,12 @@ export default class extends React.Component {
 
         // Regex for the expected date format
         let pattern = /\d{4}-\d{2}-\d{2}/;
-
         if(value == null || value == '') {
             value = DEFAULT_VALUE;
+        } else if(typeof(value) == "boolean") {
+            value = (value ? "Yes" : "No");
         // Format the date to a more readable format if the value is a date
-        } else if(value.match(pattern) != null) {
+        } else if(typeof(value) == "string" && value.match(pattern) != null) {
             value = formatDate(value);
         }
         return value
