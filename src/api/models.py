@@ -242,7 +242,7 @@ class YouthVisit(models.Model):
         return youth_visit_done_form_count / youth_visit_total_forms
 
     def get_absolute_url(self):
-        return reverse('youth-detail', args=[str(self.id)])
+        return '/'
 
 
 class FormType(models.Model):

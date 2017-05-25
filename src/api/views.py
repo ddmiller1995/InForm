@@ -509,12 +509,11 @@ class ImportYouthVisits(APIView):
                         if not youth_map[shortest_key]:
                             continue
 
-                        print('Merging %s with %s: %d' % (shortest_key, longest_key, match_ratio))
+                        # print('Merging %s with %s: %d' % (shortest_key, longest_key, match_ratio))
                         # add shortest key's group to the longest key's group
                         youth_map[longest_key] += youth_map[shortest_key]
                         # mark the shortest key as deleted without changing dict size during loop
                         youth_map[shortest_key] = []
-                        print('Done!')
 
             keys_marked_for_deletion = []
             for key, youth_visits in youth_map.items():
@@ -531,10 +530,12 @@ class ImportYouthVisits(APIView):
             for key in keys_marked_for_deletion:
                 del youth_map[key]
 
+            # Delete youth and youth visit objects in the database
             Youth.objects.all().delete()
             YouthVisit.objects.all().delete()
-
-            date_format = '%Y-%m-%d'
+            PlacementType.objects.all().delete()
+            FormYouthVisit.objects.all().delete()
+            # School.objects.all().delete()
 
             for key, value in youth_map.items():
                 for line in value:
@@ -553,8 +554,7 @@ class ImportYouthVisits(APIView):
                             notes=line.get_string_field(4, '')
                         )
 
-                    # print(line)
-                    # visit_exit_date = datetime.strptime(line[19].decode('ascii'), date_format) if line[19] else None
+     
                     current_placement_start_date = line.get_datetime_field(11)
                     current_placement_name = line.get_string_field(8, 'default placement type')
                     current_placement_length = line.get_string_field(9, 15)
@@ -575,6 +575,7 @@ class ImportYouthVisits(APIView):
                     school_phone = line.get_string_field(34, '')
                     school_notes = line.get_string_field(35, '')
 
+                    school = None
                     try:
                         school = School.objects.get(school_name=school_name)
                     except School.DoesNotExist:
@@ -607,9 +608,16 @@ class ImportYouthVisits(APIView):
                         met_greater_than_50_percent_goals=line.get_string_field(24, YouthVisit.MET_GOALS_NA),
 
                         school=school,
+                        school_am_transport = line.get_string_field(36),
+                        school_am_pickup_time = line.get_time_field(37), # TIME
+                        school_am_phone =line.get_string_field(38),
+                        school_pm_transport = line.get_string_field(39),
+                        school_pm_dropoff_time = line.get_time_field(40), # TIME
+                        school_pm_phone = line.get_string_field(41),
+                        school_date_requested = line.get_datetime_field(42),
+                        school_mkv_complete = line.get_boolean_field(43),
+                        notes = line.get_string_field(44)
                     )
-
- 
             
             return redirect('/admin/')
 

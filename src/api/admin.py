@@ -24,7 +24,7 @@ class YouthAdmin(admin.ModelAdmin):
 class YouthVisitAdmin(AjaxSelectAdmin):
     list_display = ('youth_id', 'current_placement_start_date', 'city_of_origin', 'estimated_exit_date', 'is_active')
     search_fields = ['youth_id__youth_name']
-    list_filter = ('youth_id', 'current_placement_start_date', 'city_of_origin',
+    list_filter = ('current_placement_start_date', 'city_of_origin',
                     'case_manager', 'personal_counselor')
 
     form = make_ajax_form(YouthVisit, {

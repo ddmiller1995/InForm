@@ -12,6 +12,10 @@ caption, h2, .submit-row input {
     background: #8fbc49 !important;
 }
 
+.import-warning {
+    color: red;
+}
+
 .submit-row {
     position: fixed;
     bottom: 0;
