@@ -143,11 +143,9 @@ Near the bottom of the admin page, you should see options to both import and exp
 **NOTICE**:
 Importing a new CSV file will overwrite all the youth visit data in the sytem. We recommend that this is only done for the initial onboard i.e. loading current resident data into the system when it's first deployed. If for reason you need to import a new set of youth visits, consider first backing up your data with the tool described in [this section](#restarting-the-server).
 
-### Restarting the server
+### Creating a Backup
 
-If for some reason the system crashes or the server goes down, we have provided an emergency tool for restarting the system. This tool only exists on the server, and can only be accessed on the monitor attached to the server box. 
-
-Once on the server, you should see an `InForm Database Backup Tool`. Clicking this will open the popup you see below:
+This tool only exists on the server, and can only be accessed on the monitor attached to the server box. Once on the server, you should see an `InForm Database Backup Tool`. Clicking this will open the popup you see below:
 
 ![restart interface](https://github.com/ddmiller1995/InForm/blob/dev/docs/screenshots/restart-gui.png)
 
