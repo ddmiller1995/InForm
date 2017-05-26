@@ -50,6 +50,9 @@ export default class extends React.Component {
 
     buildDialog(form) {
         let div = document.createElement("div"); 
+        if (!form.notes) {
+            form.notes = '';
+        }
         let modal = (
             `<dialog id="mdl-dialog" class="exit-dialog form-dialog">
                 <h4>` + form.form_name + ` - ` + form.form_type + `</h4>
