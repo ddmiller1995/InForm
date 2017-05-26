@@ -321,14 +321,20 @@ class YouthTrackerField(models.Model):
     def __str__(self):
         return self.field_name
 
+# form_id = models.ForeignKey(Form, on_delete=models.CASCADE, verbose_name='Form')
+# youth_visit_id = models.ForeignKey(YouthVisit, on_delete=models.CASCADE, verbose_name='Youth Visit')
+
 
 @receiver(post_save, sender=YouthVisit)
 def AddDefaultForms(sender, **kwargs):
     if kwargs['created']:
+        youth_visit = kwargs['instance']
         for form in Form.objects.filter(assign_by_default=True):
-            form_youth_visit = FormYouthVisit.objects.create(
-                form_id=form,
-                youth_visit_id=kwargs['instance'],
-                status=FormYouthVisit.PENDING
-            )
-
+            try:
+                existing_forms = FormYouthVisit.objects.get(form_id=form, youth_visit_id=youth_visit)
+            except FormYouthVisit.DoesNotExist:
+                form_youth_visit = FormYouthVisit.objects.create(
+                    form_id=form,
+                    youth_visit_id=youth_visit,
+                    status=FormYouthVisit.PENDING
+                )

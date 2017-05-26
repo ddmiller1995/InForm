@@ -22,13 +22,12 @@ namespace Inform_Database_Backup_Tool
 
         private void backupButton_Click(object sender, EventArgs e)
         {
-            ProjectRootService.ComputeProjectRoot();
 
             if (saveFileDialog.ShowDialog() == DialogResult.OK || saveFileDialog.FileName != "")
             {
                 Cursor.Current = Cursors.WaitCursor;
                 // determine where the project is stored in the file system
-                string projectRoot = ProjectRootService.ComputeProjectRoot();
+                string projectRoot = ProjectRootService.ComputeProjectSrc();
 
                 string command = "python manage.py dumpdata";
                 // execute the command to retrieve the database dump
