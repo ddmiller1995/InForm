@@ -1,5 +1,35 @@
 @import "variables";
 
+.progress-header {
+    margin: 0px 40px -30px 40px;
+    width: calc(100% - 80px);
+
+    .mdl-button { 
+        float: right;
+    }
+
+    .mdl-navigation__link {
+        color: black !important;
+    }
+
+    .material-icons {
+        padding-right: 3px;
+    }
+
+    .visit-date {
+        color: rgba(0,0,0,0.5);
+        font-size: 16px;
+        display: inline-block;
+        height: 36px;
+        line-height: 36px;
+        vertical-align: middle;
+    }
+
+    .date-part {
+        color: black;
+    }
+}
+
 .board {
     margin: 40px;
     border: 1px solid #ccc;
@@ -30,6 +60,7 @@
 
             .mdl-card__title, .mdl-card__supporting-text {
                 padding: 10px 16px;
+                font-weight: bold;
             }
 
             .mdl-card__menu {
@@ -46,6 +77,7 @@
 
             .due-done {
                 color: $light-green;
+                font-weight: bold;
             }
 
             .due-now {
@@ -106,7 +138,22 @@
     }
 
     .form-dialog {
-        width: 25% !important;
+        width: 40% !important;
+        padding: 5px 1%;
+
+        #notes-textarea {
+            font-family: "Helvetica","Arial",sans-serif;
+            width: calc(100% - 6px);
+        }
+
+        .form-info-divider {
+            border-color: $light-green;
+            width: 200px;
+        }
+
+        .notes-header {
+            margin-bottom: 5px;
+        }
     }
 
     .mdl-layout__header-row {

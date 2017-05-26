@@ -1,36 +1,30 @@
-version: '2'  
-services:  
-  nginx:
-    image: nginx:latest
-    container_name: ng01
-    ports:
-      - "8000:8000"
-    volumes:
-      - ./src:/src
-      - ./config/nginx:/etc/nginx/conf.d
-      - /static:/static
-    depends_on:
-      - web
-  web:
-    build:
-      context: .
-      dockerfile: docker/web.Dockerfile
-    container_name: dg01
-    command: bash -c "python manage.py makemigrations --no-input && python manage.py migrate --no-input && python manage.py collectstatic --no-input && gunicorn InForm.wsgi -b 0.0.0.0:8000"
-    volumes:
-      - ./src:/src
-      - /static:/static
-    expose:
-      - "8000"
-  hotloader:
-    build:
-      context: .
-      dockerfile: docker/hotloader.Dockerfile
-    container_name: hl01
-    command: bash -c "npm install --no-bin-links && npm start"
-    volumes:
-      - ./src:/src
-    expose:
-      - "3000"
-    ports:
-      - "3000:3000"
+  version: '2'  
+  services:  
+    nginx:
+      build:
+        context: .
+        dockerfile: docker/nginx.Dockerfile
+      container_name: ng01
+      ports:
+        - "80:80"
+      volumes:
+        - ./src:/src
+        - ./config/nginx:/etc/nginx/conf.d
+        - /static:/static
+      depends_on:
+        - web
+      restart: always
+    web:
+      build:
+        context: .
+        dockerfile: docker/web.Dockerfile
+      container_name: dg01
+      command: bash -c "python manage.py makemigrations --no-input && python manage.py migrate --no-input && python manage.py collectstatic --no-input && gunicorn InForm.wsgi -b 0.0.0.0:80"
+      volumes:
+        - ./src:/src
+        - /static:/static
+      expose:
+        - "80"
+      ports:
+        - "8001:80"
+      restart: always

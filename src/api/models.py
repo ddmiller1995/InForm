@@ -29,8 +29,9 @@ class PlacementType(models.Model):
     - HOPE(State) - 30 days - 1:8
     '''
     placement_type_name = models.CharField(max_length=64)
-    default_stay_length = models.IntegerField() # expressed as days
-    supervision_ratio = models.CharField(max_length=64, null=True, blank=True)
+    default_stay_length = models.IntegerField(help_text="Number of days") # expressed as days
+    supervision_ratio = models.CharField(max_length=64, null=True, blank=True,
+        help_text="Expects format: .125")
 
     def __str__(self):
         return self.placement_type_name
@@ -110,17 +111,19 @@ class YouthVisit(models.Model):
 
     youth_id = models.ForeignKey(Youth, on_delete=models.CASCADE,
         verbose_name='Youth',
-        help_text="If the Youth isn't in this dropdown already, you can add them with the green plus icon")
+        help_text="If the Youth isn't in the system already, you can add them with the green plus icon")
 
     # Required fields
     visit_start_date = models.DateField('initial start date for the visit', default=timezone_date,
-        help_text=USER_WARNING_DONT_EDIT_FIELD)
-    current_placement_type = models.ForeignKey(PlacementType, on_delete=models.PROTECT)
-    current_placement_start_date = models.DateField('placement start date', default=timezone_date)  
+        help_text= "When the youth entered the shelter")
+    current_placement_type = models.ForeignKey(PlacementType, on_delete=models.PROTECT, 
+        help_text="Please use 'change bed type' button to change bed types within a visit")
+    current_placement_start_date = models.DateField('placement start date', default=timezone_date, 
+        help_text="When the most recent/current bed type was assigned")  
 
     # Non-required fields
     current_placement_extension_days = models.IntegerField(default=0, blank=True,
-        help_text="Don't edit this field")
+        help_text="Please use the 'add extension' button, do not edit directly")
     city_of_origin = models.CharField(max_length=256, null=True, blank=True)
     state_of_origin = models.CharField(max_length=64, default='Washington', null=True, blank=True)
     guardian_name = models.CharField(max_length=256, null=True, blank=True)
@@ -158,13 +161,16 @@ class YouthVisit(models.Model):
     )
     # School tracker fields - Not required fields
     school = models.ForeignKey(School, on_delete=models.SET_NULL, null=True, blank=True)
-    school_am_transport = models.CharField(max_length=256, null=True, blank=True)
+    school_am_transport = models.CharField(max_length=256, null=True, blank=True, 
+        help_text="Transporting agency or vehicle description")
     school_am_pickup_time = models.TimeField(null=True, blank=True)
     school_am_phone = models.CharField(max_length=64, null=True, blank=True)
-    school_pm_transport = models.CharField(max_length=256, null=True, blank=True)
-    school_pm_dropoff_time = models.TimeField(null=True, blank=True)
+    school_pm_transport = models.CharField(max_length=256, null=True, blank=True,
+        help_text="Transporting agency or vehicle description")
+    school_pm_dropoff_time = models.TimeField(null=True, blank=True,
+        help_text="Expects 24 hour time such as: 18:00")
     school_pm_phone = models.CharField(max_length=64, null=True, blank=True)
-    school_date_requested = models.DateField('date information is requested from school', null=True, blank=True)
+    school_date_requested = models.DateField('date information was requested from school', null=True, blank=True)
     school_mkv_complete = models.BooleanField(default=False)
     notes = models.TextField(null=True, blank=True)
 
@@ -226,17 +232,17 @@ class YouthVisit(models.Model):
         '''Return the percentage of forms completed out of possible forms as a ratio
         '''
         # Count the total number of forms in the database
-        total_forms = Form.objects.count()
+        youth_visit_total_forms = FormYouthVisit.objects.filter(youth_visit_id=self).count()
         # Count the number of forms maked as completed for this youth's visit
         youth_visit_done_form_count = FormYouthVisit.objects.filter(youth_visit_id=self, status='done').count()
 
-        if total_forms == 0:
+        if youth_visit_total_forms == 0:
             return 0.0
 
-        return youth_visit_done_form_count / total_forms
+        return youth_visit_done_form_count / youth_visit_total_forms
 
     def get_absolute_url(self):
-        return reverse('youth-detail', args=[str(self.id)])
+        return '/'
 
 
 class FormType(models.Model):
@@ -254,7 +260,8 @@ class Form(models.Model):
     form_type_id = models.ForeignKey(FormType, on_delete=models.CASCADE, verbose_name='Form Type')
     # due date in days relative to entry date
     # forms without due dates are allowed
-    default_due_date = models.IntegerField(null=True, blank=True)
+    default_due_date = models.IntegerField(null=True, blank=True, verbose_name='Due in _ days',
+        help_text="Expects a whole number and counts up from entry date")
     # Form location - file location in static files?
     assign_by_default = models.BooleanField(default=False,
                                             help_text='Check this box if you want this form to be assigned\
@@ -293,6 +300,27 @@ class FormYouthVisit(models.Model):
             return None
         result = self.form_id.default_due_date - (timezone_date() - self.youth_visit_id.visit_start_date).days
         return result
+
+
+class YouthTrackerField(models.Model):
+    '''YouthTrackerField model'''
+
+    # Formatted name for the field to be displayed
+    field_name = models.CharField(max_length=256)
+    # Computer readable path in the Youth object to lookup. Expected format:
+    #   - | (pipe) character indicates the next level of an array or object
+    #   - + (plus) character indicates to combine the two fields into one column
+    field_path = models.CharField(max_length=256)
+    displayed = models.BooleanField(default=False)
+    order = models.IntegerField(default=0, blank=True, null=True)
+
+    @staticmethod
+    def get_youth_tracker_fields():
+        return YouthTrackerField.objects.filter(displayed=True).order_by('order', 'field_name')
+
+    def __str__(self):
+        return self.field_name
+
 
 @receiver(post_save, sender=YouthVisit)
 def AddDefaultForms(sender, **kwargs):

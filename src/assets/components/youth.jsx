@@ -31,7 +31,7 @@ export default class extends React.Component {
                             <nav className="mdl-navigation">
                                 <IndexLink className="mdl-navigation__link" to="/youth" activeClassName="active">Personal File</IndexLink>
                                 <div className="header-divider"></div>
-                                <IndexLink className="mdl-navigation__link" to="/youth/progress" activeClassName="active">Progress Chart</IndexLink>
+                                <IndexLink className="mdl-navigation__link" to="/youth/progress" activeClassName="active">Form Progress</IndexLink>
                             </nav>
                         </div>
                     </header>

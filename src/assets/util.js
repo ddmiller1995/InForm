@@ -36,7 +36,7 @@ export function registerDialog(parentNode, child) {
         }
 
         dialog.showModal();
-        document.getElementById("dialog-close").addEventListener("click", function () {
+        document.getElementById("close-dialog").addEventListener("click", function () {
             closeDialog(dialog, parentNode, child);
         });
     }
@@ -82,7 +82,7 @@ export function postRequest(url, data, reload=true) {
         }
         return response.json();
     }).then(function(data) {
-        console.log(data); // log the response json
+        console.log(data); 
     }).catch(function(ex) {
         console.log("parsing failed", ex);
     });
