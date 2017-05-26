@@ -23,7 +23,7 @@ export default class extends React.Component {
     getYouthData() {
         let rows;
         if (this.state.youth && this.state.fields) { 
-            rows = this.state.youth.youth.map(youth => <YouthTrackerRow key={youth.name} youth={youth} fields={this.state.fields.fields} />);
+            rows = this.state.youth.youth.map(youth => <YouthTrackerRow key={youth.youth_id} youth={youth} fields={this.state.fields.fields} />);
         }
         return rows;
     }
