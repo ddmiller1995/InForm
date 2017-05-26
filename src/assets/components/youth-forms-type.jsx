@@ -133,7 +133,7 @@ export default class extends React.Component {
         for(let i = 0; i < sortedForms.length; i++) {
             let form = sortedForms[i];
             cards.push(
-                <div key={form.form_name} className="demo-card-wide mdl-card mdl-shadow--2dp">
+                <div key={form.form_id} className="demo-card-wide mdl-card mdl-shadow--2dp">
                     <div className="mdl-card__title" onClick={() => this.toggleModal(form)}>
                         <h2 className="mdl-card__title-text">{form.form_name}</h2>
                     </div>
