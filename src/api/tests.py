@@ -109,6 +109,17 @@ class YouthModelTests(TestCase):
         form_youth_visit2 = FormYouthVisit.objects.create(form_id=form2, youth_visit_id=visit2, status='done')
         form_youth_visit3 = FormYouthVisit.objects.create(form_id=form3, youth_visit_id=visit2, status='done')
 
+    
+    def test_duplicate_form_youth_visit(self):
+        form1 = Form.objects.get(form_name="Form 1")
+        visit2 = YouthVisit.objects.get(pk=2)
+
+        query = FormYouthVisit.objects.filter(form_id=form1, youth_visit_id=visit2)
+        self.assertEqual(query.count(), 1)
+        form_youth_visit1 = FormYouthVisit.objects.create(form_id=form1, youth_visit_id=visit2, status='in progress')
+        query = FormYouthVisit.objects.filter(form_id=form1, youth_visit_id=visit2, status='done')
+        self.assertEqual(query.count(), 1)
+
     def test_create_youth_succeeds(self):
         self.assertIsNotNone(Youth.objects.all()[0].pk)
 
@@ -239,19 +250,20 @@ class YouthModelTests(TestCase):
         visit = YouthVisit.objects.get(pk=2)
         self.assertEqual(visit.overall_form_progress(), 1.0) 
         form_youth_visit = FormYouthVisit.objects.create(
-            form_id=Form.objects.get(form_name='Form 3'), 
+            form_id=Form.objects.get(form_name='Form 4'), 
             youth_visit_id=visit, 
             status='in progress'
-        )
+        ) 
         self.assertEqual(visit.overall_form_progress(), 0.75)  
 
     def test_overall_form_progress_done(self):
         visit = YouthVisit.objects.get(pk=2)
-        form_youth_visit = FormYouthVisit.objects.create(
+        form_youth_visit = FormYouthVisit.objects.get(
             form_id=Form.objects.get(form_name='Form 3'), 
-            youth_visit_id=visit, 
-            status='done'
-        )        
+            youth_visit_id=visit
+        )
+        form_youth_visit.status = 'done'
+        form_youth_visit.save()
         self.assertEqual(visit.overall_form_progress(), 1.0)
 
     def test_overall_form_progress_in_progress_no_forms(self):

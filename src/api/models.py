@@ -282,7 +282,6 @@ class FormYouthVisit(models.Model):
     form_id = models.ForeignKey(Form, on_delete=models.CASCADE, verbose_name='Form')
     youth_visit_id = models.ForeignKey(YouthVisit, on_delete=models.CASCADE, verbose_name='Youth Visit')
     user_id = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Completed by')
-    # expected values: pending, in progess, done
     status = models.CharField(max_length=32, default=PENDING,
                               choices=(
                                   (PENDING, PENDING),
@@ -300,6 +299,17 @@ class FormYouthVisit(models.Model):
             return None
         result = self.form_id.default_due_date - (timezone_date() - self.youth_visit_id.visit_start_date).days
         return result
+
+    def save(self, *args, **kwargs):
+        '''This custom save method prevents creation of duplicate FormYouthVisits'''
+        try:
+            existing = FormYouthVisit.objects.get(form_id=self.form_id, youth_visit_id=self.youth_visit_id)
+            # If the form being saved is an edit of an existing FormYouthVisit
+            if self.pk is not None:
+                super(FormYouthVisit, self).save(*args, **kwargs)
+        except FormYouthVisit.DoesNotExist:
+            super(FormYouthVisit, self).save(*args, **kwargs)
+
 
 
 class YouthTrackerField(models.Model):
@@ -328,13 +338,9 @@ class YouthTrackerField(models.Model):
 @receiver(post_save, sender=YouthVisit)
 def AddDefaultForms(sender, **kwargs):
     if kwargs['created']:
-        youth_visit = kwargs['instance']
         for form in Form.objects.filter(assign_by_default=True):
-            try:
-                existing_forms = FormYouthVisit.objects.get(form_id=form, youth_visit_id=youth_visit)
-            except FormYouthVisit.DoesNotExist:
-                form_youth_visit = FormYouthVisit.objects.create(
-                    form_id=form,
-                    youth_visit_id=youth_visit,
-                    status=FormYouthVisit.PENDING
-                )
+            form_youth_visit = FormYouthVisit.objects.create(
+                form_id=form,
+                youth_visit_id=kwargs['instance'],
+                status=FormYouthVisit.PENDING
+            )
