@@ -100,8 +100,6 @@ class Youth(models.Model):
         return active_youth
 
 
-USER_WARNING_DONT_EDIT_FIELD = "Don't edit this field directly in this admin page. Instead edit it through the main UI."
-
 class YouthVisit(models.Model):
     '''YouthVisit model'''
 
@@ -262,7 +260,6 @@ class Form(models.Model):
     # forms without due dates are allowed
     default_due_date = models.IntegerField(null=True, blank=True, verbose_name='Due in _ days',
         help_text="Expects a whole number and counts up from entry date")
-    # Form location - file location in static files?
     assign_by_default = models.BooleanField(default=False,
                                             help_text='Check this box if you want this form to be assigned\
                                             to new youth visits by default')
@@ -331,13 +328,10 @@ class YouthTrackerField(models.Model):
     def __str__(self):
         return self.field_name
 
-# form_id = models.ForeignKey(Form, on_delete=models.CASCADE, verbose_name='Form')
-# youth_visit_id = models.ForeignKey(YouthVisit, on_delete=models.CASCADE, verbose_name='Youth Visit')
-
 
 @receiver(post_save, sender=YouthVisit)
 def AddDefaultForms(sender, **kwargs):
-    if kwargs['created']:
+    if kwargs['created'] and not kwargs['raw']:
         for form in Form.objects.filter(assign_by_default=True):
             form_youth_visit = FormYouthVisit.objects.create(
                 form_id=form,
