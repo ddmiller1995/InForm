@@ -227,10 +227,18 @@ export default class extends React.Component {
         postRequest(url, data);
     }
 
+    setYesOrNo(currentVisit, data) {
+        if (currentVisit[data]) {
+            return "Yes";
+        } else if (currentVisit[data] === false) {
+            return "No"; 
+        }
+    }
+
     render() {
         let visitDates = [];
         let currentVisit, currentPlacement;
-        let AM, PM, permHousing, guardian, relationship;
+        let AM, PM, permHousing, mkv, guardian, relationship;
         if (this.props.currentYouth.youth_visits) {
             let visits = this.props.currentYouth.youth_visits;
             visitDates = this.getVisits(visits, visitDates);
@@ -244,11 +252,8 @@ export default class extends React.Component {
                 PM = formatTime(currentVisit.school_pm_dropoff_time) + " PM"
             }
 
-            if (currentVisit.permanent_housing) {
-                permHousing = "Yes";
-            } else if (currentVisit.permanent_housing === false) {
-                permHousing = "No"; 
-            }
+            permHousing = this.setYesOrNo(currentVisit, "permanent_housing"); 
+            mkv = this.setYesOrNo(currentVisit, "school_mkv_complete");
 
             if (currentVisit.guardian_name) {
                 guardian = currentVisit.guardian_name;
@@ -348,7 +353,7 @@ export default class extends React.Component {
                     <div className="inner-col">
                         <p>Date Requested: 
                                 <span className="value">{formatDate(currentVisit.school_date_requested) || DEFAULT_VALUE}</span></p>
-                        <p>MKV/Enroll Complete: <span className="value">{currentVisit.school_mkv_complete || DEFAULT_VALUE}</span></p>
+                        <p>MKV/Enroll Complete: <span className="value">{mkv || DEFAULT_VALUE}</span></p>
                     </div>
                 </div>
                 <div className="youth-row">
