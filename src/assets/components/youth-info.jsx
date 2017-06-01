@@ -8,7 +8,7 @@ import "whatwg-fetch";
 var moment = require("moment");
 
 const PLACEMENT_API = "/api/placement-type";
-const DEFAULT_VALUE = "Not Provided"
+const DEFAULT_VALUE = ""
 let selectedVisit;
 
 export default class extends React.Component {
@@ -324,7 +324,7 @@ export default class extends React.Component {
                         </div>
                         <div className="inner-col">
                             <p>Estimated Exit: <span className="value">{formatDate(currentVisit.estimated_exit_date)}</span></p>
-                            <p>Actual Exit: <span className="value">{formatDate(currentVisit.visit_exit_date) || "N/A"}</span></p>
+                            <p>Actual Exit: <span className="value">{formatDate(currentVisit.visit_exit_date) || DEFAULT_VALUE}</span></p>
                             <p>Where Exited: <span className="value">{currentVisit.exited_to || DEFAULT_VALUE}</span></p>
                             <p>Permanent Housing: <span className="value">{permHousing || DEFAULT_VALUE}</span></p>
                         </div>
