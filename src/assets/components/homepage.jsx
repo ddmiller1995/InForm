@@ -25,7 +25,7 @@ export default class extends React.Component {
                 <header className="mdl-layout__header">
                     <div className="mdl-layout__header-row header-fix">
                             <nav className="mdl-navigation homepage-bar">
-                                <a href="#presentation" className="mdl-navigation__link presentation-link">Presentation View</a>
+                                <a href="#presentation" className="mdl-navigation__link presentation-link"><i className="material-icons present-icon">tv</i>Presentation View</a>
                                 <div id="show-active">
                                     <input id="active-only" type="checkbox" onChange={() => this.toggleCheckbox()} checked={this.state.checked}></input>
                                     <label htmlFor="active-only">Show Active Only</label>

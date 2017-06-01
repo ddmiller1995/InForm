@@ -3,7 +3,6 @@ import logging
 from datetime import datetime
 from itertools import groupby
 from tempfile import TemporaryFile
-from fuzzywuzzy import fuzz
 from pprint import pprint
 
 
@@ -18,10 +17,10 @@ from rest_framework.views import APIView
 
 from api.csv_serializers import youth_field_names, youth_visit_field_names, CsvLine
 from api.models import (Form, FormType, FormYouthVisit, PlacementType, Youth,
-                        YouthVisit, School)
+                        YouthVisit, School, YouthTrackerField)
 from api.serializers import (FormTypeSerializer, PlacementTypeSerializer,
                              serialize_form_youth_visit, serialize_youth,
-                             serialize_youth_visit)
+                             serialize_youth_visit, serialize_youth_tracker_field)
 
 logger = logging.getLogger(__name__)
 
@@ -369,6 +368,56 @@ class YouthEditNote(APIView):
         }, status=status.HTTP_202_ACCEPTED)
 
 
+class FormEditNote(APIView):
+    '''Edit a Form Youth visit's note
+    '''
+    renderer_classes = (JSONRenderer, )
+
+    def post(self, request, youth_visit_id, format=None):
+        try:
+            youth_visit = YouthVisit.objects.get(pk=youth_visit_id)
+        except YouthVisit.DoesNotExist:
+            response = Response(status=status.HTTP_404_NOT_FOUND)
+            response['error'] = 'Youth visit pk=%s does not exist' % youth_visit_id
+            return response
+
+        form_id = request.POST.get('form_id', None)
+
+        if not form_id:
+            response = Response(status=status.HTTP_400_BAD_REQUEST)
+            response['error'] = 'Missing POST param "form_id"'
+            return response
+            
+        try:
+            form = Form.objects.get(pk=form_id)
+        except Form.DoesNotExist:
+            response = Response(status=status.HTTP_404_NOT_FOUND)
+            response['error'] = 'Form pk=%s does not exist' % form_id
+            return response
+
+        note = request.POST.get('note', None)
+        if not note:
+            response = Response(status=status.HTTP_400_BAD_REQUEST)
+            response['error'] = 'Missing POST param "note"'
+            return response
+
+        try:
+            form_youth_visit = FormYouthVisit.objects.get(
+                youth_visit_id=youth_visit.id,
+                form_id=form.id)
+        except FormYouthVisit.DoesNotExist:
+            response = Response(status=status.HTTP_404_NOT_FOUND)
+            response['error'] = 'FormYouthVisit with YouthVisit pk=%d and Form pk=%d does not exist' % (youth_visit.id, form.id)
+            return response
+
+        form_youth_visit.notes = note
+        form_youth_visit.save()
+
+        return Response({
+            'form_youth_visit_id': form_youth_visit.id,
+            'note': note
+        }, status=status.HTTP_202_ACCEPTED)
+
 class PlacementTypeList(APIView):
     '''~
     List all placement types
@@ -407,6 +456,7 @@ class UploadFileForm(forms.Form):
 
 class ImportYouthVisits(APIView):
     def post(self, request, format=None):
+        from fuzzywuzzy import fuzz
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             f = request.FILES['file']
@@ -459,12 +509,11 @@ class ImportYouthVisits(APIView):
                         if not youth_map[shortest_key]:
                             continue
 
-                        print('Merging %s with %s: %d' % (shortest_key, longest_key, match_ratio))
+                        # print('Merging %s with %s: %d' % (shortest_key, longest_key, match_ratio))
                         # add shortest key's group to the longest key's group
                         youth_map[longest_key] += youth_map[shortest_key]
                         # mark the shortest key as deleted without changing dict size during loop
                         youth_map[shortest_key] = []
-                        print('Done!')
 
             keys_marked_for_deletion = []
             for key, youth_visits in youth_map.items():
@@ -481,10 +530,12 @@ class ImportYouthVisits(APIView):
             for key in keys_marked_for_deletion:
                 del youth_map[key]
 
+            # Delete youth and youth visit objects in the database
             Youth.objects.all().delete()
             YouthVisit.objects.all().delete()
-
-            date_format = '%Y-%m-%d'
+            PlacementType.objects.all().delete()
+            FormYouthVisit.objects.all().delete()
+            # School.objects.all().delete()
 
             for key, value in youth_map.items():
                 for line in value:
@@ -503,8 +554,7 @@ class ImportYouthVisits(APIView):
                             notes=line.get_string_field(4, '')
                         )
 
-                    # print(line)
-                    # visit_exit_date = datetime.strptime(line[19].decode('ascii'), date_format) if line[19] else None
+     
                     current_placement_start_date = line.get_datetime_field(11)
                     current_placement_name = line.get_string_field(8, 'default placement type')
                     current_placement_length = line.get_string_field(9, 15)
@@ -525,6 +575,7 @@ class ImportYouthVisits(APIView):
                     school_phone = line.get_string_field(34, '')
                     school_notes = line.get_string_field(35, '')
 
+                    school = None
                     try:
                         school = School.objects.get(school_name=school_name)
                     except School.DoesNotExist:
@@ -557,9 +608,16 @@ class ImportYouthVisits(APIView):
                         met_greater_than_50_percent_goals=line.get_string_field(24, YouthVisit.MET_GOALS_NA),
 
                         school=school,
+                        school_am_transport = line.get_string_field(36),
+                        school_am_pickup_time = line.get_time_field(37), # TIME
+                        school_am_phone =line.get_string_field(38),
+                        school_pm_transport = line.get_string_field(39),
+                        school_pm_dropoff_time = line.get_time_field(40), # TIME
+                        school_pm_phone = line.get_string_field(41),
+                        school_date_requested = line.get_datetime_field(42),
+                        school_mkv_complete = line.get_boolean_field(43),
+                        notes = line.get_string_field(44)
                     )
-
- 
             
             return redirect('/admin/')
 
@@ -692,6 +750,33 @@ class ExportYouthVisits(APIView):
             writer.writerow(row)
 
         return response
+
+
+class YouthTrackerFieldList(APIView):
+    '''
+    List all display YouthTrackerFields in order
+
+    Support HTTP methods: GET
+
+    GET /api/youth-tracker-fields returns JSON Response
+    '''
+
+    renderer_classes = (JSONRenderer, )
+
+    def get(self, request, format=None):
+
+        json = {
+            'fields': []
+        }
+
+        field_list = YouthTrackerField.get_youth_tracker_fields()
+
+        for field in field_list:
+            serialized_field = serialize_youth_tracker_field(field)
+            json['fields'].append(serialized_field)
+
+        return Response(json, status=status.HTTP_200_OK)
+
 
 def api_docs(request):
     return render(request, 'api/docs.html')

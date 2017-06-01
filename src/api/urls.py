@@ -34,8 +34,12 @@ urlpatterns = [
         name='youth-add-extension'),
     url(r'^visit/(?P<youth_visit_id>[0-9]+)/edit-note/$', views.YouthEditNote.as_view(), \
         name='youth-edit-note'),
+    url(r'^visit/(?P<youth_visit_id>[0-9]+)/edit-form-note/$', views.FormEditNote.as_view(), \
+        name='form-edit-note'),
     url(r'^visit/(?P<youth_visit_id>[0-9]+)/change-form-status/$',
         views.ChangeFormStatus.as_view(), name='change-form-status'),
+    url(r'^youth-tracker-field-list/$', views.YouthTrackerFieldList.as_view(), \
+        name='youth-tracker-field-list'),
 
     url(r'^export/youth-visits/$', views.ExportYouthVisits.as_view(), \
         name='export-youth-vists'),

@@ -8,7 +8,7 @@ import "whatwg-fetch";
 var moment = require("moment");
 
 const PLACEMENT_API = "/api/placement-type";
-const DEFAULT_VALUE = "Not Provided"
+const DEFAULT_VALUE = ""
 let selectedVisit;
 
 export default class extends React.Component {
@@ -96,7 +96,7 @@ export default class extends React.Component {
         // @param2: index of dialog in childNodes array
         registerDialog(".youth-info-container", 5);
         // create post request on "save", then close modal
-        document.getElementById("dialog-submit").addEventListener("click", function () {
+        document.getElementById("submit-dialog").addEventListener("click", function () {
             postFunction(that);
             let dialog = document.querySelector("dialog");
             closeDialog(dialog, ".youth-info-container", 5);
@@ -121,8 +121,8 @@ export default class extends React.Component {
                     <p>New estimated exit: <span id="new-estimate"></span></p>
                 </div>
                 <div id="dialog-actions">
-                    <button type="button" id="dialog-submit">Save</button>
-                    <button type="button" id="dialog-close">Cancel</button>
+                    <button class="mdl-button mdl-js-button" type="button" id="submit-dialog">Save</button>
+                    <button class="mdl-button mdl-js-button" type="button" id="close-dialog">Cancel</button>
                 </div>
             </dialog>
         `);
@@ -148,8 +148,8 @@ export default class extends React.Component {
                     <p>Transfer Date: <span><input id="date-input" type="date" value=`+today+`></input></span></p>
                 </div>
                 <div id="dialog-actions">
-                    <button type="button" id="dialog-submit">Save</button>
-                    <button type="button" id="dialog-close">Cancel</button>
+                    <button type="button" class="mdl-button mdl-js-button" id="submit-dialog">Save</button>
+                    <button type="button" class="mdl-button mdl-js-button" id="close-dialog">Cancel</button>
                 </div>
             </dialog>
         `);
@@ -166,6 +166,7 @@ export default class extends React.Component {
         if (extend != null) {
             let update = function updateEstimate() {
                 let date = new Date(exit);
+                date.setTime( date.getTime() + date.getTimezoneOffset()*60*1000);
                 date.setDate(date.getDate() + parseInt(extend.value));
 
                 let day = date.getDate();
@@ -226,10 +227,18 @@ export default class extends React.Component {
         postRequest(url, data);
     }
 
+    setYesOrNo(currentVisit, data) {
+        if (currentVisit[data]) {
+            return "Yes";
+        } else if (currentVisit[data] === false) {
+            return "No"; 
+        }
+    }
+
     render() {
         let visitDates = [];
         let currentVisit, currentPlacement;
-        let AM, PM, permHousing, guardian, relationship;
+        let AM, PM, permHousing, mkv, guardian, relationship;
         if (this.props.currentYouth.youth_visits) {
             let visits = this.props.currentYouth.youth_visits;
             visitDates = this.getVisits(visits, visitDates);
@@ -243,11 +252,8 @@ export default class extends React.Component {
                 PM = formatTime(currentVisit.school_pm_dropoff_time) + " PM"
             }
 
-            if (currentVisit.permanent_housing) {
-                permHousing = "Yes";
-            } else if (currentVisit.permanent_housing === false) {
-                permHousing = "No"; 
-            }
+            permHousing = this.setYesOrNo(currentVisit, "permanent_housing"); 
+            mkv = this.setYesOrNo(currentVisit, "school_mkv_complete");
 
             if (currentVisit.guardian_name) {
                 guardian = currentVisit.guardian_name;
@@ -311,14 +317,14 @@ export default class extends React.Component {
                             </p>
                         </div>
                         <div className="inner-col">
-                            <p>Case Manager: <span className="value">{currentVisit.case_manager.name || DEFAULT_VALUE}</span></p>
-                            <p>Personal Counselor: <span className="value">{currentVisit.personal_counselor.name || DEFAULT_VALUE}</span></p>
+                            <p>Case Manager: <span className="value">{currentVisit.case_manager.full_name || currentVisit.case_manager.username || DEFAULT_VALUE}</span></p>
+                            <p>Personal Counselor: <span className="value">{currentVisit.personal_counselor.full_name || currentVisit.personal_counselor.username || DEFAULT_VALUE}</span></p>
                             <p>Social Worker: <span className="value">{currentVisit.social_worker || DEFAULT_VALUE}</span></p>
                             <p>Referred By: <span className="value">{currentVisit.referred_by || DEFAULT_VALUE}</span></p>
                         </div>
                         <div className="inner-col">
                             <p>Estimated Exit: <span className="value">{formatDate(currentVisit.estimated_exit_date)}</span></p>
-                            <p>Actual Exit: <span className="value">{formatDate(currentVisit.visit_exit_date) || "N/A"}</span></p>
+                            <p>Actual Exit: <span className="value">{formatDate(currentVisit.visit_exit_date) || DEFAULT_VALUE}</span></p>
                             <p>Where Exited: <span className="value">{currentVisit.exited_to || DEFAULT_VALUE}</span></p>
                             <p>Permanent Housing: <span className="value">{permHousing || DEFAULT_VALUE}</span></p>
                         </div>
@@ -347,7 +353,7 @@ export default class extends React.Component {
                     <div className="inner-col">
                         <p>Date Requested: 
                                 <span className="value">{formatDate(currentVisit.school_date_requested) || DEFAULT_VALUE}</span></p>
-                        <p>MKV/Enroll Complete: <span className="value">{currentVisit.school_mkv_complete || DEFAULT_VALUE}</span></p>
+                        <p>MKV/Enroll Complete: <span className="value">{mkv || DEFAULT_VALUE}</span></p>
                     </div>
                 </div>
                 <div className="youth-row">

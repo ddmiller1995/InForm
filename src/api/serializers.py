@@ -83,7 +83,7 @@ def serialize_form_youth_visit(form_youth_visit):
 
     obj = {}
 
-    obj['form_id'] = form_youth_visit.id
+    obj['form_id'] = form_youth_visit.form_id.id
     obj['form_name'] = form_youth_visit.form_id.form_name
     obj['form_type'] = form_youth_visit.form_id.form_type_id.form_type_name
     obj['form_description'] = form_youth_visit.form_id.form_description
@@ -96,6 +96,19 @@ def serialize_form_youth_visit(form_youth_visit):
 
     return obj
     
+
+def serialize_youth_tracker_field(field):
+    'Serialize the youth_tracker_fields object'
+
+    obj = {}
+
+    obj['field_name'] = field.field_name
+    obj['field_path'] = field.field_path
+    obj['displayed'] = field.displayed
+    obj['order'] = field.order
+
+    return obj
+
 
 class PlacementTypeSerializer(serializers.ModelSerializer):
     class Meta:

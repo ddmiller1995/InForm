@@ -36,7 +36,8 @@ export default class extends React.Component {
         for(let i = 0; i < this.props.formTypes.length; i++) {
             let type_id = this.props.formTypes[i].id;
             let type = this.props.formTypes[i].form_type_name;
-            type_components[type_id] = <YouthFormsType key={type} type={type} handler={this.changeFormStatusHandler} forms={forms_by_type[type]} />
+            type_components[type_id] = <YouthFormsType key={type} type={type} handler={this.changeFormStatusHandler} 
+                                                       visitID={this.props.visitID} forms={forms_by_type[type]} />
         }
 
         return type_components;
