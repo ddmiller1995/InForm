@@ -8,7 +8,7 @@ import "whatwg-fetch";
 var moment = require("moment");
 
 const PLACEMENT_API = "/api/placement-type";
-const DEFAULT_VALUE = "Not Provided"
+const DEFAULT_VALUE = ""
 let selectedVisit;
 
 export default class extends React.Component {
@@ -227,10 +227,18 @@ export default class extends React.Component {
         postRequest(url, data);
     }
 
+    setYesOrNo(currentVisit, data) {
+        if (currentVisit[data]) {
+            return "Yes";
+        } else if (currentVisit[data] === false) {
+            return "No"; 
+        }
+    }
+
     render() {
         let visitDates = [];
         let currentVisit, currentPlacement;
-        let AM, PM, permHousing, guardian, relationship;
+        let AM, PM, permHousing, mkv, guardian, relationship;
         if (this.props.currentYouth.youth_visits) {
             let visits = this.props.currentYouth.youth_visits;
             visitDates = this.getVisits(visits, visitDates);
@@ -244,11 +252,8 @@ export default class extends React.Component {
                 PM = formatTime(currentVisit.school_pm_dropoff_time) + " PM"
             }
 
-            if (currentVisit.permanent_housing) {
-                permHousing = "Yes";
-            } else if (currentVisit.permanent_housing === false) {
-                permHousing = "No"; 
-            }
+            permHousing = this.setYesOrNo(currentVisit, "permanent_housing"); 
+            mkv = this.setYesOrNo(currentVisit, "school_mkv_complete");
 
             if (currentVisit.guardian_name) {
                 guardian = currentVisit.guardian_name;
@@ -319,7 +324,7 @@ export default class extends React.Component {
                         </div>
                         <div className="inner-col">
                             <p>Estimated Exit: <span className="value">{formatDate(currentVisit.estimated_exit_date)}</span></p>
-                            <p>Actual Exit: <span className="value">{formatDate(currentVisit.visit_exit_date) || "N/A"}</span></p>
+                            <p>Actual Exit: <span className="value">{formatDate(currentVisit.visit_exit_date) || DEFAULT_VALUE}</span></p>
                             <p>Where Exited: <span className="value">{currentVisit.exited_to || DEFAULT_VALUE}</span></p>
                             <p>Permanent Housing: <span className="value">{permHousing || DEFAULT_VALUE}</span></p>
                         </div>
@@ -348,7 +353,7 @@ export default class extends React.Component {
                     <div className="inner-col">
                         <p>Date Requested: 
                                 <span className="value">{formatDate(currentVisit.school_date_requested) || DEFAULT_VALUE}</span></p>
-                        <p>MKV/Enroll Complete: <span className="value">{currentVisit.school_mkv_complete || DEFAULT_VALUE}</span></p>
+                        <p>MKV/Enroll Complete: <span className="value">{mkv || DEFAULT_VALUE}</span></p>
                     </div>
                 </div>
                 <div className="youth-row">

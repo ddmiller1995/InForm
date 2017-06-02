@@ -46,30 +46,16 @@
     {% endfor %}
 
         <br />
-        <h2>Import/Export</h2>
+        <h2>Export</h2>
         <div id="import-export">
             <ul>
                 <li>
                     <a href="{% url 'export-youth-vists' %}">Export data (CSV, Youth & Visits only)</a>
                     <ul>
-                        <li>For full database backup use external tool provided. <a href="https://github.com/ddmiller1995/InForm/blob/dev/docs/getting-started.md#import-and-export" target="_blank">Need help deciding?</a></li>
+                        <li>For full database backup use external tool provided. <a href="https://github.com/ddmiller1995/InForm/wiki#backup-and-export" target="_blank">Need help deciding?</a></li>
                     </ul>
                 </li>
-                <li>
-                    <a href="{% url 'download-import-template' %}">Download import template</a>
-                </li>
             </ul>
-
-            <div id="import-export-nested">
-                <h3>Import data</h3>
-                <form action="/api/import/" method="post" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <tr><th><label for="id_file">File:</label></th><td><input type="file" name="file" required id="id_file" /></td></tr>
-                    <br />
-                    <p class="import-warning">Caution! This will overwrite all youth information. Backup data before using this feature. </p>
-                    <input type="submit" value="Submit" />
-                </form>
-            </div>
         </div>
 
 
