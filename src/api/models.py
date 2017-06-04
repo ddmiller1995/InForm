@@ -161,12 +161,11 @@ class YouthVisit(models.Model):
     school = models.ForeignKey(School, on_delete=models.SET_NULL, null=True, blank=True)
     school_am_transport = models.CharField(max_length=256, null=True, blank=True, 
         help_text="Transporting agency or vehicle description")
-    school_am_pickup_time = models.TimeField(null=True, blank=True)
+    school_am_pickup_time = models.CharField(max_length=256, null=True, blank=True)
     school_am_phone = models.CharField(max_length=64, null=True, blank=True)
     school_pm_transport = models.CharField(max_length=256, null=True, blank=True,
         help_text="Transporting agency or vehicle description")
-    school_pm_dropoff_time = models.TimeField(null=True, blank=True,
-        help_text="Expects 24 hour time such as: 18:00")
+    school_pm_dropoff_time = models.CharField(max_length=256, null=True, blank=True)
     school_pm_phone = models.CharField(max_length=64, null=True, blank=True)
     school_date_requested = models.DateField('date information was requested from school', null=True, blank=True)
     school_mkv_complete = models.BooleanField(default=False)
