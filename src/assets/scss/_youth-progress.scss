@@ -16,7 +16,7 @@
         padding-right: 3px;
     }
 
-    .visit-date {
+    .visit-date, .youth-name {
         color: rgba(0,0,0,0.5);
         font-size: 16px;
         display: inline-block;
@@ -25,7 +25,11 @@
         vertical-align: middle;
     }
 
-    .date-part {
+    .visit-date {
+        margin-left: 1.5%;
+    }
+
+    .date-part, .name-part {
         color: black;
     }
 }

@@ -101,11 +101,17 @@ export default class extends React.Component {
         return (
             <div className="container">
                 <div className="progress-header">
+                    <span className="youth-name">Youth Name: {
+                        this.visitExists() ?
+                            <span className="name-part">{this.state.currentYouth.name}</span> :
+                            ""
+                    }</span>
                     <span className="visit-date">Visit Date: {
                         this.visitExists() ?
                             <span className="date-part">{formatDate(this.state.currentYouth.youth_visits[0].visit_start_date)}</span> :
                             ""
                     }</span>
+
                     <button className="mdl-button mdl-js-button edit-youth">
                         <a className="mdl-navigation__link" href={this.getAdminPageLink()}>
                             <i className="material-icons">mode_edit</i>
