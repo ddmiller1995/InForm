@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # user defined below here
     'webpack_loader',
+    'session_security',
     'rest_framework',
     'ajax_select',
     'api.apps.ApiConfig',
@@ -51,6 +52,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'session_security.middleware.SessionSecurityMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -184,3 +186,6 @@ REST_FRAMEWORK = {
 LOGIN_URL = '/admin/login/'
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+SESSION_SECURITY_WARN_AFTER = 5
+SESSION_SECURITY_EXPIRE_AFTER = 10
