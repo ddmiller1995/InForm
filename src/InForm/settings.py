@@ -182,3 +182,5 @@ REST_FRAMEWORK = {
 }
 
 LOGIN_URL = '/admin/login/'
+
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
