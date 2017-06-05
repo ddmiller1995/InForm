@@ -70,6 +70,7 @@ namespace Inform_Database_Backup_Tool
                 Cursor.Current = Cursors.Default;
 
                 string message = "Succesfully restored database from backup file: " + openFileDialog.FileName;
+                message = json;
 
                 string caption = "InForm Database Restore";
                 MessageBoxButtons buttons = MessageBoxButtons.OK;
@@ -81,11 +82,22 @@ namespace Inform_Database_Backup_Tool
 
         private void restartButton_Click_Click(object sender, EventArgs e)
         {
-            Cursor.Current = Cursors.WaitCursor;
-            string projectRoot = ProjectRootService.ComputeProjectRoot();
-            string command = "docker-compose restart";
-            string result = CommandService.Execute(projectRoot, command);
-            Cursor.Current = Cursors.Default;
+
+
+            MessageBoxButtons buttons = MessageBoxButtons.OKCancel;
+            DialogResult dialogResult = MessageBox.Show("Are you sure you want to restart the web server? Everyone will temporarily be unable to access it.", "InForm restart", buttons);
+            if (dialogResult == DialogResult.OK)
+            {
+                var x = 1;
+                Cursor.Current = Cursors.WaitCursor;
+                string projectRoot = ProjectRootService.ComputeProjectRoot();
+                string command = "docker-compose restart";
+                string result = CommandService.Execute(projectRoot, command);
+                Cursor.Current = Cursors.Default;
+
+                MessageBox.Show("Succesfully restarted InForm", "Success", MessageBoxButtons.OK);
+            }
+
 
         }
     }
