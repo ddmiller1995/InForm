@@ -67,13 +67,13 @@ namespace Inform_Database_Backup_Tool
                     string projectSrc = ProjectRootService.ComputeProjectSrc();
 
                     string filename = openFileDialog.FileName;
-                    string command = "python manage.py loaddata " + filename;
+                    string command = "python manage.py loaddata \"" + filename + "\"";
                     // execute the command to retrieve the database dump
-                    string json = CommandService.Execute(projectSrc, command);
+                    string result = CommandService.Execute(projectSrc, command);
                     Cursor.Current = Cursors.Default;
 
-                    string message = "Succesfully restored database from backup file: " + openFileDialog.FileName;
-                    message = json;
+                    string message = "Restored database from backup file: " + openFileDialog.FileName;
+                    message += "\n" + result;
 
                     string caption = "InForm Database Restore";
                     MessageBoxButtons buttons = MessageBoxButtons.OK;
