@@ -59,33 +59,50 @@ namespace Inform_Database_Backup_Tool
         {
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                Cursor.Current = Cursors.WaitCursor;
-                // determine where the project is stored in the file system
-                string projectSrc = ProjectRootService.ComputeProjectSrc();
+                DialogResult confirmationResult = MessageBox.Show("Are you sure want to restore the database? \nAll data will be overwritten by the data in the json file you are using to restore.", "Confirmation", MessageBoxButtons.OKCancel);
+                if (confirmationResult == DialogResult.OK)
+                {
+                    Cursor.Current = Cursors.WaitCursor;
+                    // determine where the project is stored in the file system
+                    string projectSrc = ProjectRootService.ComputeProjectSrc();
 
-                string filename = openFileDialog.FileName;
-                string command = "python manage.py loaddata " + filename;
-                // execute the command to retrieve the database dump
-                string json = CommandService.Execute(projectSrc, command);
-                Cursor.Current = Cursors.Default;
+                    string filename = openFileDialog.FileName;
+                    string command = "python manage.py loaddata \"" + filename + "\"";
+                    // execute the command to retrieve the database dump
+                    string result = CommandService.Execute(projectSrc, command);
+                    Cursor.Current = Cursors.Default;
 
-                string message = "Succesfully restored database from backup file: " + openFileDialog.FileName;
+                    string message = "Restored database from backup file: " + openFileDialog.FileName;
+                    message += "\n" + result;
 
-                string caption = "InForm Database Restore";
-                MessageBoxButtons buttons = MessageBoxButtons.OK;
-                DialogResult dialogResult = MessageBox.Show(message.ToString(), caption, buttons);
+                    string caption = "InForm Database Restore";
+                    MessageBoxButtons buttons = MessageBoxButtons.OK;
+                    DialogResult dialogResult = MessageBox.Show(message.ToString(), caption, buttons);
 
-                if (dialogResult == DialogResult.Yes) { this.Close(); }
+                    if (dialogResult == DialogResult.Yes) { this.Close(); }
+                }
+
             }
         }
 
         private void restartButton_Click_Click(object sender, EventArgs e)
         {
-            Cursor.Current = Cursors.WaitCursor;
-            string projectRoot = ProjectRootService.ComputeProjectRoot();
-            string command = "docker-compose restart";
-            string result = CommandService.Execute(projectRoot, command);
-            Cursor.Current = Cursors.Default;
+
+
+            MessageBoxButtons buttons = MessageBoxButtons.OKCancel;
+            DialogResult dialogResult = MessageBox.Show("Are you sure you want to restart the web server? Everyone will temporarily be unable to access it.", "InForm restart", buttons);
+            if (dialogResult == DialogResult.OK)
+            {
+                var x = 1;
+                Cursor.Current = Cursors.WaitCursor;
+                string projectRoot = ProjectRootService.ComputeProjectRoot();
+                string command = "docker-compose restart";
+                string result = CommandService.Execute(projectRoot, command);
+                Cursor.Current = Cursors.Default;
+
+                MessageBox.Show("Succesfully restarted InForm", "Success", MessageBoxButtons.OK);
+            }
+
 
         }
     }

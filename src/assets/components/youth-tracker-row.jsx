@@ -163,18 +163,6 @@ export default class extends React.Component {
         let parts = path.split('|');
         let value = this.props.youth;
 
-        // Special case for combining both AM and PM time values into one column
-        if(path == "am+pm") {
-            let AM = "NA / ", PM = "NA";
-            if (value.school_am_pickup_time) {
-                AM = formatTime(value.school_am_pickup_time) + " AM / "
-            }
-            if (value.school_pm_dropoff_time) {
-                PM = formatTime(value.school_pm_dropoff_time) + " PM"
-            }
-            return AM + PM;
-        }
-
         // Special case for formatting the percentage
         if(path == "overall_form_progress") {
             return calcPercentage(value[path]);
@@ -193,14 +181,17 @@ export default class extends React.Component {
 
 
         // Regex for the expected date format
-        let pattern = /\d{4}-\d{2}-\d{2}/;
+        let date_pattern = /\d{4}-\d{2}-\d{2}/;
+        let time_pattern = /\d{2}:\d{2}:\d{2}/;
         if(value == null || value == '') {
             value = DEFAULT_VALUE;
         } else if(typeof(value) == "boolean") {
             value = (value ? "Yes" : "No");
         // Format the date to a more readable format if the value is a date
-        } else if(typeof(value) == "string" && value.match(pattern) != null) {
+        } else if(typeof(value) == "string" && value.match(date_pattern) != null) {
             value = formatDate(value);
+        } else if(typeof(value) == "string" && value.match(time_pattern) != null) {
+            value = moment(value, "hh:mm").format("h:mm a");
         }
         return value
     }
@@ -208,7 +199,6 @@ export default class extends React.Component {
     handleRowClick() {
         hashHistory.push("/youth");
         this.registerYouth();
-        
     }
 
     render() {

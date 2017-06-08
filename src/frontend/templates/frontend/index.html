@@ -18,7 +18,9 @@
 
 <body>
     <div id="app">
-        {% render_bundle "main" %} 
+        {% render_bundle "main" %}
+        <script src="/static/jquery-3.2.1.min.js"></script>
+        {% include 'session_security/all.html' %} 
     </div>
 </body>
 </html>

@@ -299,35 +299,36 @@ export default class extends React.Component {
                             <hr className="youth-info-divider"/>
                         </div>
                         <div className="inner-col">
-                            <p>Entry Date: <span className="value">{formatDate(currentVisit.visit_start_date)}</span></p>
-                            <p>Bed Nights: 
+                            <p>Entry Date:<span className="value">{formatDate(currentVisit.visit_start_date)}</span></p>
+                            <p>Bed Nights:
                                 <span className="value">{currentVisit.total_bed_nights}</span>
                             </p>
-                            <p>Current Placement Date:  
-                                <span className="value"> 
+                            <p>Current Placement Date:
+                                <span className="value">
                                     {formatDate(currentVisit.current_placement_type.current_placement_start_date)}
                                 </span>
                             </p>
-                            <p>Placement Type:  
-                                <span className="value"> {currentVisit.current_placement_type.name}</span>
+                            <p>Placement Type:
+                                <span className="value">{currentVisit.current_placement_type.name}</span>
                             </p>
                             <p>Estimated Stay:  
-                                <span className="value"> { currentVisit.current_placement_type.default_stay_length} days (+ 
-                                    { currentVisit.current_placement_type.current_placement_extension_days} day extension)
+                                <span className="value">{currentVisit.current_placement_type.default_stay_length} days (+ 
+                                    {currentVisit.current_placement_type.current_placement_extension_days} day extension)
                                 </span>
                             </p>
                         </div>
                         <div className="inner-col">
-                            <p>Case Manager: <span className="value">{currentVisit.case_manager.full_name || currentVisit.case_manager.username || DEFAULT_VALUE}</span></p>
-                            <p>Personal Counselor: <span className="value">{currentVisit.personal_counselor.full_name || currentVisit.personal_counselor.username || DEFAULT_VALUE}</span></p>
-                            <p>Social Worker: <span className="value">{currentVisit.social_worker || DEFAULT_VALUE}</span></p>
-                            <p>Referred By: <span className="value">{currentVisit.referred_by || DEFAULT_VALUE}</span></p>
+                            <p>Case Manager:<span className="value">{currentVisit.case_manager.full_name || currentVisit.case_manager.username || DEFAULT_VALUE}</span></p>
+                            <p>Personal Counselor:<span className="value">{currentVisit.personal_counselor.full_name || currentVisit.personal_counselor.username || DEFAULT_VALUE}</span></p>
+                            <p>Social Worker:<span className="value">{currentVisit.social_worker || DEFAULT_VALUE}</span></p>
+                            <p>Referred By:<span className="value">{currentVisit.referred_by || DEFAULT_VALUE}</span></p>
+                            <p>DCFS ID:<span className="value">{this.props.currentYouth.dcfs_id || DEFAULT_VALUE}</span></p>
                         </div>
                         <div className="inner-col">
-                            <p>Estimated Exit: <span className="value">{formatDate(currentVisit.estimated_exit_date)}</span></p>
-                            <p>Actual Exit: <span className="value">{formatDate(currentVisit.visit_exit_date) || DEFAULT_VALUE}</span></p>
-                            <p>Where Exited: <span className="value">{currentVisit.exited_to || DEFAULT_VALUE}</span></p>
-                            <p>Permanent Housing: <span className="value">{permHousing || DEFAULT_VALUE}</span></p>
+                            <p>Estimated Exit:<span className="value">{formatDate(currentVisit.estimated_exit_date)}</span></p>
+                            <p>Actual Exit:<span className="value">{formatDate(currentVisit.visit_exit_date) || DEFAULT_VALUE}</span></p>
+                            <p>Where Exited:<span className="value">{currentVisit.exited_to || DEFAULT_VALUE}</span></p>
+                            <p>Permanent Housing:<span className="value">{permHousing || DEFAULT_VALUE}</span></p>
                         </div>
                     </div>
                 </div>
@@ -337,24 +338,24 @@ export default class extends React.Component {
                         <hr className="youth-info-divider"/>
                     </div>
                     <div className="inner-col">
-                        <p>School: <span className="value">{currentVisit.school.school_name || DEFAULT_VALUE}</span></p>
-                        <p>District: <span className="value">{currentVisit.school.school_district || DEFAULT_VALUE}</span></p>
-                        <p>Phone: <span className="value">{currentVisit.school.school_phone || DEFAULT_VALUE}</span></p>
+                        <p>School:<span className="value">{currentVisit.school.school_name || DEFAULT_VALUE}</span></p>
+                        <p>District:<span className="value">{currentVisit.school.school_district || DEFAULT_VALUE}</span></p>
+                        <p>Phone:<span className="value">{currentVisit.school.school_phone || DEFAULT_VALUE}</span></p>
                     </div>
                     <div className="inner-col">
-                        <p>AM Transport: <span className="value">{currentVisit.school_am_transport || DEFAULT_VALUE}</span></p>
-                        <p>AM Pickup Time: <span className="value">{AM || DEFAULT_VALUE}</span></p>
-                        <p>AM Phone: <span className="value">{currentVisit.school_am_phone || DEFAULT_VALUE}</span></p>
+                        <p>AM Transport:<span className="value">{currentVisit.school_am_transport || DEFAULT_VALUE}</span></p>
+                        <p>AM Pickup Time:<span className="value">{AM || DEFAULT_VALUE}</span></p>
+                        <p>AM Phone:<span className="value">{currentVisit.school_am_phone || DEFAULT_VALUE}</span></p>
                     </div>
                     <div className="inner-col">
-                        <p>PM Transport: <span className="value">{currentVisit.school_pm_transport || DEFAULT_VALUE}</span></p>
-                        <p>PM Dropoff Time: <span className="value">{PM || DEFAULT_VALUE}</span></p>
-                        <p>PM Phone: <span className="value">{currentVisit.school_pm_phone || DEFAULT_VALUE}</span></p>
+                        <p>PM Transport:<span className="value">{currentVisit.school_pm_transport || DEFAULT_VALUE}</span></p>
+                        <p>PM Dropoff Time:<span className="value">{PM || DEFAULT_VALUE}</span></p>
+                        <p>PM Phone:<span className="value">{currentVisit.school_pm_phone || DEFAULT_VALUE}</span></p>
                     </div>
                     <div className="inner-col">
                         <p>Date Requested: 
                                 <span className="value">{formatDate(currentVisit.school_date_requested) || DEFAULT_VALUE}</span></p>
-                        <p>MKV/Enroll Complete: <span className="value">{mkv || DEFAULT_VALUE}</span></p>
+                        <p>MKV/Enroll Complete:<span className="value">{mkv || DEFAULT_VALUE}</span></p>
                     </div>
                 </div>
                 <div className="youth-row">

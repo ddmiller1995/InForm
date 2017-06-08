@@ -13,6 +13,10 @@ namespace BackupApi
             string[] drives = Environment.GetLogicalDrives();
             foreach (string dr in drives)
             {
+                if (dr != @"C:\")
+                {
+                    continue;
+                }
                 DriveInfo di = new DriveInfo(dr);
                 if (!di.IsReady)
                 {
@@ -37,6 +41,10 @@ namespace BackupApi
             string[] drives = Environment.GetLogicalDrives();
             foreach (string dr in drives)
             {
+                if (dr != @"C:\")
+                {
+                    continue;
+                }
                 DriveInfo di = new DriveInfo(dr);
                 if (!di.IsReady)
                 {
