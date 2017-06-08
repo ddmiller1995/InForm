@@ -162,7 +162,7 @@ class FormYouthVisitAdmin(admin.ModelAdmin):
     ]
 
 class YouthTrackerFieldAdmin(admin.ModelAdmin):
-    exclude = ('field_path',)
+    #exclude = ('field_path',)
     ordering = ('-displayed', 'order',)
 
     list_display = [
@@ -187,6 +187,10 @@ class YouthTrackerFieldAdmin(admin.ModelAdmin):
 
     def has_delete_permission(self, request, obj=None):
         #Disable delete
+        return False
+
+    def has_add_permission(self, request):
+        #Disable add
         return False
 
 admin.site.register(Youth, YouthAdmin)

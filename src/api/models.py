@@ -128,6 +128,7 @@ class YouthVisit(models.Model):
     state_of_origin = models.CharField(max_length=64, default='Washington', null=True, blank=True)
     guardian_name = models.CharField(max_length=256, null=True, blank=True)
     guardian_relationship = models.CharField(max_length=256, null=True, blank=True)
+    guardian_phone_number = models.CharField(max_length=64, null=True, blank=True)
     referred_by = models.CharField(max_length=256, null=True, blank=True)
     social_worker = models.CharField(max_length=256, null=True, blank=True)
     visit_exit_date = models.DateField(null=True, blank=True)

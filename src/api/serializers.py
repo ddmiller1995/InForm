@@ -38,6 +38,7 @@ def serialize_youth_visit(youth_visit):
     obj['city_of_origin'] = youth_visit.city_of_origin
     obj['guardian_name'] = youth_visit.guardian_name
     obj['guardian_relationship'] = youth_visit.guardian_relationship
+    obj['guardian_phone_number'] = youth_visit.guardian_phone_number
     obj['referred_by'] = youth_visit.referred_by
     obj['social_worker'] = youth_visit.social_worker
     obj['permanent_housing'] = youth_visit.permanent_housing

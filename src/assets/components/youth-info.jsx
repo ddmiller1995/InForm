@@ -289,6 +289,7 @@ export default class extends React.Component {
                             <p>Birthdate: <span className="value">{formatDate(this.props.currentYouth.dob)}</span></p>
                             <p>Age: <span className="value">{getDateDiff(this.props.currentYouth.dob, "years")}</span></p>
                             <p>Guardian: <span className="value">{guardian + relationship || DEFAULT_VALUE}</span></p>
+                            <p>Guardian Phone Number: <span className="value">{currentVisit.guardian_phone_number || DEFAULT_VALUE}</span></p>
                             <p>City: <span className="value">{currentVisit.city_of_origin || DEFAULT_VALUE}</span></p>
                         </div>
                     </div>
