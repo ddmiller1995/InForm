@@ -23,5 +23,4 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^ajax_select/', include(ajax_select_urls)),
-    url(r'session_security/', include('session_security.urls')),
 ]

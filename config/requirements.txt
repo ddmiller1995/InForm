@@ -4,4 +4,3 @@ djangorestframework==3.6.2
 gunicorn==19.7.1
 django-ajax-selects==1.5.2
 fuzzywuzzy==0.15.0
-django-session-security==2.5.1
