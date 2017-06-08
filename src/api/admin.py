@@ -163,7 +163,7 @@ class FormYouthVisitAdmin(admin.ModelAdmin):
     ]
 
 class YouthTrackerFieldAdmin(admin.ModelAdmin):
-    #exclude = ('field_path',)
+    exclude = ('field_path',)
     ordering = ('-displayed', 'order',)
 
     list_display = [
