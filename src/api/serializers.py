@@ -11,6 +11,7 @@ def serialize_youth(youth):
     obj['name'] = youth.youth_name
     obj['dob'] = youth.date_of_birth
     obj['ethnicity'] = youth.ethnicity
+    obj['dcfs_id'] = youth.dcfs_id
     obj['notes'] = youth.notes
 
     return obj
