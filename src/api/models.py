@@ -52,7 +52,7 @@ class Youth(models.Model):
     youth_name = models.CharField(max_length=256, help_text="Full name")
     date_of_birth = models.DateField('date born')
     ethnicity = models.CharField(max_length=256, null=True, blank=True)
-    dcfs_id = models.CharField(max_length=64, null=True, blank=True)
+    dcfs_id = models.CharField('DCFS ID', max_length=64, null=True, blank=True)
     notes = models.TextField(null=True, blank=True)
 
     def __str__(self):

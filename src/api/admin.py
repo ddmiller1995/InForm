@@ -49,6 +49,7 @@ class YouthVisitAdmin(AjaxSelectAdmin):
                 'personal_counselor',
                 'guardian_name',
                 'guardian_relationship',
+                'guardian_phone_number'
             ]
         }),
         ('Placement', {
