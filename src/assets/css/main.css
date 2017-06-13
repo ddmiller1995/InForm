@@ -47,9 +47,9 @@
   white-space: normal;
   word-wrap: break-word;
   max-width: 215px; }
-.mdl-data-table.mdl-js-data-tabled .seven-days .mdl-navigation__link {
+.mdl-data-table.mdl-js-data-tabled .seven-days {
   color: #E17000; }
-.mdl-data-table.mdl-js-data-tabled .three-days .mdl-navigation__link {
+.mdl-data-table.mdl-js-data-tabled .three-days {
   color: red; }
 .mdl-data-table.mdl-js-data-tabled .exit-column {
   padding: 0 0 0 5px; }
